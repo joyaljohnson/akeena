@@ -1,0 +1,15 @@
+# Minimal Supabase CLI config. Hosted-project settings (sign-ups off, etc.) are in the README.
+project_id = "akeena-letters"
+
+[api]
+enabled = true
+schemas = ["public"]
+
+[db]
+port = 54322
+major_version = 17
+
+[auth]
+# Only admins exist, and they are created by hand. Nobody can sign themselves up.
+enable_signup = false
+enable_anonymous_sign_ins = false

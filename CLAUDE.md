@@ -38,3 +38,4 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 - No instruction text inside the letter (no "scroll", "tap", "click"). Type is compact (body about 16px); spacing tight. Phase 5 oath button must not say "Tap to swear".
 - The cover fills the first screen on its own (greeting, note, sign-off); duties, chapters and the rest sit below the fold.
 - The envelope scene shows no instruction text. The seal is a labelled button with a soft pulse. Layered artwork spec: docs/ASSETS.md.
+- Database: migrations in `supabase/migrations/`, tests in `supabase/tests/` (PGlite, part of `npm test`). `unlock_letter` has an extra `p_count_view` flag (false when resuming after a refresh, so views are not inflated). Tokens are 40 hex chars (~154 bits). PINs are unique across bridesmaids. Any new table needs RLS, explicit revokes from anon, and a test.
