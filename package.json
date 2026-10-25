@@ -18,7 +18,7 @@
     "ci:local": "bash scripts/ci-local.sh",
     "e2e": "playwright test",
     "shots": "tsx scripts/screenshots.ts",
-    "brand:build": "node scripts/build-brand-images.mjs"
+    "art:build": "node scripts/process-art.mjs && node scripts/build-images.mjs"
   },
   "repository": {
     "type": "git",

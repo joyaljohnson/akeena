@@ -9,7 +9,19 @@ const OUT = 'public/img';
 mkdirSync(OUT, { recursive: true });
 
 // Reference-only files never ship.
-const SKIP = new Set(['stamp-reference']);
+// The envelope art has its own pipeline (process-art.mjs).
+const SKIP = new Set([
+  'stamp-reference',
+  'envelope-front',
+  'envelope-back-body',
+  'envelope-flap',
+  'envelope-flap-inner',
+  'flap-florals',
+  'wax-seal',
+  'floral-corner',
+  'paper-texture',
+  'og-envelope',
+]);
 
 for (const file of readdirSync(SRC)) {
   const ext = extname(file).toLowerCase();

@@ -1,24 +1,44 @@
-# Artwork needed (envelope and reveal)
+# Artwork
 
-Everything below is currently a drawn placeholder in `src/envelope/EnvelopeArt.tsx`. Each piece is a
-separate layer, because the opening animation moves them independently. Swapping in the real art
-only touches that file (and a build step through `scripts/build-images.mjs`).
+The final envelope artwork is in. Originals live in `assets-src/` on the machine that made them
+(the large originals are not committed to GitHub; keep your copies). The web-ready files are in
+`public/img/` and **are** committed.
 
-Display geometry: the envelope is 340 CSS px wide at most, aspect ratio 300 : 204 (about 1.47 : 1).
-The flap tip (the point of the flap triangle) sits 55% of the way down the envelope.
-Deliver at 2x or better. Transparent PNG unless noted. No names, dates or venues in any image.
+## How the pictures are used
 
-| File                                   | Size (px)  | What it is                                                                                                                                                                                                                   |
-| -------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `envelope-front.png` (opaque)          | 1200 x 816 | Envelope front, plain ivory embossed paper. Leave the top-right free: the stamp is drawn over it. Leave the centre free: "A letter for you" is set on it.                                                                    |
-| `envelope-back-body.png`               | 1200 x 816 | The back of the envelope without the flap: side and bottom folds meeting at a point 55% of the way down. **The V-shaped area above the folds must be transparent**, so the letter and glow show through when the flap opens. |
-| `envelope-flap.png`                    | 1200 x 448 | The flap only: a triangle, wide edge along the top, point at the bottom. Transparent outside the triangle. This is the **outer** face.                                                                                       |
-| `envelope-flap-inner.png`              | 1200 x 448 | Same triangle, the **inside** face (plain, slightly darker paper). Seen once the flap has swung open.                                                                                                                        |
-| `flap-florals.png`                     | 640 x 280  | Symmetrical floral relief cluster that sits at the flap's point, behind the seal.                                                                                                                                            |
-| `wax-seal.png`                         | 256 x 256  | Blush / dusty-rose wax seal with an embossed peony (or the initial "A"). The seal is split into two halves in code to "crack" it, so it should read as one round piece with no hard edge artefacts.                          |
-| `paper-texture.png` (opaque, tileable) | 512 x 512  | Letter page background. Currently a generated noise.                                                                                                                                                                         |
-| `floral-corner.png`                    | 320 x 320  | Corner ornament for the cover.                                                                                                                                                                                               |
-| `og-envelope.jpg` (opaque)             | 1200 x 630 | WhatsApp / link preview image: a closed envelope, nothing personal.                                                                                                                                                          |
+| File you supplied         | What it is                                         | Used for                                                                                                                                                                       |
+| ------------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `envelope-front.png`      | Envelope front with embossed ferns                 | The PIN screen (plus the stamp and "A letter for you") and the page shell in `index.html`                                                                                      |
+| `envelope-back-body.png`  | The **closed** back of the envelope, flap attached | Both the **flap** (the big triangle) and the **pocket** (everything else). Closed, they line up exactly; when opening, the flap swings away and the inside shows through the V |
+| `envelope-flap-inner.png` | Plain warm paper with a glow                       | The inside of the envelope, and the underside of the flap                                                                                                                      |
+| `flap-florals.png`        | Flower spray on a dark backdrop                    | The spray at the flap's point, above the seal (backdrop cut away)                                                                                                              |
+| `wax-seal.png`            | Blush wax seal with a peony, on a dark backdrop    | The seal, cracked in two when opened (backdrop cut away)                                                                                                                       |
+| `floral-corner.png`       | Rose and fern corner on a dark backdrop            | The cover's top-left corner, turned half a circle for the bottom-right (backdrop cut away)                                                                                     |
+| `paper-texture.png`       | Cream paper with fibres                            | The paper behind the pages, made seamless so it can repeat                                                                                                                     |
+| `og-envelope.jpg`         | Envelope on linen with petals                      | The WhatsApp link preview (cropped to 1200 x 630)                                                                                                                              |
+| `envelope-flap.png`       | A flat card with ferns                             | **Not used.** The flap is taken from the closed-back picture instead, so it matches the envelope exactly.                                                                      |
 
-If the final art is not split into these layers (for example the flap is baked into the envelope),
-it cannot be animated convincingly. Regenerate it as separate pieces rather than faking it.
+The seal also provides the browser-tab icon and the phone home-screen icon.
+
+## Rebuilding after a change
+
+Put a new picture in `assets-src/` with the same file name, then:
+
+```bash
+npm run art:build
+```
+
+That cuts the dark backdrops away, makes the paper seamless, writes the WebP files and the link
+preview, and rebuilds the icons. Then check the opening animation (`#/dev/envelope`) and the
+picture download.
+
+## If you ever regenerate the art
+
+- **Closed back picture** (`envelope-back-body.png`): the flap triangle is cut out using its measured
+  outline in `src/envelope/EnvelopeArt.tsx` (corner clips at 40 px and 160 px, point at 1251 px, on a
+  2528 x 1696 picture). If the flap's shape or position changes, update those numbers. Keep the
+  flap's edge crisp and the envelope's aspect ratio at about 1.49 : 1.
+- **Transparent pieces** (seal, florals, corner): a flat, plain dark backdrop (anything close to a
+  single dark grey) cuts away cleanly. A textured or gradient backdrop will not. Real transparent
+  PNGs also work: put them in as they are and skip the cut-out step in `scripts/process-art.mjs`.
+- No names, dates or venues in any image (the link preview is seen by anyone with the link).

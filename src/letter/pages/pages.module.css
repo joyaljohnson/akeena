@@ -45,9 +45,9 @@
 .corner {
   position: absolute;
   pointer-events: none;
-  width: 80px;
-  height: 80px;
-  opacity: 0.95;
+  width: 118px;
+  height: auto;
+  opacity: 1;
 }
 .cornerTl {
   top: 0;

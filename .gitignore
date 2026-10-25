@@ -17,3 +17,14 @@ test-results/
 playwright-report/
 qa-reports/
 qa-screenshots/
+
+# Large original artwork (the web-ready versions in public/img/ are committed)
+assets-src/envelope-front.png
+assets-src/envelope-back-body.png
+assets-src/envelope-flap.png
+assets-src/envelope-flap-inner.png
+assets-src/flap-florals.png
+assets-src/wax-seal.png
+assets-src/floral-corner.png
+assets-src/paper-texture.png
+assets-src/og-envelope.jpg

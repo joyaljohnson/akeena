@@ -18,10 +18,10 @@ so they touch nothing real.
 | Admin: statuses, copy link/PIN/message, add with validation and a generated PIN, live preview, reorder, deactivate, delete warning for signed letters, shared letter editor validation, sign-in | `e2e/admin.spec.ts`                      |
 | Accessibility (WCAG 2.1 A and AA) on every screen, with axe                                                                                                                                     | `e2e/a11y.spec.ts`                       |
 
-Lighthouse (mobile, simulated slow 4G on a mid-range phone), last run on the production build:
-Performance 95 to 98, Accessibility 100, Best Practices 100. SEO is not a goal: the pages are
-deliberately kept out of search engines. The envelope appears in about 2.1 to 2.6 seconds; the
-first download is about 119 KB (gzipped).
+Lighthouse (mobile, simulated slow 4G on a mid-range phone), last run on the production build with
+the final artwork: Performance 97 to 98, Accessibility 100, Best Practices 100. SEO is not a goal:
+the pages are deliberately kept out of search engines. The envelope appears in about 2.3 to 2.4
+seconds; the first script download is about 118 KB (gzipped) plus a 15 KB envelope picture.
 
 ## Still needs a real phone
 
@@ -89,6 +89,5 @@ delete her afterwards (a signed test letter can only be removed by deleting it).
 ## Before the real invites go out
 
 - [ ] Delete all test bridesmaids.
-- [ ] Replace the placeholder envelope art, seal, florals and paper texture (see `docs/ASSETS.md`), then re-check the opening animation and the picture download.
 - [ ] Confirm the three open spellings and the two church times from Akeena in the shared letter editor.
 - [ ] Check `https://<site>/#/admin` asks for a sign-in, and that sign-ups are off in Supabase.

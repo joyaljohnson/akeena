@@ -17,7 +17,7 @@
     <meta property="og:image:alt" content="A sealed envelope" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="%VITE_SITE_URL%/og-envelope.jpg" />
-    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="icon" type="image/png" href="%BASE_URL%favicon.png" />
     <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
     <style>
       /* The envelope is drawn here so it appears before any script has loaded. It mirrors the
@@ -26,8 +26,9 @@
       #shell[hidden] { display: none; }
       #shell .col { width: 100%; max-width: 430px; height: 100dvh; background: #fbf7ef; box-shadow: 0 0 60px rgba(58,47,42,.12); display: grid; place-items: center; overflow: hidden; }
       #shell .stack { display: grid; justify-items: center; gap: 2.25rem; }
-      #shell .env { position: relative; width: min(86vw, 340px); height: calc(min(86vw, 340px) * .68); filter: drop-shadow(0 14px 24px rgba(58,47,42,.18)); }
-      #shell .env svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+      #shell .env { position: relative; width: min(86vw, 340px); height: calc(min(86vw, 340px) * .671); filter: drop-shadow(0 14px 24px rgba(58,47,42,.18)); }
+      #shell .env { background: linear-gradient(135deg, #fdfaf3, #f0e8d8); border-radius: 4px; }
+      #shell .env img { position: absolute; inset: 0; width: 100%; height: 100%; }
       #shell .env p { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: 400 calc(1.7rem * 1.1)/1.3 'Parisienne', cursive; color: #3a2f2a; text-align: center; }
       #shell .boxes { display: flex; gap: .6rem; min-height: 150px; align-items: flex-start; }
       #shell .boxes i { width: 48px; height: 58px; border: 1px solid #b8925a; border-radius: 10px; background: rgba(255,255,255,.7); opacity: .55; box-shadow: 0 2px 8px rgba(58,47,42,.08); }
@@ -39,12 +40,7 @@
         <div class="col">
           <div class="stack">
             <div class="env">
-              <svg viewBox="0 0 300 204" aria-hidden="true" focusable="false">
-                <defs><linearGradient id="shp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FDFAF3"/><stop offset="1" stop-color="#F0E8D8"/></linearGradient></defs>
-                <rect x=".5" y=".5" width="299" height="203" rx="6" fill="url(#shp)" stroke="#E0D3BA"/>
-                <rect x="9" y="9" width="282" height="186" rx="3" fill="none" stroke="#D9BE8C" stroke-width=".8" opacity=".7"/>
-                <rect x="11" y="11" width="278" height="182" rx="2" fill="none" stroke="#fff" stroke-width="1.2" opacity=".8"/>
-              </svg>
+              <img id="shell-img" alt="" width="1000" height="671" decoding="async" />
               <p>A letter for you</p>
             </div>
             <div class="boxes"><i></i><i></i><i></i><i></i></div>
@@ -54,7 +50,10 @@
     </div>
     <script>
       // Only letter links get the envelope; the admin area and other pages start blank.
-      if (/^#\/l\//.test(location.hash)) document.getElementById('shell').hidden = false;
+      if (/^#\/l\//.test(location.hash)) {
+        document.getElementById('shell').hidden = false;
+        document.getElementById('shell-img').src = '%BASE_URL%img/envelope-front.webp';
+      }
     </script>
     <noscript>This letter needs JavaScript to open. Please enable it and try again.</noscript>
     <script type="module" src="/src/main.tsx"></script>
