@@ -1,7 +1,7 @@
 import { useEffect, useMemo, type CSSProperties } from 'react';
 import { handwritingVars, loadHandwritingFont } from '../lib/handwriting';
 import type { LetterData, SignedInfo } from '../lib/letterTypes';
-import { Booklet } from './Booklet';
+import { LetterScroll } from './LetterScroll';
 import styles from './Letter.module.css';
 import { AcceptancePage } from './pages/AcceptancePage';
 import { ChapterPage } from './pages/ChapterPage';
@@ -53,7 +53,7 @@ export function Letter({ data, signed = null, initialIndex, onAccept, onDownload
   return (
     <div className={styles.stage}>
       <div className={styles.column} style={handwritingVars(data.fontId) as CSSProperties}>
-        <Booklet pages={pages} initialIndex={initialIndex} />
+        <LetterScroll pages={pages} initialIndex={initialIndex} />
       </div>
     </div>
   );

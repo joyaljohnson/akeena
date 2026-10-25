@@ -1,0 +1,34 @@
+.wrap {
+  position: relative;
+  height: 100%;
+}
+
+.scroller {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: var(--safe-bottom);
+}
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+.scroller:focus-visible {
+  outline-offset: -3px;
+}
+
+.progress {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 2;
+  background: rgba(184, 146, 90, 0.18);
+  pointer-events: none;
+}
+.bar {
+  height: 100%;
+  background: var(--burgundy);
+  transform: scaleX(0);
+  transform-origin: left;
+}

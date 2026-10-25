@@ -1,9 +1,5 @@
 .page {
   position: relative;
-  height: 100%;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: none;
   background-color: var(--paper);
   background-image: var(--paper-noise);
   --accent-text: var(--ink-soft);
@@ -12,12 +8,12 @@
 
 .inner {
   position: relative;
-  min-height: 100%;
+  min-height: var(--page-min, auto);
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 1.5rem;
-  padding: 3.25rem 1.75rem 2rem;
+  padding: 4rem 1.75rem 4rem;
   text-align: center;
 }
 
@@ -65,9 +61,24 @@
 
 /* Cover */
 .cover {
+  --page-min: 100dvh;
   gap: 1.25rem;
   padding-top: 6rem;
   padding-bottom: 6rem;
+}
+.full {
+  --page-min: 100dvh;
+}
+.scrollHint {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
 }
 .headline {
   margin: 0;
@@ -270,7 +281,7 @@
 }
 .stamp {
   position: absolute;
-  right: -10px;
+  right: 0;
   bottom: -14px;
   filter: drop-shadow(0 2px 3px rgba(58, 47, 42, 0.25));
 }
@@ -292,8 +303,4 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   cursor: pointer;
-}
-
-.page::-webkit-scrollbar {
-  display: none;
 }

@@ -29,3 +29,7 @@ Design at 360/390/430. `100dvh`, safe-area insets, no horizontal scroll, targets
 ## Working style
 
 Quality over speed. If the spec is wrong or something is better, say so. Missing art: same-size placeholder with the exact filename.
+
+## Decisions that override BUILD_PROMPT.md
+
+- The letter is one continuous vertical scroll (no horizontal swipe, no page dots or arrows). A thin progress line shows reading position. Export (`ExportLetter`, §9) stacks pages the same way.
