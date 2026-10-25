@@ -101,3 +101,16 @@ export function penKeyframes(
   keyframes.push({ offset: 1, x: last.x + 18, y: last.y - 8, opacity: 0 });
   return { keyframes, durationMs: span };
 }
+
+/** How long one letter's reveal lasts; the pen and the letters both use this. */
+export function penStrokeMs(schedule: PenSchedule): number {
+  return Math.max(280, schedule.stepMs * 4.5);
+}
+
+/**
+ * When the visible ink's leading edge reaches a letter. A letter's reveal eases in slowly, so the
+ * edge arrives a little after the letter's start; the pen's nib is timed to this moment.
+ */
+export function inkEdgeMs(startOfLetterMs: number, schedule: PenSchedule): number {
+  return startOfLetterMs + penStrokeMs(schedule) * 0.3;
+}

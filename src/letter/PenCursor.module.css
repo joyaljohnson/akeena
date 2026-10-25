@@ -1,4 +1,4 @@
-/* The pen sits at the top-left of its box and is moved by transform. Its nib is the box's origin. */
+/* The quill sits at the top-left of its box and is moved by transform. Its nib is the box's origin. */
 .pen {
   position: absolute;
   left: 0;
@@ -8,24 +8,50 @@
   opacity: 0;
   z-index: 6;
   pointer-events: none;
-  will-change: transform, opacity;
+}
+
+/* The writing hand: a lively tilt about the nib, plus a small bob like pen strokes. Two nested
+   boxes so the two movements never fight over the same transform. */
+.swing {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+  transform: rotate(-42deg);
+  animation: swing 0.27s ease-in-out infinite alternate;
+}
+
+.bob {
+  position: absolute;
+  left: 0;
+  top: 0;
+  animation: bob 0.17s ease-in-out infinite alternate;
 }
 
 .svg {
   position: absolute;
-  left: -1px;
-  top: -9px;
+  left: -0.6px;
+  top: -7.6px;
   display: block;
-  overflow: visible;
-  transform-origin: 2% 50%;
-  transform: rotate(-42deg);
-  filter: drop-shadow(1px 3px 3px rgba(58, 47, 42, 0.32));
-  animation: wobble 0.55s ease-in-out infinite alternate;
 }
 
-@keyframes wobble {
+@keyframes swing {
+  from {
+    transform: rotate(-52deg);
+  }
   to {
-    transform: rotate(-35deg);
+    transform: rotate(-30deg);
+  }
+}
+
+@keyframes bob {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(0.9px, 1.6px);
   }
 }
 

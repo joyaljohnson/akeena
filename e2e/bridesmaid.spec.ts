@@ -249,8 +249,8 @@ test('the note is written out like a pen, and a tap finishes it', async ({ page 
   const letters = page.locator('p span[class*="char"]');
   expect(await letters.count()).toBeGreaterThan(20);
   // Straight after opening, the end of the note has not been written yet.
-  const lastOpacity = await letters.last().evaluate((el) => Number(getComputedStyle(el).opacity));
-  expect(lastOpacity).toBeLessThan(1);
+  const lastClip = await letters.last().evaluate((el) => getComputedStyle(el).clipPath);
+  expect(lastClip).not.toBe('none');
   // A pen travels with the writing.
   await expect(page.locator('[data-pen-cursor] svg')).toBeVisible();
   // A tap on the cover finishes the writing at once, and the pen leaves with it.
@@ -276,8 +276,8 @@ test.describe('pen writing with reduced motion', () => {
     await mockBackend(page);
     await openLetter(page);
     const letters = page.locator('p span[class*="char"]');
-    const last = await letters.last().evaluate((el) => Number(getComputedStyle(el).opacity));
-    expect(last).toBe(1);
+    const lastClip = await letters.last().evaluate((el) => getComputedStyle(el).clipPath);
+    expect(lastClip).toBe('none');
     await expect(page.locator('[data-pen-cursor] svg')).toBeHidden();
   });
 });

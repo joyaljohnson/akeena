@@ -1,5 +1,5 @@
 import { Fragment, type ReactNode } from 'react';
-import type { PenSchedule } from './penTiming';
+import { penStrokeMs, type PenSchedule } from './penTiming';
 import styles from './PenWriting.module.css';
 
 type PenWritingProps = {
@@ -16,7 +16,7 @@ type PenWritingProps = {
  * the whole text at once (the animated copy is hidden from them).
  */
 export function PenWriting({ chars, schedule, startMs }: PenWritingProps) {
-  const duration = Math.max(280, schedule.stepMs * 4.5);
+  const duration = penStrokeMs(schedule);
   const nodes: ReactNode[] = [];
   let word: ReactNode[] = [];
   let key = 0;

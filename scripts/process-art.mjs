@@ -113,7 +113,7 @@ async function cutOut(file, { low = 16, high = 52, enclosed = false } = {}) {
   return sharp(out, { raw: { width: w, height: h, channels: 4 } });
 }
 
-async function save(img, name, { width, trim = false, quality = 82 }) {
+async function save(img, name, { width, trim = false, quality = 82, lossless = false }) {
   let p = img;
   if (trim) {
     const buf = await p.png().toBuffer();
@@ -129,7 +129,7 @@ async function save(img, name, { width, trim = false, quality = 82 }) {
   }
   const buf = await p
     .resize({ width, withoutEnlargement: true })
-    .webp({ quality, alphaQuality: 90, effort: 5 })
+    .webp(lossless ? { lossless: true, effort: 5 } : { quality, alphaQuality: 90, effort: 5 })
     .toBuffer();
   await sharp(buf).toFile(`${OUT}/${name}.webp`);
   const m = await sharp(buf).metadata();
@@ -157,24 +157,48 @@ await flat('envelope-front.png', 'envelope-front', 1000);
 await flat('envelope-back-body.png', 'envelope-back', 1000);
 await flat('envelope-flap-inner.png', 'envelope-inner', 1000, 72);
 
-// Seamless paper: mirror the picture into a 2x2 block so every edge matches its neighbour.
+// Seamless paper. The supplied picture carries faint blocky steps in its background tone (left over
+// from its own compression), which show as pale rectangles on a bright screen. So keep only the
+// fine fibres (the picture minus a blurred copy of itself) and lay them over a flat paper colour.
+// Then mirror it into a 2x2 block so every edge matches its neighbour and it can repeat.
 {
-  const tile = await sharp(`${SRC}/paper-texture.png`).resize(512, 512).toBuffer();
+  const SIZE = 512;
+  const base = [251, 247, 239]; // the page's paper colour (--paper)
+  const src = await sharp(`${SRC}/paper-texture.png`)
+    .resize(SIZE, SIZE)
+    .removeAlpha()
+    .raw()
+    .toBuffer();
+  const soft = await sharp(src, { raw: { width: SIZE, height: SIZE, channels: 3 } })
+    .blur(7)
+    .raw()
+    .toBuffer();
+  const fibres = Buffer.alloc(src.length);
+  for (let i = 0; i < src.length; i++) {
+    const detail = src[i] - soft[i];
+    // Ignore the faint grain and block steps; keep only real strands.
+    const v = Math.abs(detail) < 5 ? 0 : detail;
+    fibres[i] = Math.max(0, Math.min(255, Math.round(base[i % 3] + v)));
+  }
+  const tile = await sharp(fibres, { raw: { width: SIZE, height: SIZE, channels: 3 } })
+    .png()
+    .toBuffer();
   const flopped = await sharp(tile).flop().toBuffer();
   const flipped = await sharp(tile).flip().toBuffer();
   const both = await sharp(tile).flip().flop().toBuffer();
   const block = await sharp({
-    create: { width: 1024, height: 1024, channels: 3, background: '#fff' },
+    create: { width: SIZE * 2, height: SIZE * 2, channels: 3, background: '#fff' },
   })
     .composite([
       { input: tile, left: 0, top: 0 },
-      { input: flopped, left: 512, top: 0 },
-      { input: flipped, left: 0, top: 512 },
-      { input: both, left: 512, top: 512 },
+      { input: flopped, left: SIZE, top: 0 },
+      { input: flipped, left: 0, top: SIZE },
+      { input: both, left: SIZE, top: SIZE },
     ])
     .png()
     .toBuffer();
-  await save(sharp(block), 'paper', { width: 1024, quality: 70 });
+  // Lossless, so the flat paper stays exactly flat (lossy compression adds pale rectangles).
+  await save(sharp(block), 'paper', { width: 1024, lossless: true });
 }
 
 // --- link preview and icons --------------------------------------------------------------------

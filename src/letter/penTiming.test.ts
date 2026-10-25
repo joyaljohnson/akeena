@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { penKeyframes, penSchedule, splitGraphemes } from './penTiming';
+import { inkEdgeMs, penKeyframes, penSchedule, penStrokeMs, splitGraphemes } from './penTiming';
 
 describe('splitGraphemes', () => {
   it('keeps emoji and Malayalam letter marks together', () => {
@@ -76,5 +76,15 @@ describe('penKeyframes', () => {
   it('handles no points and a single point', () => {
     expect(penKeyframes([]).keyframes).toEqual([]);
     expect(penKeyframes([{ t: 0, x: 1, y: 2 }]).keyframes.length).toBeGreaterThanOrEqual(3);
+  });
+});
+
+describe('ink edge timing', () => {
+  it('puts the pen slightly after a letter starts, never before', () => {
+    const sched = penSchedule(splitGraphemes('hello'), { perCharMs: 55 });
+    expect(penStrokeMs(sched)).toBeGreaterThanOrEqual(280);
+    const edge = inkEdgeMs(1000, sched);
+    expect(edge).toBeGreaterThan(1000);
+    expect(edge).toBeLessThan(1000 + penStrokeMs(sched));
   });
 });

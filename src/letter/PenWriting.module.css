@@ -8,7 +8,6 @@
 .char {
   display: inline-block;
   clip-path: inset(-45% 160% -45% -60%);
-  opacity: 0;
   animation-name: ink;
   animation-timing-function: cubic-bezier(0.4, 0.05, 0.35, 1);
   animation-fill-mode: both;
@@ -17,7 +16,6 @@
 @keyframes ink {
   to {
     clip-path: inset(-45% -60% -45% -60%);
-    opacity: 1;
   }
 }
 
@@ -25,6 +23,5 @@
   .char {
     animation: none;
     clip-path: none;
-    opacity: 1;
   }
 }
