@@ -1,0 +1,90 @@
+.wrap {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+}
+
+.button {
+  min-height: 40px;
+  padding: 0 1.25rem;
+  border: 1px solid var(--burgundy);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--burgundy);
+  font-family: var(--font-label);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.hint {
+  max-width: 260px;
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+.status {
+  min-height: 1.3em;
+  max-width: 260px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  background: rgba(40, 30, 26, 0.72);
+}
+
+.sheet {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: center;
+  width: min(100%, 430px);
+  max-height: 100%;
+  padding: 1rem;
+  border-radius: 16px;
+  background: var(--paper);
+  overflow-y: auto;
+}
+
+.sheetText {
+  margin: 0;
+  font-style: italic;
+}
+
+.picture {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(58, 47, 42, 0.18);
+  -webkit-touch-callout: default;
+  user-select: auto;
+}
+
+.sheetActions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.close {
+  min-height: 40px;
+  padding: 0 1rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink-soft);
+  text-decoration: underline;
+  cursor: pointer;
+}

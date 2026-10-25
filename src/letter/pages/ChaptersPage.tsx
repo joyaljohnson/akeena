@@ -155,12 +155,18 @@ export function ChapterCard({
   );
 }
 
-export function ChaptersPage({ chapters }: { chapters: readonly LetterChapter[] }) {
+export function ChaptersPage({
+  chapters,
+  alwaysOpen = false,
+}: {
+  chapters: readonly LetterChapter[];
+  alwaysOpen?: boolean;
+}) {
   return (
     <div className={styles.page}>
       <div className={`${styles.inner} ${styles.cards}`}>
         {chapters.map((c) => (
-          <ChapterCard key={c.id} chapter={c} />
+          <ChapterCard key={c.id} chapter={c} alwaysOpen={alwaysOpen} />
         ))}
       </div>
     </div>

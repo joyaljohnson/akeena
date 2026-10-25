@@ -1,0 +1,10 @@
+.root {
+  --cover-min: 560px;
+  /* The grain is an inline SVG background, which the image renderer draws as solid black. */
+  --paper-noise: none;
+  --safe-top: 0px;
+  --safe-bottom: 0px;
+  width: 390px;
+  background: var(--paper);
+  color: var(--ink);
+}

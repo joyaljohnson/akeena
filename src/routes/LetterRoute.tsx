@@ -5,7 +5,8 @@ import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
 import { LetterContent } from '../letter/Letter';
 import { PhoneStage } from '../letter/PhoneStage';
-import { checkLink, unlockLetter } from '../lib/api';
+import { checkLink, signLetter, unlockLetter } from '../lib/api';
+import type { SignOutcome } from '../lib/signing';
 import { DEFAULT_FONT_ID, handwritingVars } from '../lib/handwriting';
 import type { LetterData, SignedInfo } from '../lib/letterTypes';
 import { clearPin, readPin, savePin } from '../lib/pinSession';
@@ -92,6 +93,26 @@ function LetterFlow({ token }: { token: string }) {
     [token],
   );
 
+  const onSign = useCallback(
+    async (name: string): Promise<SignOutcome> => {
+      const pin = readPin(token);
+      if (!pin) return { status: 'blocked' };
+      try {
+        const res = await signLetter(token, pin, name);
+        if (res.status === 'ok' && res.letter.signed) {
+          const signed = res.letter.signed;
+          setState((s) => (s.kind === 'letter' ? { ...s, payload: res.letter } : s));
+          return { status: 'ok', signed };
+        }
+        if (res.status === 'invalid_name') return { status: 'invalid_name' };
+        return { status: 'blocked' };
+      } catch {
+        return { status: 'error' };
+      }
+    },
+    [token],
+  );
+
   const handOver = useCallback(() => {
     const payload = pending.current;
     if (payload) setState({ kind: 'letter', payload, resumed: false });
@@ -137,6 +158,7 @@ function LetterFlow({ token }: { token: string }) {
             <LetterContent
               data={toLetterData(state.payload)}
               signed={signed}
+              onSign={onSign}
               initialIndex={signed ? 'last' : 0}
             />
           </motion.div>

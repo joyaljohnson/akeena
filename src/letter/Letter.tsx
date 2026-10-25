@@ -1,6 +1,8 @@
 import { useEffect, useMemo, type CSSProperties } from 'react';
 import { handwritingVars, loadHandwritingFont } from '../lib/handwriting';
 import type { LetterData, SignedInfo } from '../lib/letterTypes';
+import { DownloadButton } from '../export/DownloadButton';
+import type { SignOutcome } from '../lib/signing';
 import { LetterScroll } from './LetterScroll';
 import { PhoneStage } from './PhoneStage';
 import { AcceptancePage } from './pages/AcceptancePage';
@@ -13,18 +15,11 @@ type LetterProps = {
   data: LetterData;
   signed?: SignedInfo | null;
   initialIndex?: number | 'last';
-  onAccept?: () => void;
-  onDownload?: () => void;
+  onSign?: (name: string) => Promise<SignOutcome>;
 };
 
 /** The letter itself, without the surrounding phone column. */
-export function LetterContent({
-  data,
-  signed = null,
-  initialIndex,
-  onAccept,
-  onDownload,
-}: LetterProps) {
+export function LetterContent({ data, signed = null, initialIndex, onSign }: LetterProps) {
   const { content } = data;
 
   useEffect(() => {
@@ -44,13 +39,13 @@ export function LetterContent({
           <AcceptancePage
             content={content}
             signed={signed}
-            onAccept={onAccept}
-            onDownload={onDownload}
+            onSign={onSign}
+            downloadSlot={signed ? <DownloadButton data={data} signed={signed} /> : null}
           />
         ),
       },
     ],
-    [data, content, signed, onAccept, onDownload],
+    [data, content, signed, onSign],
   );
 
   return <LetterScroll pages={pages} initialIndex={initialIndex} />;
