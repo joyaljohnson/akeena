@@ -42,23 +42,6 @@
   color: var(--gold);
 }
 
-.corner {
-  position: absolute;
-  pointer-events: none;
-  width: 118px;
-  height: auto;
-  opacity: 1;
-}
-.cornerTl {
-  top: 0;
-  left: 0;
-}
-.cornerBr {
-  right: 0;
-  bottom: 0;
-  transform: rotate(180deg);
-}
-
 /* Cover */
 .cover {
   min-height: var(--cover-min, calc(100dvh - var(--safe-top) - var(--stage-offset, 0px)));

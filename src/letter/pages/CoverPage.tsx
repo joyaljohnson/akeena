@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { fillTemplate } from '../../lib/format';
 import type { LetterData } from '../../lib/letterTypes';
 import { CoverBackground } from '../CoverBackground';
-import { FloralCorner } from '../FloralCorner';
 import { PenCursor } from '../PenCursor';
 import { PenWriting } from '../PenWriting';
 import { penSchedule, splitGraphemes } from '../penTiming';
@@ -78,8 +77,6 @@ export function CoverPage({
         className={`${styles.inner} ${styles.cover}`}
         onPointerDown={animate ? () => setSkipped(true) : undefined}
       >
-        <FloralCorner className={`${styles.corner} ${styles.cornerTl}`} />
-        <FloralCorner className={`${styles.corner} ${styles.cornerBr}`} />
         {animate && <PenCursor containerRef={innerRef} blocks={penBlocks} startedAt={startedAt} />}
         <h1 className={`hand ${styles.headline} ${animate ? 'fade-in' : ''}`}>{headline}</h1>
         <p ref={noteRef} className={`hand ${styles.note}`}>
