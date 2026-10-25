@@ -54,7 +54,16 @@ function failure(error: { code?: string; message?: string }): SaveResult {
   return { ok: false, reason: 'error' };
 }
 
+let cached: { key: string; api: AdminApi } | null = null;
+
+/** One Supabase client per page: a second one would fight over the saved sign-in. */
 export function createSupabaseApi(url: string, anonKey: string): AdminApi {
+  const key = `${url}|${anonKey}`;
+  if (cached?.key !== key) cached = { key, api: buildApi(url, anonKey) };
+  return cached.api;
+}
+
+function buildApi(url: string, anonKey: string): AdminApi {
   const supabase: SupabaseClient = createClient(url, anonKey, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false },
   });

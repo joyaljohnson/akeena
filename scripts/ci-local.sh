@@ -24,5 +24,5 @@ fail=0
 run() { echo "--- $*"; "$@" || { echo "FAILED: $*"; fail=1; return 1; }; }
 
 run npm run typecheck && run npm run lint && run npm test && \
-  VITE_BASE_PATH=/akeena/ run npm run build
+  VITE_BASE_PATH=/akeena/ VITE_SITE_URL=https://example.test/akeena run npm run build
 exit $fail

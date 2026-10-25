@@ -1,9 +1,15 @@
-import { motion } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
-import { LetterContent } from '../letter/Letter';
 import { PhoneStage } from '../letter/PhoneStage';
 import { checkLink, signLetter, unlockLetter } from '../lib/api';
 import type { SignOutcome } from '../lib/signing';
@@ -12,6 +18,11 @@ import type { LetterData, SignedInfo } from '../lib/letterTypes';
 import { clearPin, readPin, savePin } from '../lib/pinSession';
 import type { LetterPayload } from '../lib/rpcSchemas';
 import { ConnectionErrorScreen, LoadingScreen, UnavailableScreen } from './StatusScreen';
+
+// The letter's pages are only needed after the PIN, so they load separately and the envelope
+// appears sooner. They start downloading as soon as the envelope is on screen.
+const loadLetter = () => import('../letter/Letter');
+const LetterContent = lazy(() => loadLetter().then((m) => ({ default: m.LetterContent })));
 
 type State =
   | { kind: 'loading' }
@@ -42,6 +53,11 @@ function LetterFlow({ token }: { token: string }) {
 
   useEffect(() => {
     let cancelled = false;
+    // Warm the letter chunk while she types her PIN, so opening never waits on the network.
+    const idle = (window as Window & { requestIdleCallback?: (cb: () => void) => number })
+      .requestIdleCallback;
+    if (idle) idle(() => void loadLetter());
+    else setTimeout(() => void loadLetter(), 800);
 
     (async () => {
       try {
@@ -149,19 +165,17 @@ function LetterFlow({ token }: { token: string }) {
       const signed: SignedInfo | null = state.payload.signed;
       return (
         <PhoneStage style={handwritingVars(state.payload.font) as CSSProperties}>
-          <motion.div
-            style={{ height: '100%' }}
-            initial={state.resumed ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <LetterContent
-              data={toLetterData(state.payload)}
-              signed={signed}
-              onSign={onSign}
-              initialIndex={signed ? 'last' : 0}
-            />
-          </motion.div>
+          <div className={state.resumed ? undefined : 'fade-in'} style={{ height: '100%' }}>
+            {/* Plain paper while the pages arrive, so nothing from the envelope flashes back. */}
+            <Suspense fallback={<div style={{ height: '100%', background: 'var(--paper)' }} />}>
+              <LetterContent
+                data={toLetterData(state.payload)}
+                signed={signed}
+                onSign={onSign}
+                initialIndex={signed ? 'last' : 0}
+              />
+            </Suspense>
+          </div>
         </PhoneStage>
       );
     }

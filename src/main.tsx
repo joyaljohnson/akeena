@@ -5,6 +5,7 @@ import '@fontsource/cormorant-garamond/400.css';
 import '@fontsource/cormorant-garamond/400-italic.css';
 import '@fontsource/cormorant-garamond/600.css';
 import '@fontsource/cinzel/400.css';
+import '@fontsource/parisienne/400.css';
 import './styles/global.css';
 import { App } from './App';
 

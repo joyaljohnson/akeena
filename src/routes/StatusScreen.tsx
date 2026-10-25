@@ -1,3 +1,6 @@
+import type { CSSProperties } from 'react';
+import { EnvelopeLoading } from '../envelope/EnvelopeScene';
+import { DEFAULT_FONT_ID, handwritingVars } from '../lib/handwriting';
 import { Flourish } from '../letter/Flourish';
 import { PhoneStage } from '../letter/PhoneStage';
 import styles from './StatusScreen.module.css';
@@ -40,18 +43,11 @@ export function ConnectionErrorScreen({ onRetry }: { onRetry: () => void }) {
   );
 }
 
-/** A paper-coloured placeholder shaped like the envelope while the link is checked. */
+/** The envelope with its PIN boxes switched off, while the link is checked. */
 export function LoadingScreen() {
   return (
-    <PhoneStage>
-      <div className={styles.screen} role="status" aria-label="Loading your letter">
-        <div className={styles.skelEnvelope} />
-        <div className={styles.skelRow}>
-          {[0, 1, 2, 3].map((i) => (
-            <span key={i} className={styles.skelBox} />
-          ))}
-        </div>
-      </div>
+    <PhoneStage style={handwritingVars(DEFAULT_FONT_ID) as CSSProperties}>
+      <EnvelopeLoading fontId={DEFAULT_FONT_ID} />
     </PhoneStage>
   );
 }

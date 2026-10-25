@@ -14,8 +14,17 @@ npm run dev
 Design previews (dev only, not in the production build): `#/dev/letter`, `#/dev/envelope`
 (mock PIN `1234`), `#/dev/stamp`.
 
-Checks: `npm run typecheck`, `npm run lint`, `npm test` (includes the database tests),
-`npm run build`, `npm run check:leaks`.
+Checks:
+
+- `npm run ci:local` runs what GitHub runs (type check, lint, unit and database tests, build) with the
+  private files hidden. Run it before every push.
+- `npm run e2e` runs the browser tests (needs Google Chrome installed). They use made-up content and a
+  pretend backend. `npm run e2e -- --ui` opens the visual runner.
+- `npm run check:leaks` fails if venue names or map links from the private letter appear in `dist/`.
+- `npm run shots` takes 390 px screenshots of every screen (local only, shows the real letter).
+- `npm run brand:build` redraws the favicon, touch icon and WhatsApp preview image.
+
+The manual device checklist is in `docs/QA.md`.
 
 ## Supabase setup (once)
 

@@ -15,7 +15,10 @@
     "check:leaks": "node scripts/check-leaks.mjs",
     "seed:build": "tsx scripts/build-seed.ts",
     "images:build": "node scripts/build-images.mjs",
-    "ci:local": "bash scripts/ci-local.sh"
+    "ci:local": "bash scripts/ci-local.sh",
+    "e2e": "playwright test",
+    "shots": "tsx scripts/screenshots.ts",
+    "brand:build": "node scripts/build-brand-images.mjs"
   },
   "repository": {
     "type": "git",
@@ -45,9 +48,11 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@electric-sql/pglite": "^0.5.11",
     "@eslint/js": "^10.0.1",
     "@fontsource/josefin-sans": "^5.3.0",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

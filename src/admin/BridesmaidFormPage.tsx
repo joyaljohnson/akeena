@@ -162,36 +162,49 @@ function BridesmaidForm({ existing, list, template }: FormProps) {
           onSubmit={(e) => void submit(e)}
           noValidate
         >
-          <label className={styles.field}>
-            <span className={styles.label}>Name</span>
+          <div className={styles.field}>
+            <label htmlFor="bm-name" className={styles.label}>
+              Name
+            </label>
             <input
+              id="bm-name"
               className={styles.input}
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={80}
               aria-invalid={Boolean(show('name'))}
+              aria-describedby="bm-name-err"
               autoComplete="off"
             />
-            <p className={styles.error}>{show('name')}</p>
-          </label>
+            <p id="bm-name-err" className={styles.error}>
+              {show('name')}
+            </p>
+          </div>
 
-          <label className={styles.field}>
-            <span className={styles.label}>Personal note</span>
+          <div className={styles.field}>
+            <label htmlFor="bm-note" className={styles.label}>
+              Personal note
+            </label>
             <textarea
+              id="bm-note"
               className={styles.textarea}
               value={note}
               onChange={(e) => setNote(e.target.value)}
               aria-invalid={Boolean(show('note'))}
+              aria-describedby="bm-note-count bm-note-err"
               rows={6}
             />
             <span
+              id="bm-note-count"
               className={styles.counter}
               style={note.length > NOTE_LIMIT ? { color: '#8f2f2a' } : undefined}
             >
               {note.length} / {NOTE_LIMIT}
             </span>
-            <p className={styles.error}>{show('note')}</p>
-          </label>
+            <p id="bm-note-err" className={styles.error}>
+              {show('note')}
+            </p>
+          </div>
 
           <div className={styles.field}>
             <label htmlFor="pin" className={styles.label}>
@@ -207,6 +220,7 @@ function BridesmaidForm({ existing, list, template }: FormProps) {
                 maxLength={4}
                 onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 4))}
                 aria-invalid={Boolean(show('pin'))}
+                aria-describedby="bm-pin-hint bm-pin-err"
                 autoComplete="off"
               />
               <button
@@ -220,7 +234,9 @@ function BridesmaidForm({ existing, list, template }: FormProps) {
             <p className={styles.hint}>
               She types this to open her letter. Each bridesmaid needs a different one.
             </p>
-            <p className={styles.error}>{show('pin')}</p>
+            <p id="bm-pin-err" className={styles.error}>
+              {show('pin')}
+            </p>
           </div>
 
           <fieldset className={styles.field} style={{ border: 0, padding: 0, margin: 0 }}>

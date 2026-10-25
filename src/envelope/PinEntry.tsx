@@ -1,4 +1,3 @@
-import { animate } from 'framer-motion';
 import { useEffect, useRef, useState, type ClipboardEvent, type KeyboardEvent } from 'react';
 import styles from './PinEntry.module.css';
 
@@ -38,21 +37,17 @@ function messageFor(status: PinStatus): string {
 export function PinEntry({ status, onSubmit }: PinEntryProps) {
   const [digits, setDigits] = useState<string[]>(Array(LENGTH).fill(''));
   const refs = useRef<Array<HTMLInputElement | null>>([]);
-  const row = useRef<HTMLDivElement>(null);
   const locked = status.kind === 'locked';
   const busy = status.kind === 'checking';
   const disabled = locked || busy;
 
   // The parent remounts this component (new key) after a wrong PIN, so the boxes start empty;
-  // here we only focus the first box and shake the row. A network error keeps what was typed.
+  // here we only focus the first box. The shake is a CSS animation that plays on mount.
   useEffect(() => {
-    if (status.kind !== 'wrong') return;
-    refs.current[0]?.focus();
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduce && row.current) {
-      void animate(row.current, { x: [0, -10, 9, -6, 4, 0] }, { duration: 0.45 });
-    }
-  }, [status]);
+    if (status.kind === 'wrong') refs.current[0]?.focus();
+    // Only when this fresh copy first appears.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const commit = (next: string[]) => {
     setDigits(next);
@@ -103,7 +98,11 @@ export function PinEntry({ status, onSubmit }: PinEntryProps) {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.row} ref={row} role="group" aria-label="Your 4-digit PIN">
+      <div
+        className={`${styles.row} ${status.kind === 'wrong' ? styles.shake : ''}`}
+        role="group"
+        aria-label="Your 4-digit PIN"
+      >
         {digits.map((d, i) => (
           <input
             key={i}

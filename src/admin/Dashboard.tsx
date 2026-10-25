@@ -215,6 +215,7 @@ export function Dashboard() {
         <div
           className={styles.progressBar}
           role="progressbar"
+          aria-label="Letters signed"
           aria-valuemin={0}
           aria-valuemax={list.length}
           aria-valuenow={signed}

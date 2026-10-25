@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import { useState, type ReactNode } from 'react';
 import { EnvelopeScene, type UnlockResult } from './EnvelopeScene';
 
@@ -34,13 +33,8 @@ export function EnvelopeGate({
     );
   }
   return (
-    <motion.div
-      style={{ height: '100%' }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-    >
+    <div className="fade-in" style={{ height: '100%' }}>
       {children}
-    </motion.div>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { formatEventDate } from '../lib/format';
 import { HANDWRITING_FONTS, getHandwritingFont, loadHandwritingFont } from '../lib/handwriting';
 import { CHAPTER_THEMES, letterContentSchema, type LetterContent } from '../lib/letterTypes';
@@ -24,6 +24,9 @@ const ICONS = [
   ['bible', 'Bible'],
 ] as const;
 
+type FieldControl = { id: string; 'aria-describedby'?: string; 'aria-invalid'?: boolean };
+
+/** A labelled field. The label names only the control; hint and error are linked, not part of it. */
 function Field({
   label,
   error,
@@ -33,15 +36,33 @@ function Field({
   label: string;
   error?: string;
   hint?: string;
-  children: ReactNode;
+  children: (control: FieldControl) => ReactNode;
 }) {
+  const id = useId();
+  const describedBy = [hint ? `${id}-hint` : '', error ? `${id}-err` : '']
+    .filter(Boolean)
+    .join(' ');
   return (
-    <label className={styles.field}>
-      <span className={styles.label}>{label}</span>
-      {children}
-      {hint && <span className={styles.hint}>{hint}</span>}
-      {error && <span className={styles.error}>{error}</span>}
-    </label>
+    <div className={styles.field}>
+      <label htmlFor={id} className={styles.label}>
+        {label}
+      </label>
+      {children({
+        id,
+        'aria-describedby': describedBy || undefined,
+        'aria-invalid': error ? true : undefined,
+      })}
+      {hint && (
+        <span id={`${id}-hint`} className={styles.hint}>
+          {hint}
+        </span>
+      )}
+      {error && (
+        <span id={`${id}-err`} className={styles.error} role="alert">
+          {error}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -81,22 +102,24 @@ function Editor({ template }: { template: TemplateRecord }) {
     opts: { multiline?: boolean; hint?: string; type?: string } = {},
   ) => (
     <Field label={label} error={err(path)} hint={opts.hint}>
-      {opts.multiline ? (
-        <textarea
-          className={styles.textarea}
-          value={val(path)}
-          onChange={(e) => set(path, e.target.value)}
-          aria-invalid={Boolean(err(path))}
-        />
-      ) : (
-        <input
-          className={styles.input}
-          type={opts.type ?? 'text'}
-          value={val(path)}
-          onChange={(e) => set(path, e.target.value)}
-          aria-invalid={Boolean(err(path))}
-        />
-      )}
+      {(c) =>
+        opts.multiline ? (
+          <textarea
+            {...c}
+            className={styles.textarea}
+            value={val(path)}
+            onChange={(e) => set(path, e.target.value)}
+          />
+        ) : (
+          <input
+            {...c}
+            className={styles.input}
+            type={opts.type ?? 'text'}
+            value={val(path)}
+            onChange={(e) => set(path, e.target.value)}
+          />
+        )
+      }
     </Field>
   );
 
@@ -134,23 +157,28 @@ function Editor({ template }: { template: TemplateRecord }) {
           hint: 'Use {name} where her name goes.',
         })}
         <Field label="Default handwriting">
-          <select
-            className={styles.select}
-            value={defaultFont}
-            onChange={(e) => setDefaultFont(e.target.value)}
-          >
-            {HANDWRITING_FONTS.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.label}
-              </option>
-            ))}
-          </select>
-          <span
-            className={styles.fontSample}
-            style={{ fontFamily: `'${getHandwritingFont(defaultFont).family}', cursive` }}
-          >
-            Riya, would you be my bridesmaid?
-          </span>
+          {(c) => (
+            <>
+              <select
+                {...c}
+                className={styles.select}
+                value={defaultFont}
+                onChange={(e) => setDefaultFont(e.target.value)}
+              >
+                {HANDWRITING_FONTS.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+              <span
+                className={styles.fontSample}
+                style={{ fontFamily: `'${getHandwritingFont(defaultFont).family}', cursive` }}
+              >
+                Riya, would you be my bridesmaid?
+              </span>
+            </>
+          )}
         </Field>
       </section>
 
@@ -160,12 +188,14 @@ function Editor({ template }: { template: TemplateRecord }) {
         {items.map((_, i) => (
           <div key={i} className={styles.listRow}>
             <Field label={`Duty ${i + 1}`} error={err(['duties', 'items', i])}>
-              <input
-                className={styles.input}
-                value={items[i] ?? ''}
-                onChange={(e) => set(['duties', 'items', i], e.target.value)}
-                aria-invalid={Boolean(err(['duties', 'items', i]))}
-              />
+              {(c) => (
+                <input
+                  {...c}
+                  className={styles.input}
+                  value={items[i] ?? ''}
+                  onChange={(e) => set(['duties', 'items', i], e.target.value)}
+                />
+              )}
             </Field>
             <span className={styles.miniActions} style={{ marginTop: '1.4rem' }}>
               <button
@@ -223,35 +253,41 @@ function Editor({ template }: { template: TemplateRecord }) {
               {text('Title', ['chapters', ci, 'title'])}
               <div className={styles.twoCols}>
                 <Field label="Colour theme">
-                  <select
-                    className={styles.select}
-                    value={chapter.theme}
-                    onChange={(e) => set(['chapters', ci, 'theme'], e.target.value)}
-                  >
-                    {CHAPTER_THEMES.map((t) => (
-                      <option key={t} value={t}>
-                        {THEME_LABELS[t]}
-                      </option>
-                    ))}
-                  </select>
+                  {(c) => (
+                    <select
+                      {...c}
+                      className={styles.select}
+                      value={chapter.theme}
+                      onChange={(e) => set(['chapters', ci, 'theme'], e.target.value)}
+                    >
+                      {CHAPTER_THEMES.map((t) => (
+                        <option key={t} value={t}>
+                          {THEME_LABELS[t]}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </Field>
                 <Field label="Icon">
-                  <select
-                    className={styles.select}
-                    value={chapter.icon ?? ''}
-                    onChange={(e) =>
-                      set(
-                        ['chapters', ci, 'icon'],
-                        e.target.value === '' ? undefined : e.target.value,
-                      )
-                    }
-                  >
-                    {ICONS.map(([v, l]) => (
-                      <option key={v} value={v}>
-                        {l}
-                      </option>
-                    ))}
-                  </select>
+                  {(c) => (
+                    <select
+                      {...c}
+                      className={styles.select}
+                      value={chapter.icon ?? ''}
+                      onChange={(e) =>
+                        set(
+                          ['chapters', ci, 'icon'],
+                          e.target.value === '' ? undefined : e.target.value,
+                        )
+                      }
+                    >
+                      {ICONS.map(([v, l]) => (
+                        <option key={v} value={v}>
+                          {l}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </Field>
               </div>
 
@@ -274,32 +310,37 @@ function Editor({ template }: { template: TemplateRecord }) {
                         /^\d{4}-\d{2}-\d{2}$/.test(ev.date) ? formatEventDate(ev.date) : undefined
                       }
                     >
-                      <input
-                        className={styles.input}
-                        type="date"
-                        value={ev.date}
-                        onChange={(e) =>
-                          set(['chapters', ci, 'events', ei, 'date'], e.target.value)
-                        }
-                        aria-invalid={Boolean(err(['chapters', ci, 'events', ei, 'date']))}
-                      />
+                      {(c) => (
+                        <input
+                          {...c}
+                          className={styles.input}
+                          type="date"
+                          value={ev.date}
+                          onChange={(e) =>
+                            set(['chapters', ci, 'events', ei, 'date'], e.target.value)
+                          }
+                        />
+                      )}
                     </Field>
                     <Field
                       label="Time"
                       error={err(['chapters', ci, 'events', ei, 'time'])}
                       hint="Leave empty if it isn't decided yet."
                     >
-                      <input
-                        className={styles.input}
-                        type="time"
-                        value={ev.time ?? ''}
-                        onChange={(e) =>
-                          set(
-                            ['chapters', ci, 'events', ei, 'time'],
-                            e.target.value === '' ? null : e.target.value,
-                          )
-                        }
-                      />
+                      {(c) => (
+                        <input
+                          {...c}
+                          className={styles.input}
+                          type="time"
+                          value={ev.time ?? ''}
+                          onChange={(e) =>
+                            set(
+                              ['chapters', ci, 'events', ei, 'time'],
+                              e.target.value === '' ? null : e.target.value,
+                            )
+                          }
+                        />
+                      )}
                     </Field>
                   </div>
                   {text('Time note (optional)', ['chapters', ci, 'events', ei, 'timeNote'], {
@@ -381,13 +422,15 @@ function Editor({ template }: { template: TemplateRecord }) {
           error={whatsappError}
           hint="Use {name}, {link} and {pin}. Remove {pin} if you'd rather send the PIN separately."
         >
-          <textarea
-            className={styles.textarea}
-            value={whatsapp}
-            onChange={(e) => setWhatsapp(e.target.value)}
-            rows={5}
-            aria-invalid={Boolean(whatsappError)}
-          />
+          {(c) => (
+            <textarea
+              {...c}
+              className={styles.textarea}
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+              rows={5}
+            />
+          )}
         </Field>
       </section>
 

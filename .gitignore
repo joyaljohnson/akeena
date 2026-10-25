@@ -11,3 +11,9 @@ supabase/seed.private.sql
 src/dev-fixture/
 supabase/.temp
 .claude/
+
+# Local test and QA output (QA screenshots show the real letter)
+test-results/
+playwright-report/
+qa-reports/
+qa-screenshots/
