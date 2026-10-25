@@ -49,6 +49,13 @@ export const letterContentSchema = z.object({
     yesLabel: required('the button text'),
   }),
   oath: required('the oath'),
+  /** An optional link under the chapters, such as a Pinterest board for outfit ideas. */
+  moodboard: z
+    .object({
+      label: required('a label for the link'),
+      url: z.string().url('Please paste the full link, starting with https://'),
+    })
+    .optional(),
 });
 
 export type LetterContent = z.infer<typeof letterContentSchema>;

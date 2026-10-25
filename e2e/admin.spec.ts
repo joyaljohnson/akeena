@@ -156,6 +156,29 @@ test('the shared letter editor explains mistakes and only saves valid changes', 
   await expect(save).toBeDisabled();
 });
 
+test('the moodboard link can be edited, needs both boxes, and can be removed', async ({ page }) => {
+  await page.goto(`${admin}/letter`);
+  const save = page.getByRole('button', { name: 'Save changes' });
+  const label = page.getByLabel('Label', { exact: true });
+  const link = page.getByLabel('Link', { exact: true });
+  await expect(label).toHaveValue('Join my sample board');
+
+  await link.fill('not a link');
+  await expect(page.getByText('Please paste the full link, starting with https://')).toBeVisible();
+  await expect(save).toBeDisabled();
+
+  await link.fill('https://moodboard.example.test/other');
+  await label.fill('');
+  await expect(page.getByText('Please enter a label for the link.')).toBeVisible();
+  await expect(save).toBeDisabled();
+
+  // Both boxes empty removes the moodboard.
+  await link.fill('');
+  await expect(save).toBeEnabled();
+  await save.click();
+  await expect(page.getByText('Saved. Unsigned letters now show this version.')).toBeVisible();
+});
+
 test('the real admin address asks for sign-in and never shows the dashboard to strangers', async ({
   page,
 }) => {

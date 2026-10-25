@@ -9,7 +9,7 @@ if (!existsSync('letter-content.md')) {
 }
 const src = readFileSync('letter-content.md', 'utf8');
 const terms = new Set();
-for (const m of src.matchAll(/https:\/\/maps\.app\.goo\.gl\/\S+/g)) terms.add(m[0]);
+for (const m of src.matchAll(/https:\/\/(?:maps\.app\.goo\.gl|pin\.it)\/[\w-]+/g)) terms.add(m[0]);
 for (const m of src.matchAll(/Venue name: \*\*(.+?)\*\*/g)) if (m[1]) terms.add(m[1]);
 
 const walk = (d) =>

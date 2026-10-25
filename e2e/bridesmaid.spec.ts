@@ -95,6 +95,12 @@ test('the whole journey: PIN, envelope, letter, sign, download @responsive', asy
   await expect(page.getByText('Friday, 25 December 2026')).toBeVisible();
   await expect(page.getByText('6:30 pm')).toBeVisible();
 
+  // The moodboard link sits after the chapters and opens in a new tab.
+  const moodboard = page.getByRole('link', { name: /Join my sample board/ });
+  await expect(moodboard).toHaveAttribute('href', 'https://moodboard.example.test/board');
+  await expect(moodboard).toHaveAttribute('target', '_blank');
+  await expect(moodboard).toHaveAttribute('rel', /noopener/);
+
   // Accept, swear, sign.
   await page.getByRole('button', { name: 'Yes, I do!' }).scrollIntoViewIfNeeded();
   await page.getByRole('button', { name: 'Yes, I do!' }).click();

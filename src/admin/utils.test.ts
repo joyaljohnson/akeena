@@ -183,6 +183,26 @@ describe('editor helpers', () => {
     expect(letterContentSchema.safeParse(clean).success).toBe(true);
   });
 
+  it('drops an empty moodboard, keeps a filled one, and keeps a half-filled one for the editor to flag', () => {
+    expect(normalizeContent(content).moodboard).toBeUndefined();
+    const blank = setIn(content, ['moodboard'], { label: '  ', url: '' });
+    expect(normalizeContent(blank).moodboard).toBeUndefined();
+    const full = setIn(content, ['moodboard'], {
+      label: ' Join us ',
+      url: ' https://example.test/b ',
+    });
+    expect(normalizeContent(full).moodboard).toEqual({
+      label: 'Join us',
+      url: 'https://example.test/b',
+    });
+    expect(letterContentSchema.safeParse(normalizeContent(full)).success).toBe(true);
+    const half = setIn(content, ['moodboard'], { label: 'Join us', url: '' });
+    const res = letterContentSchema.safeParse(normalizeContent(half));
+    expect(res.success).toBe(false);
+    if (!res.success)
+      expect(Object.keys(issuesByPath(res.error.issues))).toContain('moodboard.url');
+  });
+
   it('moves items within bounds', () => {
     expect(move(['a', 'b', 'c'], 0, 1)).toEqual(['b', 'a', 'c']);
     expect(move(['a', 'b', 'c'], 2, 3)).toEqual(['a', 'b', 'c']);

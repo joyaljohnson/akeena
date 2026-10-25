@@ -141,8 +141,12 @@ export function issuesByPath(
 /** Cleans what the form produced: blank optional text becomes absent, blank time becomes null. */
 export function normalizeContent(content: LetterContent): LetterContent {
   const blank = (s: string | undefined) => (s && s.trim() !== '' ? s.trim() : undefined);
+  // Both boxes empty means "no moodboard"; one box filled is kept so the editor can ask for the other.
+  const label = content.moodboard?.label?.trim() ?? '';
+  const url = content.moodboard?.url?.trim() ?? '';
   return {
     ...content,
+    moodboard: label === '' && url === '' ? undefined : { label, url },
     chapters: content.chapters.map((c) => ({
       ...c,
       dressCodeNote: blank(c.dressCodeNote),

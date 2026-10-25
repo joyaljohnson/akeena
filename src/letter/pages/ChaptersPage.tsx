@@ -6,7 +6,7 @@ import {
   formatEventDate,
   formatEventDateShort,
 } from '../../lib/format';
-import type { LetterChapter } from '../../lib/letterTypes';
+import type { LetterChapter, LetterContent } from '../../lib/letterTypes';
 import { ChapterIcon, DEFAULT_ICON_FOR_THEME } from '../ChapterIcon';
 import styles from './pages.module.css';
 
@@ -155,11 +155,37 @@ export function ChapterCard({
   );
 }
 
+function Moodboard({ moodboard }: { moodboard: NonNullable<LetterContent['moodboard']> }) {
+  return (
+    <section className={styles.moodboard} aria-labelledby="moodboard-title">
+      <svg className={styles.moodIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          d="M9 3h6l-1 6 3 3H7l3-3-1-6Zm3 9v8"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <h2 id="moodboard-title" className={styles.label}>
+        Moodboard
+      </h2>
+      <a className={styles.moodLink} href={moodboard.url} target="_blank" rel="noopener noreferrer">
+        {moodboard.label}
+        <span className="sr-only"> (opens in a new tab)</span>
+      </a>
+    </section>
+  );
+}
+
 export function ChaptersPage({
   chapters,
+  moodboard,
   alwaysOpen = false,
 }: {
   chapters: readonly LetterChapter[];
+  moodboard?: LetterContent['moodboard'];
   alwaysOpen?: boolean;
 }) {
   return (
@@ -168,6 +194,8 @@ export function ChaptersPage({
         {chapters.map((c) => (
           <ChapterCard key={c.id} chapter={c} alwaysOpen={alwaysOpen} />
         ))}
+        {/* A link means nothing in a saved picture, so the download leaves it out. */}
+        {moodboard && !alwaysOpen && <Moodboard moodboard={moodboard} />}
       </div>
     </div>
   );

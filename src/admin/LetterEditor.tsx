@@ -408,6 +408,18 @@ function Editor({ template }: { template: TemplateRecord }) {
       ))}
 
       <section className={`${styles.card} ${styles.section}`}>
+        <h2 className={styles.sectionTitle}>Moodboard link (optional)</h2>
+        <p className={styles.hint}>
+          Shows as a small card after the chapters, for example a Pinterest board. Leave both boxes
+          empty to hide it.
+        </p>
+        {text('Label', ['moodboard', 'label'], {
+          hint: 'For example "Join my group board, Bridesmaids on Pinterest!"',
+        })}
+        {text('Link', ['moodboard', 'url'], { type: 'url' })}
+      </section>
+
+      <section className={`${styles.card} ${styles.section}`}>
         <h2 className={styles.sectionTitle}>Ending</h2>
         {text('Closing quote', ['closingQuote'], { multiline: true })}
         {text('Question', ['acceptance', 'question'])}

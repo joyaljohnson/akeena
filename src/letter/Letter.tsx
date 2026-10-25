@@ -38,7 +38,11 @@ export function LetterContent({
     () => [
       { key: 'cover', label: 'Cover', node: <CoverPage data={data} write={writeCover} /> },
       { key: 'duties', label: content.duties.title, node: <DutiesPage content={content} /> },
-      { key: 'chapters', label: 'Chapters', node: <ChaptersPage chapters={content.chapters} /> },
+      {
+        key: 'chapters',
+        label: 'Chapters',
+        node: <ChaptersPage chapters={content.chapters} moodboard={content.moodboard} />,
+      },
       { key: 'quote', label: 'Closing quote', node: <QuotePage quote={content.closingQuote} /> },
       {
         key: 'accept',
