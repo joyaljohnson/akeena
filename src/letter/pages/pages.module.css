@@ -61,6 +61,7 @@
 
 /* Cover */
 .cover {
+  min-height: calc(100dvh - var(--safe-top));
   gap: 0.9rem;
   padding-top: 5rem;
   padding-bottom: 5rem;
@@ -256,15 +257,15 @@
 }
 .download {
   align-self: center;
-  min-height: 52px;
-  padding: 0 1.75rem;
+  min-height: 40px;
+  padding: 0 1.25rem;
   border: 1px solid var(--burgundy);
   border-radius: 999px;
   background: transparent;
   color: var(--burgundy);
   font-family: var(--font-label);
-  font-size: 0.72rem;
-  letter-spacing: 0.18em;
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   cursor: pointer;
 }
@@ -292,7 +293,7 @@
   width: 100%;
   min-height: 68px;
   display: grid;
-  grid-template-columns: 44px 1fr;
+  grid-template-columns: 34px 1fr;
   align-items: center;
   gap: 1rem;
   padding: 0.8rem 1rem;

@@ -1,7 +1,7 @@
 .wrap {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   flex: none;
   display: block;
   border-radius: 50%;
@@ -12,9 +12,9 @@
 
 .glyph {
   position: absolute;
-  inset: 5px;
-  width: 32px;
-  height: 32px;
+  inset: 4px;
+  width: 24px;
+  height: 24px;
   transition:
     opacity 0.3s ease,
     transform 0.3s ease;

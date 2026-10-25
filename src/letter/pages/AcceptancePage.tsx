@@ -22,7 +22,7 @@ export function AcceptancePage({ content, signed, onAccept, onDownload }: Accept
             <div className={styles.sigBlock}>
               <div className={styles.sigRow}>
                 <p className={`hand ${styles.sigName}`}>{signed.name}</p>
-                <UnionStamp className={styles.stamp} size={118} />
+                <UnionStamp className={styles.stamp} size={80} />
               </div>
               <p className={styles.signedAt}>
                 ✅ Signed by {signed.name} · {formatSignedAt(signed.at)}
