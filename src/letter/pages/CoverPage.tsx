@@ -18,9 +18,6 @@ export function CoverPage({ data }: { data: LetterData }) {
           <br />
           {content.bride.firstName}
         </p>
-        <p className={styles.scrollHint} aria-hidden="true">
-          Scroll ↓
-        </p>
       </div>
     </div>
   );

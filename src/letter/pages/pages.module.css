@@ -8,19 +8,19 @@
 
 .inner {
   position: relative;
-  min-height: var(--page-min, auto);
+  min-height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1.5rem;
-  padding: 4rem 1.75rem 4rem;
+  gap: 1rem;
+  padding: 2rem 1.5rem 2rem;
   text-align: center;
 }
 
 .label {
   margin: 0;
   font-family: var(--font-label);
-  font-size: 0.78rem;
+  font-size: 0.68rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--accent-text);
@@ -31,7 +31,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: 2.35rem;
+  font-size: 1.8rem;
   line-height: 1.12;
   color: var(--ink);
   text-wrap: balance;
@@ -45,8 +45,8 @@
 .corner {
   position: absolute;
   pointer-events: none;
-  width: 110px;
-  height: 110px;
+  width: 80px;
+  height: 80px;
   opacity: 0.95;
 }
 .cornerTl {
@@ -61,39 +61,25 @@
 
 /* Cover */
 .cover {
-  --page-min: 100dvh;
-  gap: 1.25rem;
-  padding-top: 6rem;
-  padding-bottom: 6rem;
+  gap: 0.9rem;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
 }
-.full {
-  --page-min: 100dvh;
-}
-.scrollHint {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 0;
-  right: 0;
-  font-family: var(--font-label);
-  font-size: 0.7rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-}
+
 .headline {
   margin: 0;
-  --hand-size: 1.85rem;
+  --hand-size: 1.45rem;
   color: var(--ink);
 }
 .note {
   margin: 0;
-  --hand-size: 1.3rem;
+  --hand-size: 1.05rem;
   color: var(--ink);
   white-space: pre-line;
 }
 .signoff {
   margin: 0.5rem 0 0;
-  --hand-size: 1.6rem;
+  --hand-size: 1.3rem;
   color: var(--burgundy);
 }
 
@@ -103,7 +89,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 1rem;
+  gap: 0.75rem;
   text-align: left;
 }
 .duty {
@@ -111,7 +97,7 @@
   grid-template-columns: 22px 1fr;
   gap: 0.75rem;
   align-items: start;
-  font-size: 1.2rem;
+  font-size: 1.02rem;
   line-height: 1.35;
 }
 .duty svg {
@@ -128,27 +114,27 @@
   display: grid;
   gap: 0.2rem;
   justify-items: center;
-  padding: 0.5rem 0;
+  padding: 0.3rem 0;
 }
 .eventLabel {
   font-family: var(--font-label);
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--accent-text);
 }
 .date {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 600;
 }
 .body {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.02rem;
   text-wrap: balance;
 }
 .aside {
   margin: 0.25rem 0 0;
-  --hand-size: 1.25rem;
+  --hand-size: 1.05rem;
   color: var(--burgundy);
 }
 .rule {
@@ -206,7 +192,7 @@
   margin: 0;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 1.85rem;
+  font-size: 1.45rem;
   line-height: 1.3;
   text-wrap: balance;
 }
@@ -222,7 +208,7 @@
   color: #fff8ee;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   box-shadow: 0 6px 18px rgba(126, 46, 58, 0.28);
   cursor: pointer;
 }
@@ -234,7 +220,7 @@
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.5);
   font-style: italic;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 .sigBlock {
   position: relative;
@@ -245,13 +231,13 @@
 .sigRow {
   position: relative;
   width: 100%;
-  min-height: 120px;
+  min-height: 96px;
   display: grid;
   place-items: center;
 }
 .sigName {
   margin: 0;
-  --hand-size: 2.1rem;
+  --hand-size: 1.7rem;
   color: var(--ink);
   border-bottom: 1px solid var(--ink-soft);
   padding: 0 0.5rem;
@@ -265,7 +251,7 @@
 }
 .signedAt {
   margin: 0.5rem 0 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--ink-soft);
 }
 .download {
@@ -277,7 +263,7 @@
   background: transparent;
   color: var(--burgundy);
   font-family: var(--font-label);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   cursor: pointer;
@@ -286,8 +272,8 @@
 /* Chapter cards */
 .cards {
   justify-content: flex-start;
-  gap: 1rem;
-  padding-top: 3rem;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
 }
 .card {
   --accent-text: var(--ink-soft);
@@ -304,12 +290,12 @@
 .cardHead {
   position: relative;
   width: 100%;
-  min-height: 88px;
+  min-height: 68px;
   display: grid;
-  grid-template-columns: 52px 1fr;
+  grid-template-columns: 44px 1fr;
   align-items: center;
   gap: 1rem;
-  padding: 1.1rem 1.25rem;
+  padding: 0.8rem 1rem;
   border: 0;
   background: transparent;
   text-align: left;
@@ -327,7 +313,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 400;
-  font-size: 1.65rem;
+  font-size: 1.3rem;
   line-height: 1.15;
   color: var(--ink);
   text-wrap: balance;
@@ -335,7 +321,7 @@
 .cardDate {
   display: block;
   margin-top: 0.3rem;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--ink-soft);
 }
 .cardBody {
@@ -343,17 +329,17 @@
 }
 .cardInner {
   display: grid;
-  gap: 1.25rem;
-  padding: 0.25rem 1.5rem 1.75rem;
+  gap: 0.9rem;
+  padding: 0.1rem 1.25rem 1.25rem;
 }
 .venueLink {
   display: inline-block;
   text-decoration: none;
   min-height: 44px;
-  padding: 0.6rem 0.25rem;
+  padding: 0.4rem 0.25rem;
   color: var(--ink);
   font-style: italic;
-  font-size: 1.2rem;
+  font-size: 1.02rem;
   line-height: 1.3;
   text-wrap: balance;
 }

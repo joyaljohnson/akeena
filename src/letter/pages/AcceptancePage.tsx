@@ -14,7 +14,7 @@ type AcceptancePageProps = {
 export function AcceptancePage({ content, signed, onAccept, onDownload }: AcceptancePageProps) {
   return (
     <div className={styles.page}>
-      <div className={`${styles.inner} ${styles.full}`}>
+      <div className={styles.inner}>
         <h2 className={styles.title}>{content.acceptance.question}</h2>
         {signed ? (
           <>
