@@ -16,6 +16,10 @@ export function splitGraphemes(text: string): string[] {
   return Array.from(text);
 }
 
+/** Comfortable handwriting pace for the note, and the longest a very long note may take. */
+export const PEN_PER_CHAR_MS = 90;
+export const PEN_MAX_TOTAL_MS = 24000;
+
 export type PenOptions = {
   /** Time per letter at a comfortable handwriting pace. */
   perCharMs?: number;
@@ -41,8 +45,8 @@ const SHORT_PAUSE = /[,;:—–-]/;
  * gap shrinks by the same amount so the rhythm is kept.
  */
 export function penSchedule(chars: readonly string[], opts: PenOptions = {}): PenSchedule {
-  const perChar = opts.perCharMs ?? 55;
-  const cap = opts.maxTotalMs ?? 14000;
+  const perChar = opts.perCharMs ?? PEN_PER_CHAR_MS;
+  const cap = opts.maxTotalMs ?? PEN_MAX_TOTAL_MS;
 
   // Gap that follows each character, in "steps".
   const gaps = chars.map((c, i) => {

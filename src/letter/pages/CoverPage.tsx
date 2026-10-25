@@ -14,7 +14,7 @@ type CoverPageProps = {
 };
 
 const START_MS = 900; // let the letter finish fading in first
-const PAUSE_BEFORE_SIGNOFF_MS = 600;
+const PAUSE_BEFORE_SIGNOFF_MS = 800;
 
 export function CoverPage({ data, write = false }: CoverPageProps) {
   const { content } = data;
@@ -31,7 +31,7 @@ export function CoverPage({ data, write = false }: CoverPageProps) {
     const note = splitGraphemes(data.personalNote);
     const sign = splitGraphemes(signOff);
     const noteSchedule = penSchedule(note);
-    const signSchedule = penSchedule(sign, { perCharMs: 80, maxTotalMs: 3500 });
+    const signSchedule = penSchedule(sign, { perCharMs: 120, maxTotalMs: 5500 });
     const signStart = START_MS + noteSchedule.totalMs + PAUSE_BEFORE_SIGNOFF_MS;
     return { note, sign, noteSchedule, signSchedule, signStart };
   }, [data.personalNote, signOff]);

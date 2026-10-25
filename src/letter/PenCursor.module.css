@@ -20,14 +20,14 @@
   height: 0;
   transform-origin: 0 0;
   transform: rotate(-42deg);
-  animation: swing 0.27s ease-in-out infinite alternate;
+  animation: swing 0.34s ease-in-out infinite alternate;
 }
 
 .bob {
   position: absolute;
   left: 0;
   top: 0;
-  animation: bob 0.17s ease-in-out infinite alternate;
+  animation: bob 0.21s ease-in-out infinite alternate;
 }
 
 .svg {

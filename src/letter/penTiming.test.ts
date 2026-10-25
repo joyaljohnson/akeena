@@ -38,6 +38,13 @@ describe('penSchedule', () => {
     expect(s.stepMs).toBeLessThan(55);
   });
 
+  it('uses a slow, unhurried pace by default', () => {
+    const s = penSchedule(chars('Hello there my dear friend'));
+    expect(s.stepMs).toBe(90);
+    // A short note takes a few seconds, not a blink.
+    expect(s.totalMs).toBeGreaterThan(2000);
+  });
+
   it('handles empty text', () => {
     expect(penSchedule([]).offsets).toEqual([]);
   });
