@@ -26,6 +26,10 @@ const chapterSchema = z.object({
   vibe: z.string(),
   dressCode: z.string(),
   dressCodeNote: z.string().optional(),
+  /** Inspiration picture under "The colour"; `name` is a file in public/img (without extension). */
+  colourImage: z
+    .object({ name: z.string(), alt: z.string(), width: z.number(), height: z.number() })
+    .optional(),
 });
 
 export const letterContentSchema = z.object({

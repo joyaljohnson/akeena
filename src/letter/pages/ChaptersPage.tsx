@@ -25,6 +25,25 @@ function PinIcon({ className }: { className?: string }) {
   );
 }
 
+function ColourImage({ image }: { image: NonNullable<LetterChapter['colourImage']> }) {
+  const base = `${import.meta.env.BASE_URL}img/${image.name}`;
+  return (
+    <figure className={styles.figure}>
+      <picture>
+        <source srcSet={`${base}.webp`} type="image/webp" />
+        <img
+          src={`${base}.jpg`}
+          alt={image.alt}
+          width={image.width}
+          height={image.height}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    </figure>
+  );
+}
+
 function ChapterDetails({ chapter }: { chapter: LetterChapter }) {
   const many = chapter.events.length > 1;
   return (
@@ -66,6 +85,7 @@ function ChapterDetails({ chapter }: { chapter: LetterChapter }) {
         </h3>
         <p className={styles.body}>{chapter.dressCode}</p>
         {chapter.dressCodeNote && <p className={`hand ${styles.aside}`}>{chapter.dressCodeNote}</p>}
+        {chapter.colourImage && <ColourImage image={chapter.colourImage} />}
       </section>
     </div>
   );
