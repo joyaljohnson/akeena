@@ -20,6 +20,8 @@ const chapterSchema = z.object({
   number: z.number().int().min(1),
   title: z.string().min(1),
   theme: z.enum(CHAPTER_THEMES),
+  /** Optional; falls back to the theme's default icon. */
+  icon: z.enum(['home', 'ring', 'sunset', 'bible']).optional(),
   events: z.array(eventSchema).min(1).max(2),
   vibe: z.string(),
   dressCode: z.string(),

@@ -7,6 +7,7 @@ import {
   formatEventDateShort,
 } from '../../lib/format';
 import type { LetterChapter } from '../../lib/letterTypes';
+import { ChapterIcon, DEFAULT_ICON_FOR_THEME } from '../ChapterIcon';
 import styles from './pages.module.css';
 
 function PinIcon({ className }: { className?: string }) {
@@ -20,26 +21,6 @@ function PinIcon({ className }: { className?: string }) {
         strokeLinejoin="round"
       />
       <circle cx="12" cy="10" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.6" />
-    </svg>
-  );
-}
-
-function Chevron({ open }: { open: boolean }) {
-  return (
-    <svg
-      className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`}
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="m6 9 6 6 6-6"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
     </svg>
   );
 }
@@ -110,6 +91,7 @@ export function ChapterCard({
 
   const head = (
     <>
+      <ChapterIcon name={chapter.icon ?? DEFAULT_ICON_FOR_THEME[chapter.theme]} open={expanded} />
       <span>
         <span className={styles.label}>{chapterLabel(chapter.number)}</span>
         <span className={styles.cardTitle} role="heading" aria-level={2}>
@@ -117,7 +99,6 @@ export function ChapterCard({
         </span>
         <span className={styles.cardDate}>{dates}</span>
       </span>
-      {!alwaysOpen && <Chevron open={expanded} />}
     </>
   );
 
