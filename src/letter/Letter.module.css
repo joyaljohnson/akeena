@@ -1,5 +1,5 @@
 .stage {
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--stage-offset, 0px));
   display: flex;
   justify-content: center;
   background:
@@ -10,7 +10,7 @@
 .column {
   width: 100%;
   max-width: var(--column-width);
-  height: 100dvh;
+  height: calc(100dvh - var(--stage-offset, 0px));
   padding-top: var(--safe-top);
   background: var(--paper);
   box-shadow: 0 0 60px rgba(58, 47, 42, 0.12);

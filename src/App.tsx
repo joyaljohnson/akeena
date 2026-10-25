@@ -4,6 +4,8 @@ import styles from './App.module.css';
 import { LetterRoute } from './routes/LetterRoute';
 import { UnavailableScreen } from './routes/StatusScreen';
 
+const AdminApp = lazy(() => import('./admin/AdminApp'));
+const DevAdmin = import.meta.env.DEV ? lazy(() => import('./dev/DevAdmin')) : null;
 const DevLetter = import.meta.env.DEV ? lazy(() => import('./dev/DevLetter')) : null;
 const DevEnvelope = import.meta.env.DEV ? lazy(() => import('./dev/DevEnvelope')) : null;
 const StampCompare = import.meta.env.DEV ? lazy(() => import('./dev/StampCompare')) : null;
@@ -22,6 +24,8 @@ export function App() {
       <Routes>
         <Route path="/" element={<Hello />} />
         <Route path="/l/:token" element={<LetterRoute />} />
+        <Route path="/admin/*" element={<AdminApp />} />
+        {DevAdmin && <Route path="/dev/admin/*" element={<DevAdmin />} />}
         {DevLetter && <Route path="/dev/letter" element={<DevLetter />} />}
         {DevEnvelope && <Route path="/dev/envelope" element={<DevEnvelope />} />}
         {StampCompare && <Route path="/dev/stamp" element={<StampCompare />} />}

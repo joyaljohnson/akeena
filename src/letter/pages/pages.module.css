@@ -61,7 +61,7 @@
 
 /* Cover */
 .cover {
-  min-height: var(--cover-min, calc(100dvh - var(--safe-top)));
+  min-height: var(--cover-min, calc(100dvh - var(--safe-top) - var(--stage-offset, 0px)));
   gap: 0.9rem;
   padding-top: 5rem;
   padding-bottom: 5rem;

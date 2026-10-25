@@ -3,16 +3,18 @@ import { z } from 'zod';
 export const CHAPTER_THEMES = ['pearl', 'jewel', 'gold', 'pastel-metallic'] as const;
 export type ChapterTheme = (typeof CHAPTER_THEMES)[number];
 
+const required = (what: string) => z.string().min(1, `Please enter ${what}.`);
+
 const eventSchema = z.object({
   label: z.string().optional(),
-  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Please pick a date.'),
   time: z
     .string()
-    .regex(/^([01]\d|2[0-3]):[0-5]\d$/)
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, 'Please enter a time like 18:30.')
     .nullable(),
   timeNote: z.string().optional(),
-  venueName: z.string().min(1),
-  mapsUrl: z.string().url(),
+  venueName: required('the venue name'),
+  mapsUrl: z.string().url('Please paste a full Google Maps link, starting with https://'),
 });
 
 const chapterSchema = z.object({
@@ -23,8 +25,8 @@ const chapterSchema = z.object({
   /** Optional; falls back to the theme's default icon. */
   icon: z.enum(['home', 'ring', 'sunset', 'bible']).optional(),
   events: z.array(eventSchema).min(1).max(2),
-  vibe: z.string(),
-  dressCode: z.string(),
+  vibe: required('the vibe'),
+  dressCode: required('the colour'),
   dressCodeNote: z.string().optional(),
   /** Inspiration picture under "The colour"; `name` is a file in public/img (without extension). */
   colourImage: z
@@ -33,13 +35,20 @@ const chapterSchema = z.object({
 });
 
 export const letterContentSchema = z.object({
-  bride: z.object({ firstName: z.string().min(1), signOff: z.string() }),
-  cover: z.object({ headlineTemplate: z.string() }),
-  duties: z.object({ title: z.string(), items: z.array(z.string()) }),
+  bride: z.object({ firstName: required('your first name'), signOff: required('a sign-off') }),
+  cover: z.object({
+    headlineTemplate: required('a headline').refine((h) => h.includes('{name}'), {
+      message: 'Include {name} so each cover shows her name.',
+    }),
+  }),
+  duties: z.object({ title: required('a title'), items: z.array(required('the duty')) }),
   chapters: z.array(chapterSchema),
-  closingQuote: z.string(),
-  acceptance: z.object({ question: z.string(), yesLabel: z.string() }),
-  oath: z.string(),
+  closingQuote: required('the quote'),
+  acceptance: z.object({
+    question: required('the question'),
+    yesLabel: required('the button text'),
+  }),
+  oath: required('the oath'),
 });
 
 export type LetterContent = z.infer<typeof letterContentSchema>;
