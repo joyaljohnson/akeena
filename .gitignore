@@ -10,3 +10,4 @@ letter-content.md
 supabase/seed.private.sql
 src/dev-fixture/
 supabase/.temp
+.claude/
