@@ -251,9 +251,12 @@ test('the note is written out like a pen, and a tap finishes it', async ({ page 
   // Straight after opening, the end of the note has not been written yet.
   const lastOpacity = await letters.last().evaluate((el) => Number(getComputedStyle(el).opacity));
   expect(lastOpacity).toBeLessThan(1);
-  // A tap on the cover finishes the writing at once.
+  // A pen travels with the writing.
+  await expect(page.locator('[data-pen-cursor] svg')).toBeVisible();
+  // A tap on the cover finishes the writing at once, and the pen leaves with it.
   await note(page).click();
   await expect(letters).toHaveCount(0);
+  await expect(page.locator('[data-pen-cursor]')).toHaveCount(0);
   await expect(note(page)).toBeVisible();
   await expect(page.getByText('With love,')).toBeVisible();
 });
@@ -275,6 +278,7 @@ test.describe('pen writing with reduced motion', () => {
     const letters = page.locator('p span[class*="char"]');
     const last = await letters.last().evaluate((el) => Number(getComputedStyle(el).opacity));
     expect(last).toBe(1);
+    await expect(page.locator('[data-pen-cursor] svg')).toBeHidden();
   });
 });
 
@@ -288,4 +292,22 @@ test('a refresh does not write the note again, and the finished picture never an
     page.getByRole('heading', { name: /Riya, would you be my bridesmaid/ }),
   ).toBeVisible();
   await expect(page.locator('p span[class*="char"]')).toHaveCount(0);
+  await expect(page.locator('[data-pen-cursor]')).toHaveCount(0);
+});
+
+test('the pen follows the writing: it moves down the page as the note is written', async ({
+  page,
+}) => {
+  await mockBackend(page);
+  await openLetter(page);
+  const where = () =>
+    page.evaluate(() => {
+      const r = document.querySelector('[data-pen-cursor]')!.getBoundingClientRect();
+      return { x: r.x, y: r.y };
+    });
+  await expect(page.locator('[data-pen-cursor] svg')).toBeVisible();
+  const first = await where();
+  await page.waitForTimeout(2500);
+  const later = await where();
+  expect(Math.abs(later.x - first.x) + Math.abs(later.y - first.y)).toBeGreaterThan(8);
 });

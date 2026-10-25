@@ -1,0 +1,36 @@
+/* The pen sits at the top-left of its box and is moved by transform. Its nib is the box's origin. */
+.pen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  z-index: 6;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.svg {
+  position: absolute;
+  left: -1px;
+  top: -9px;
+  display: block;
+  overflow: visible;
+  transform-origin: 2% 50%;
+  transform: rotate(-42deg);
+  filter: drop-shadow(1px 3px 3px rgba(58, 47, 42, 0.32));
+  animation: wobble 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes wobble {
+  to {
+    transform: rotate(-35deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pen {
+    display: none;
+  }
+}

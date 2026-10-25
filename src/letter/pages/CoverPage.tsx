@@ -1,7 +1,8 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { fillTemplate } from '../../lib/format';
 import type { LetterData } from '../../lib/letterTypes';
 import { FloralCorner } from '../FloralCorner';
+import { PenCursor } from '../PenCursor';
 import { PenWriting } from '../PenWriting';
 import { penSchedule, splitGraphemes } from '../penTiming';
 import styles from './pages.module.css';
@@ -18,6 +19,10 @@ const PAUSE_BEFORE_SIGNOFF_MS = 600;
 export function CoverPage({ data, write = false }: CoverPageProps) {
   const { content } = data;
   const [skipped, setSkipped] = useState(false);
+  const [startedAt] = useState(() => performance.now());
+  const innerRef = useRef<HTMLDivElement>(null);
+  const noteRef = useRef<HTMLParagraphElement>(null);
+  const signRef = useRef<HTMLParagraphElement>(null);
   const animate = write && !skipped;
   const headline = fillTemplate(content.cover.headlineTemplate, { name: data.name });
   const signOff = `${content.bride.signOff}\n${content.bride.firstName}`;
@@ -27,33 +32,38 @@ export function CoverPage({ data, write = false }: CoverPageProps) {
     const sign = splitGraphemes(signOff);
     const noteSchedule = penSchedule(note);
     const signSchedule = penSchedule(sign, { perCharMs: 80, maxTotalMs: 3500 });
-    return {
-      note,
-      sign,
-      noteSchedule,
-      signSchedule,
-      signStart: START_MS + noteSchedule.totalMs + PAUSE_BEFORE_SIGNOFF_MS,
-    };
+    const signStart = START_MS + noteSchedule.totalMs + PAUSE_BEFORE_SIGNOFF_MS;
+    return { note, sign, noteSchedule, signSchedule, signStart };
   }, [data.personalNote, signOff]);
+
+  const penBlocks = useMemo(
+    () => [
+      { ref: noteRef, startMs: START_MS, schedule: plan.noteSchedule },
+      { ref: signRef, startMs: plan.signStart, schedule: plan.signSchedule },
+    ],
+    [plan],
+  );
 
   return (
     <div className={styles.page}>
       {/* Tapping the cover while it is being written shows the finished text straight away. */}
       <div
+        ref={innerRef}
         className={`${styles.inner} ${styles.cover}`}
         onPointerDown={animate ? () => setSkipped(true) : undefined}
       >
         <FloralCorner className={`${styles.corner} ${styles.cornerTl}`} />
         <FloralCorner className={`${styles.corner} ${styles.cornerBr}`} />
+        {animate && <PenCursor containerRef={innerRef} blocks={penBlocks} startedAt={startedAt} />}
         <h1 className={`hand ${styles.headline} ${animate ? 'fade-in' : ''}`}>{headline}</h1>
-        <p className={`hand ${styles.note}`}>
+        <p ref={noteRef} className={`hand ${styles.note}`}>
           {animate ? (
             <PenWriting chars={plan.note} schedule={plan.noteSchedule} startMs={START_MS} />
           ) : (
             data.personalNote
           )}
         </p>
-        <p className={`hand ${styles.signoff}`}>
+        <p ref={signRef} className={`hand ${styles.signoff}`}>
           {animate ? (
             <PenWriting chars={plan.sign} schedule={plan.signSchedule} startMs={plan.signStart} />
           ) : (

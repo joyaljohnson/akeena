@@ -65,3 +65,39 @@ export function penSchedule(chars: readonly string[], opts: PenOptions = {}): Pe
   }
   return { offsets, stepMs, totalMs: t };
 }
+
+export type PenPoint = { t: number; x: number; y: number };
+
+export type PenKeyframe = { offset: number; x: number; y: number; opacity: number };
+
+/**
+ * Turns the places the pen should be (and when) into animation keyframes. The pen glides in just
+ * before the first letter, follows the writing, and fades out a moment after the last one.
+ */
+export function penKeyframes(
+  points: readonly PenPoint[],
+  opts: { leadInMs?: number; leadOutMs?: number } = {},
+): { keyframes: PenKeyframe[]; durationMs: number } {
+  if (points.length === 0) return { keyframes: [], durationMs: 0 };
+  const leadIn = opts.leadInMs ?? 500;
+  const leadOut = opts.leadOutMs ?? 700;
+
+  const sorted = [...points].sort((a, b) => a.t - b.t);
+  const first = sorted[0]!;
+  const last = sorted[sorted.length - 1]!;
+  const t0 = Math.max(0, first.t - leadIn);
+  const end = last.t + leadOut;
+  const span = Math.max(1, end - t0);
+  const at = (t: number) => Math.min(1, Math.max(0, (t - t0) / span));
+
+  const keyframes: PenKeyframe[] = [{ offset: 0, x: first.x - 14, y: first.y - 10, opacity: 0 }];
+  keyframes.push({ offset: at(first.t), x: first.x, y: first.y, opacity: 1 });
+  let lastOffset = at(first.t);
+  for (const p of sorted.slice(1)) {
+    const o = Math.max(lastOffset, at(p.t));
+    keyframes.push({ offset: o, x: p.x, y: p.y, opacity: 1 });
+    lastOffset = o;
+  }
+  keyframes.push({ offset: 1, x: last.x + 18, y: last.y - 8, opacity: 0 });
+  return { keyframes, durationMs: span };
+}

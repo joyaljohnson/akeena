@@ -43,6 +43,7 @@ export function PenWriting({ chars, schedule, startMs }: PenWritingProps) {
         <span
           key={i}
           className={styles.char}
+          data-pen={i}
           style={{
             animationDelay: `${Math.round(startMs + (schedule.offsets[i] ?? 0))}ms`,
             animationDuration: `${Math.round(duration)}ms`,
