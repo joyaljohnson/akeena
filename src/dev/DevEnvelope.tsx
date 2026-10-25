@@ -1,16 +1,17 @@
 import { useCallback, useRef } from 'react';
-import { fixture } from '../dev-fixture/fixture';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
 import { LetterContent } from '../letter/Letter';
 import { PhoneStage } from '../letter/PhoneStage';
 import { DEFAULT_FONT_ID, handwritingVars } from '../lib/handwriting';
 import type { CSSProperties } from 'react';
+import type { LetterData } from '../lib/letterTypes';
+import { FixtureGate, useFixture } from './useFixture';
 
 const PIN = '1234';
 
 /** Mock unlock: PIN 1234 opens, 5 wrong tries lock for 15 minutes. `?pin=ok` skips the wait. */
-export default function DevEnvelope() {
+function Preview({ fixture }: { fixture: LetterData }) {
   const failed = useRef(0);
   const lockedUntil = useRef<string | null>(null);
   const unlock = useCallback(async (pin: string): Promise<UnlockResult> => {
@@ -38,4 +39,9 @@ export default function DevEnvelope() {
       </EnvelopeGate>
     </PhoneStage>
   );
+}
+
+export default function DevEnvelope() {
+  const state = useFixture();
+  return <FixtureGate state={state}>{(fixture) => <Preview fixture={fixture} />}</FixtureGate>;
 }

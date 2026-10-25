@@ -11,7 +11,9 @@ if (!existsSync(FIXTURE)) {
   process.exit(1);
 }
 
-const { fixture } = (await import('../src/dev-fixture/fixture')) as {
+// A variable path keeps the type-check working on machines without the private fixture.
+const fixturePath = '../src/dev-fixture/fixture';
+const { fixture } = (await import(fixturePath)) as {
   fixture: { content: unknown; fontId: string };
 };
 

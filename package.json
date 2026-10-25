@@ -14,7 +14,8 @@
     "preview": "vite preview",
     "check:leaks": "node scripts/check-leaks.mjs",
     "seed:build": "tsx scripts/build-seed.ts",
-    "images:build": "node scripts/build-images.mjs"
+    "images:build": "node scripts/build-images.mjs",
+    "ci:local": "bash scripts/ci-local.sh"
   },
   "repository": {
     "type": "git",

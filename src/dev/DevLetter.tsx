@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { fixture } from '../dev-fixture/fixture';
 import { HANDWRITING_FONTS } from '../lib/handwriting';
+import type { LetterData } from '../lib/letterTypes';
 import { Letter } from '../letter/Letter';
+import { FixtureGate, useFixture } from './useFixture';
 
-export default function DevLetter() {
+function Preview({ fixture }: { fixture: LetterData }) {
   const params = new URLSearchParams(location.hash.split('?')[1] ?? '');
   const [signed, setSigned] = useState(params.get('signed') === '1');
   const fontId = params.get('font') ?? fixture.fontId;
@@ -16,4 +17,9 @@ export default function DevLetter() {
       onAccept={() => setSigned(true)}
     />
   );
+}
+
+export default function DevLetter() {
+  const state = useFixture();
+  return <FixtureGate state={state}>{(fixture) => <Preview fixture={fixture} />}</FixtureGate>;
 }
