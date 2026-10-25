@@ -1,0 +1,12 @@
+node_modules
+dist
+.DS_Store
+.env
+.env.*
+!.env.example
+
+# PRIVATE: never commit
+letter-content.md
+supabase/seed.private.sql
+src/dev-fixture/
+supabase/.temp

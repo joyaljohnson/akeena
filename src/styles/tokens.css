@@ -1,0 +1,22 @@
+:root {
+  --ivory: #f7f1e6;
+  --paper: #fbf7ef;
+  --paper-shadow: #e9dfcc;
+  --ink: #3a2f2a;
+  --ink-soft: #6e625a;
+  --blush: #e6cbc3;
+  --rose: #c9a3a0;
+  --sage: #a9b39a;
+  --dusty-blue: #a9bcd0;
+  --gold: #b8925a;
+  --gold-light: #d9be8c;
+  --burgundy: #7e2e3a;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-label: 'Cinzel', 'Cormorant Garamond', serif;
+  --font-body: 'Cormorant Garamond', Georgia, serif;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --column-width: 430px;
+}
