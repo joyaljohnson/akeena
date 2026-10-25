@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import styles from './App.module.css';
 
+const DevLetter = import.meta.env.DEV ? lazy(() => import('./dev/DevLetter')) : null;
 const StampCompare = import.meta.env.DEV ? lazy(() => import('./dev/StampCompare')) : null;
 
 function Hello() {
@@ -18,6 +19,7 @@ export function App() {
     <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<Hello />} />
+        {DevLetter && <Route path="/dev/letter" element={<DevLetter />} />}
         {StampCompare && <Route path="/dev/stamp" element={<StampCompare />} />}
       </Routes>
     </Suspense>

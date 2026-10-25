@@ -1,0 +1,95 @@
+.booklet {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.viewport {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.track {
+  display: flex;
+  height: 100%;
+  touch-action: pan-y;
+  will-change: transform;
+}
+
+.slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+.nav {
+  display: grid;
+  grid-template-columns: 52px 1fr 52px;
+  align-items: center;
+  padding: 0.25rem 0.5rem calc(0.5rem + var(--safe-bottom));
+  background: linear-gradient(180deg, rgba(251, 247, 239, 0) 0%, var(--paper) 40%);
+  border-top: 1px solid rgba(184, 146, 90, 0.25);
+}
+
+.arrow {
+  width: 48px;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  line-height: 1;
+  color: var(--burgundy);
+  cursor: pointer;
+}
+.arrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.center {
+  display: grid;
+  justify-items: center;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+}
+
+.dotHit {
+  width: 22px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.dot,
+.dotOn {
+  display: block;
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--gold-light);
+}
+.dotOn {
+  width: 9px;
+  height: 9px;
+  background: var(--burgundy);
+}
+
+.count {
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-soft);
+}

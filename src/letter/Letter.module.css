@@ -1,0 +1,18 @@
+.stage {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(60% 40% at 20% 10%, rgba(230, 203, 195, 0.5), transparent 70%),
+    radial-gradient(50% 40% at 85% 90%, rgba(169, 188, 208, 0.4), transparent 70%), var(--ivory);
+}
+
+.column {
+  width: 100%;
+  max-width: var(--column-width);
+  height: 100dvh;
+  padding-top: var(--safe-top);
+  background: var(--paper);
+  box-shadow: 0 0 60px rgba(58, 47, 42, 0.12);
+  overflow: hidden;
+}
