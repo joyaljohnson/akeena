@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import styles from './App.module.css';
 
 const DevLetter = import.meta.env.DEV ? lazy(() => import('./dev/DevLetter')) : null;
+const DevEnvelope = import.meta.env.DEV ? lazy(() => import('./dev/DevEnvelope')) : null;
 const StampCompare = import.meta.env.DEV ? lazy(() => import('./dev/StampCompare')) : null;
 
 function Hello() {
@@ -20,6 +21,7 @@ export function App() {
       <Routes>
         <Route path="/" element={<Hello />} />
         {DevLetter && <Route path="/dev/letter" element={<DevLetter />} />}
+        {DevEnvelope && <Route path="/dev/envelope" element={<DevEnvelope />} />}
         {StampCompare && <Route path="/dev/stamp" element={<StampCompare />} />}
       </Routes>
     </Suspense>

@@ -1,0 +1,228 @@
+.scene {
+  --ew: min(86vw, 340px);
+  --eh: calc(var(--ew) * 0.68);
+  position: relative;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: calc(1rem + var(--safe-top)) 0 calc(1rem + var(--safe-bottom));
+  overflow: hidden;
+  touch-action: manipulation;
+}
+
+.stageCol {
+  display: grid;
+  justify-items: center;
+  gap: 2.25rem;
+}
+
+.perspective {
+  perspective: 1100px;
+}
+
+.flip {
+  transform-style: flat;
+}
+
+.envelope {
+  position: relative;
+  width: var(--ew);
+  height: var(--eh);
+  filter: drop-shadow(0 14px 24px rgba(58, 47, 42, 0.18));
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.fadeIn {
+  animation: fade 0.35s ease both;
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Front */
+.stamp {
+  position: absolute;
+  top: 6%;
+  right: 4%;
+  filter: drop-shadow(0 2px 3px rgba(58, 47, 42, 0.22));
+}
+.greeting {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  --hand-size: 1.7rem;
+  color: var(--ink);
+  text-align: center;
+}
+
+/* Back */
+.back {
+  --flap-h: calc(var(--eh) * 0.549);
+  perspective: 900px;
+}
+.zInterior {
+  z-index: 1;
+}
+.zPocket {
+  z-index: 3;
+}
+
+.glowBack,
+.glowFront {
+  position: absolute;
+  left: -30%;
+  top: -34%;
+  width: 160%;
+  height: 95%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 224, 150, 1), rgba(255, 224, 150, 0));
+  filter: blur(8px);
+  pointer-events: none;
+}
+.glowBack {
+  z-index: 1;
+}
+.glowFront {
+  z-index: 3;
+  mix-blend-mode: screen;
+  top: 2%;
+  height: 40%;
+}
+
+.letter {
+  position: absolute;
+  z-index: 2;
+  left: 6%;
+  top: 6%;
+  width: 88%;
+  height: 88%;
+  display: grid;
+  align-content: start;
+  gap: 0.6rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e6d9bd;
+  border-radius: 4px;
+  background-color: var(--paper);
+  background-image: var(--paper-noise);
+  box-shadow: 0 2px 10px rgba(58, 47, 42, 0.12);
+  transform-origin: 50% 80%;
+}
+.letterRule {
+  height: 2px;
+  border-radius: 1px;
+  background: #e6d9bd;
+}
+.letterRule:nth-child(2) {
+  width: 70%;
+}
+.letterRule:nth-child(3) {
+  width: 85%;
+}
+
+.flap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: var(--flap-h);
+  transform-origin: 50% 0;
+  transform-style: preserve-3d;
+}
+.flapFace {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.flapInner {
+  /* Faces the viewer once the flap has swung over; keeps the triangle's shape (wide edge on the hinge). */
+  transform: rotateY(180deg);
+}
+
+.florals {
+  position: absolute;
+  left: 50%;
+  bottom: 2%;
+  width: 62%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.florals svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sealHalf {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 64px;
+  height: 64px;
+  margin-left: -32px;
+  margin-bottom: -8px;
+  pointer-events: none;
+}
+.sealArt {
+  width: 100%;
+  height: 100%;
+}
+.sealLeft {
+  clip-path: polygon(0 0, 52% 0, 46% 22%, 54% 40%, 47% 62%, 53% 80%, 49% 100%, 0 100%);
+}
+.sealRight {
+  clip-path: polygon(52% 0, 100% 0, 100% 100%, 49% 100%, 53% 80%, 47% 62%, 54% 40%, 46% 22%);
+}
+
+.sealButton {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
+  margin-bottom: -4px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.pulse::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(201, 163, 160, 0.55);
+  animation: pulse 2.2s ease-out infinite;
+}
+@keyframes pulse {
+  to {
+    box-shadow: 0 0 0 18px rgba(201, 163, 160, 0);
+  }
+}
+
+.pin {
+  min-height: 150px;
+  transition: opacity 0.25s ease;
+}
+.pinHidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse::after {
+    animation: none;
+  }
+}

@@ -1,0 +1,41 @@
+import { useCallback, useRef } from 'react';
+import { fixture } from '../dev-fixture/fixture';
+import { EnvelopeGate } from '../envelope/EnvelopeGate';
+import type { UnlockResult } from '../envelope/EnvelopeScene';
+import { LetterContent } from '../letter/Letter';
+import { PhoneStage } from '../letter/PhoneStage';
+import { DEFAULT_FONT_ID, handwritingVars } from '../lib/handwriting';
+import type { CSSProperties } from 'react';
+
+const PIN = '1234';
+
+/** Mock unlock: PIN 1234 opens, 5 wrong tries lock for 15 minutes. `?pin=ok` skips the wait. */
+export default function DevEnvelope() {
+  const failed = useRef(0);
+  const lockedUntil = useRef<string | null>(null);
+  const unlock = useCallback(async (pin: string): Promise<UnlockResult> => {
+    await new Promise((r) => setTimeout(r, 350));
+    if (lockedUntil.current && new Date(lockedUntil.current) > new Date()) {
+      return { status: 'locked', lockedUntil: lockedUntil.current };
+    }
+    if (pin === PIN) return { status: 'ok' };
+    if (pin === '0000') return { status: 'error' };
+    failed.current += 1;
+    if (failed.current >= 5) {
+      failed.current = 0;
+      lockedUntil.current = new Date(Date.now() + 15 * 60000).toISOString();
+      return { status: 'locked', lockedUntil: lockedUntil.current };
+    }
+    return { status: 'wrong_pin', attemptsLeft: 5 - failed.current };
+  }, []);
+
+  return (
+    <PhoneStage style={handwritingVars(DEFAULT_FONT_ID) as CSSProperties}>
+      <EnvelopeGate unlock={unlock} fontId={DEFAULT_FONT_ID}>
+        <div style={{ height: '100%', ...(handwritingVars(fixture.fontId) as CSSProperties) }}>
+          <LetterContent data={fixture} />
+        </div>
+      </EnvelopeGate>
+    </PhoneStage>
+  );
+}

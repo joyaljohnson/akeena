@@ -2,7 +2,7 @@ import { useEffect, useMemo, type CSSProperties } from 'react';
 import { handwritingVars, loadHandwritingFont } from '../lib/handwriting';
 import type { LetterData, SignedInfo } from '../lib/letterTypes';
 import { LetterScroll } from './LetterScroll';
-import styles from './Letter.module.css';
+import { PhoneStage } from './PhoneStage';
 import { AcceptancePage } from './pages/AcceptancePage';
 import { ChaptersPage } from './pages/ChaptersPage';
 import { CoverPage } from './pages/CoverPage';
@@ -17,7 +17,14 @@ type LetterProps = {
   onDownload?: () => void;
 };
 
-export function Letter({ data, signed = null, initialIndex, onAccept, onDownload }: LetterProps) {
+/** The letter itself, without the surrounding phone column. */
+export function LetterContent({
+  data,
+  signed = null,
+  initialIndex,
+  onAccept,
+  onDownload,
+}: LetterProps) {
   const { content } = data;
 
   useEffect(() => {
@@ -46,11 +53,13 @@ export function Letter({ data, signed = null, initialIndex, onAccept, onDownload
     [data, content, signed, onAccept, onDownload],
   );
 
+  return <LetterScroll pages={pages} initialIndex={initialIndex} />;
+}
+
+export function Letter(props: LetterProps) {
   return (
-    <div className={styles.stage}>
-      <div className={styles.column} style={handwritingVars(data.fontId) as CSSProperties}>
-        <LetterScroll pages={pages} initialIndex={initialIndex} />
-      </div>
-    </div>
+    <PhoneStage style={handwritingVars(props.data.fontId) as CSSProperties}>
+      <LetterContent {...props} />
+    </PhoneStage>
   );
 }
