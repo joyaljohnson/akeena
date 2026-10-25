@@ -35,7 +35,7 @@ create table public.letter_template (
   content jsonb not null,
   default_font text not null default 'parisienne',
   whatsapp_message_template text not null default
-    E'Hey {name} 💌 I''ve got something special for you…\n\nOpen it here: {link}\nYour secret PIN: {pin}',
+    E'Hey {name} \U0001F48C I''ve got something special for you\u2026\n\nOpen it here: {link}\nYour secret PIN: {pin}',
   updated_at timestamptz not null default now()
 );
 

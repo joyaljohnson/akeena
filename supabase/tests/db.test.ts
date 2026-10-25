@@ -387,5 +387,15 @@ describe.skipIf(!existsSync(SEED))('private seed', () => {
     };
     expect(res.letter.content.chapters).toHaveLength(4);
     expect(res.letter.content.duties.items).toHaveLength(6);
+
+    // Non-ASCII characters must survive intact (the seed is ASCII with escapes).
+    const quote = (res.letter.content as unknown as { closingQuote: string }).closingQuote;
+    expect(quote).toContain(' \u2014 ');
+    expect(quote).not.toMatch(/[\u201A\u00C4]/);
+    const tpl = await db.query<{ whatsapp_message_template: string }>(
+      'select whatsapp_message_template from letter_template',
+    );
+    expect(tpl.rows[0]!.whatsapp_message_template).toContain('\u{1F48C}');
+    expect(tpl.rows[0]!.whatsapp_message_template).toContain('\u2026');
   });
 });
