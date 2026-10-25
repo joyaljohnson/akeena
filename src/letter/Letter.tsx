@@ -12,7 +12,7 @@ import { QuotePage } from './pages/QuotePage';
 type LetterProps = {
   data: LetterData;
   signed?: SignedInfo | null;
-  initialIndex?: number;
+  initialIndex?: number | 'last';
   onAccept?: () => void;
   onDownload?: () => void;
 };

@@ -27,17 +27,26 @@ type EnvelopeSceneProps = {
   unlock: (pin: string) => Promise<UnlockResult>;
   /** Called once the opening animation has finished and the letter should take over. */
   onOpened: () => void;
+  /** Start with the link already locked (from the link check). */
+  initialLockedUntil?: string;
   /** Handwriting font for "A letter for you" (the default font; the name is not known yet). */
   fontId: string;
 };
 
 type Controls = ReturnType<typeof animate>;
 
-export function EnvelopeScene({ unlock, onOpened, fontId }: EnvelopeSceneProps) {
+export function EnvelopeScene({
+  unlock,
+  onOpened,
+  fontId,
+  initialLockedUntil,
+}: EnvelopeSceneProps) {
   const reduce = useReducedMotion() ?? false;
   const [phase, setPhase] = useState<Phase>('front');
   const [face, setFace] = useState<'front' | 'back'>('front');
-  const [pinStatus, setPinStatus] = useState<PinStatus>({ kind: 'idle' });
+  const [pinStatus, setPinStatus] = useState<PinStatus>(
+    initialLockedUntil ? { kind: 'locked', until: initialLockedUntil } : { kind: 'idle' },
+  );
   const [pinKey, setPinKey] = useState(0);
 
   const flipRot = useMotionValue(0);

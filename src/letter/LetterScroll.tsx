@@ -4,7 +4,7 @@ import styles from './LetterScroll.module.css';
 type LetterScrollProps = {
   pages: ReadonlyArray<{ key: string; label: string; node: ReactNode }>;
   /** Scrolls this page into view on mount (used by previews and revisits). */
-  initialIndex?: number;
+  initialIndex?: number | 'last';
 };
 
 /** The letter as one continuous vertical scroll, with a thin reading-progress line. */
@@ -34,12 +34,15 @@ export function LetterScroll({ pages, initialIndex = 0 }: LetterScrollProps) {
   }, []);
 
   useEffect(() => {
-    if (initialIndex > 0) {
+    const target = initialIndex === 'last' ? pages.length - 1 : initialIndex;
+    if (target > 0) {
       scroller.current
-        ?.querySelector<HTMLElement>(`[data-page="${initialIndex}"]`)
+        ?.querySelector<HTMLElement>(`[data-page="${target}"]`)
         ?.scrollIntoView({ block: 'start' });
     }
-  }, [initialIndex]);
+    // Only on mount: later page changes must not yank the reader around.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className={styles.wrap}>

@@ -5,15 +5,34 @@ import { EnvelopeScene, type UnlockResult } from './EnvelopeScene';
 type EnvelopeGateProps = {
   unlock: (pin: string) => Promise<UnlockResult>;
   fontId: string;
+  initialLockedUntil?: string;
+  onOpened?: () => void;
   /** Rendered after the envelope has opened. */
   children: ReactNode;
 };
 
 /** Shows the envelope until it has opened, then hands over to the letter with a fade. */
-export function EnvelopeGate({ unlock, fontId, children }: EnvelopeGateProps) {
+export function EnvelopeGate({
+  unlock,
+  fontId,
+  initialLockedUntil,
+  onOpened,
+  children,
+}: EnvelopeGateProps) {
   const [opened, setOpened] = useState(false);
-  if (!opened)
-    return <EnvelopeScene unlock={unlock} fontId={fontId} onOpened={() => setOpened(true)} />;
+  if (!opened) {
+    return (
+      <EnvelopeScene
+        unlock={unlock}
+        fontId={fontId}
+        initialLockedUntil={initialLockedUntil}
+        onOpened={() => {
+          setOpened(true);
+          onOpened?.();
+        }}
+      />
+    );
+  }
   return (
     <motion.div
       style={{ height: '100%' }}

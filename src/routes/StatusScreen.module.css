@@ -1,0 +1,80 @@
+.screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem 1.75rem;
+  text-align: center;
+}
+
+.flourish {
+  color: var(--gold);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.8rem;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.message {
+  margin: 0;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+
+.action {
+  min-height: 44px;
+  padding: 0 1.5rem;
+  border: 1px solid var(--burgundy);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--burgundy);
+  font-family: var(--font-label);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.skelEnvelope {
+  width: min(86vw, 340px);
+  height: calc(min(86vw, 340px) * 0.68);
+  border-radius: 6px;
+  background: linear-gradient(100deg, #f3ecdd 30%, #fbf7ef 50%, #f3ecdd 70%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  box-shadow: 0 14px 24px rgba(58, 47, 42, 0.1);
+}
+
+.skelRow {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+.skelBox {
+  width: 48px;
+  height: 58px;
+  border: 1px solid rgba(184, 146, 90, 0.4);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skelEnvelope {
+    animation: none;
+  }
+}
