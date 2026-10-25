@@ -4,7 +4,7 @@ import type { LetterData, SignedInfo } from '../lib/letterTypes';
 import { LetterScroll } from './LetterScroll';
 import styles from './Letter.module.css';
 import { AcceptancePage } from './pages/AcceptancePage';
-import { ChapterPage } from './pages/ChapterPage';
+import { ChaptersPage } from './pages/ChaptersPage';
 import { CoverPage } from './pages/CoverPage';
 import { DutiesPage } from './pages/DutiesPage';
 import { QuotePage } from './pages/QuotePage';
@@ -28,11 +28,7 @@ export function Letter({ data, signed = null, initialIndex, onAccept, onDownload
     () => [
       { key: 'cover', label: 'Cover', node: <CoverPage data={data} /> },
       { key: 'duties', label: content.duties.title, node: <DutiesPage content={content} /> },
-      ...content.chapters.map((c) => ({
-        key: c.id,
-        label: `Chapter ${c.number}: ${c.title}`,
-        node: <ChapterPage chapter={c} />,
-      })),
+      { key: 'chapters', label: 'Chapters', node: <ChaptersPage chapters={content.chapters} /> },
       { key: 'quote', label: 'Closing quote', node: <QuotePage quote={content.closingQuote} /> },
       {
         key: 'accept',

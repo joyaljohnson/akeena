@@ -4,6 +4,7 @@ import {
   describeEventTime,
   fillTemplate,
   formatEventDate,
+  formatEventDateShort,
   formatEventTime,
   formatSignedAt,
 } from './format';
@@ -14,6 +15,11 @@ describe('format', () => {
     expect(formatEventDate('2026-12-27')).toBe('Sunday, 27 December 2026');
     expect(formatEventDate('2027-01-04')).toBe('Monday, 4 January 2027');
     expect(formatEventDate('2027-01-06')).toBe('Wednesday, 6 January 2027');
+  });
+
+  it('formats short dates', () => {
+    expect(formatEventDateShort('2026-12-25')).toBe('25 Dec 2026');
+    expect(formatEventDateShort('2027-01-04')).toBe('4 Jan 2027');
   });
 
   it('formats times', () => {

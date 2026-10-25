@@ -12,6 +12,16 @@ export function formatEventDate(isoDate: string): string {
   }).format(d);
 }
 
+/** "2026-12-25" -> "25 Dec 2026". */
+export function formatEventDateShort(isoDate: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(`${isoDate}T00:00:00Z`));
+}
+
 /** "18:30" -> "6:30 pm". */
 export function formatEventTime(time: string): string {
   const [hh = '0', mm = '0'] = time.split(':');

@@ -33,3 +33,4 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 ## Decisions that override BUILD_PROMPT.md
 
 - The letter is one continuous vertical scroll (no horizontal swipe, no page dots or arrows). A thin progress line shows reading position. Export (`ExportLetter`, §9) stacks pages the same way.
+- Chapters are four expandable cards on one page (themed per chapter, collapsed by default). No "Get directions" button: the venue name is a dotted-underline link with a small pin icon. The image export renders cards with `alwaysOpen`.
