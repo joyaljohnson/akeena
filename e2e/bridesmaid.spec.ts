@@ -347,3 +347,33 @@ test('the cover shows the film behind it, silent and looping', async ({ page }) 
   await expect(video).toHaveJSProperty('muted', true);
   await expect(video).toHaveJSProperty('loop', true);
 });
+
+test('after the cover is written the letter slowly scrolls on to the duties', async ({ page }) => {
+  await mockBackend(page);
+  await openLetter(page);
+  const scroller = page.getByLabel('Your letter');
+  expect(await scroller.evaluate((el) => el.scrollTop)).toBeLessThan(10);
+  await expect
+    .poll(() => scroller.evaluate((el) => el.scrollTop), { timeout: 40_000 })
+    .toBeGreaterThan(300);
+});
+
+test('reading yourself cancels the automatic scroll, and chapter one opens on its own', async ({
+  page,
+}) => {
+  await mockBackend(page);
+  await openLetter(page);
+  await page.getByLabel('Your letter').hover();
+  await page.mouse.wheel(0, 30);
+  await page.locator('[data-page="2"]').scrollIntoViewIfNeeded();
+  await page.getByLabel('Your letter').evaluate((el) => {
+    el.scrollTop = (el.querySelector('[data-page="2"]') as HTMLElement).offsetTop - 20;
+  });
+  const first = page.getByRole('button', { name: /Chapter One/ });
+  await expect(first).toHaveAttribute('aria-expanded', 'false');
+  await expect(first).toHaveAttribute('aria-expanded', 'true', { timeout: 6000 });
+  await expect(page.getByRole('button', { name: /Chapter Two/ })).toHaveAttribute(
+    'aria-expanded',
+    'false',
+  );
+});

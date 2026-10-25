@@ -1,4 +1,4 @@
-import { useEffect, useMemo, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { handwritingVars, loadHandwritingFont } from '../lib/handwriting';
 import type { LetterData, SignedInfo } from '../lib/letterTypes';
 import { DownloadButton } from '../export/DownloadButton';
@@ -30,6 +30,8 @@ export function LetterContent({
   writeCover = false,
 }: LetterProps) {
   const { content } = data;
+  const [written, setWritten] = useState(false);
+  const onWritten = useCallback(() => setWritten(true), []);
 
   useEffect(() => {
     void loadHandwritingFont(data.fontId);
@@ -40,13 +42,19 @@ export function LetterContent({
       {
         key: 'cover',
         label: 'Cover',
-        node: <CoverPage data={data} write={writeCover} showBackground />,
+        node: <CoverPage data={data} write={writeCover} showBackground onWritten={onWritten} />,
       },
       { key: 'duties', label: content.duties.title, node: <DutiesPage content={content} /> },
       {
         key: 'chapters',
         label: 'Chapters',
-        node: <ChaptersPage chapters={content.chapters} moodboard={content.moodboard} />,
+        node: (
+          <ChaptersPage
+            chapters={content.chapters}
+            moodboard={content.moodboard}
+            autoOpenFirst={writeCover}
+          />
+        ),
       },
       { key: 'quote', label: 'Closing quote', node: <QuotePage quote={content.closingQuote} /> },
       {
@@ -62,12 +70,16 @@ export function LetterContent({
         ),
       },
     ],
-    [data, content, signed, onSign, writeCover],
+    [data, content, signed, onSign, writeCover, onWritten],
   );
 
   return (
     <div style={{ position: 'relative', height: '100%' }}>
-      <LetterScroll pages={pages} initialIndex={initialIndex} />
+      <LetterScroll
+        pages={pages}
+        initialIndex={initialIndex}
+        autoAdvanceAfterMs={writeCover && written ? 3000 : undefined}
+      />
       <SoundButton />
     </div>
   );

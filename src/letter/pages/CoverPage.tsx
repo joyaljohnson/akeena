@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { fillTemplate } from '../../lib/format';
 import type { LetterData } from '../../lib/letterTypes';
 import { CoverBackground } from '../CoverBackground';
@@ -14,12 +14,19 @@ type CoverPageProps = {
   write?: boolean;
   /** Show the film behind the cover. Off for the picture download and the admin preview. */
   showBackground?: boolean;
+  /** Called once the writing has finished (or was skipped by a tap). */
+  onWritten?: () => void;
 };
 
 const START_MS = 900; // let the letter finish fading in first
 const PAUSE_BEFORE_SIGNOFF_MS = 800;
 
-export function CoverPage({ data, write = false, showBackground = false }: CoverPageProps) {
+export function CoverPage({
+  data,
+  write = false,
+  showBackground = false,
+  onWritten,
+}: CoverPageProps) {
   const { content } = data;
   const [skipped, setSkipped] = useState(false);
   const [startedAt] = useState(() => performance.now());
@@ -46,6 +53,16 @@ export function CoverPage({ data, write = false, showBackground = false }: Cover
     ],
     [plan],
   );
+
+  useEffect(() => {
+    if (!write || !onWritten) return;
+    if (skipped) {
+      onWritten();
+      return;
+    }
+    const id = setTimeout(onWritten, plan.signStart + plan.signSchedule.totalMs);
+    return () => clearTimeout(id);
+  }, [write, skipped, onWritten, plan]);
 
   return (
     <div className={styles.page}>

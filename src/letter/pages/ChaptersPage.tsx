@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   chapterLabel,
   describeEventTime,
@@ -96,14 +96,24 @@ type ChapterCardProps = {
   /** Keeps the card open with no toggle (used by the image export). */
   alwaysOpen?: boolean;
   defaultOpen?: boolean;
+  /** Opens the card on its own when this turns true (until the reader has opened one herself). */
+  autoOpen?: boolean;
+  onToggle?: () => void;
 };
 
 export function ChapterCard({
   chapter,
   alwaysOpen = false,
   defaultOpen = false,
+  autoOpen = false,
+  onToggle,
 }: ChapterCardProps) {
   const [open, setOpen] = useState(defaultOpen);
+  const [seenAuto, setSeenAuto] = useState(false);
+  if (autoOpen !== seenAuto) {
+    setSeenAuto(autoOpen);
+    if (autoOpen) setOpen(true);
+  }
   const reduce = useReducedMotion();
   const expanded = alwaysOpen || open;
   const dates = [...new Set(chapter.events.map((e) => formatEventDateShort(e.date)))].join(' · ');
@@ -132,7 +142,10 @@ export function ChapterCard({
           className={styles.cardHead}
           aria-expanded={expanded}
           aria-controls={bodyId}
-          onClick={() => setOpen((o) => !o)}
+          onClick={() => {
+            onToggle?.();
+            setOpen((o) => !o);
+          }}
         >
           {head}
         </button>
@@ -183,16 +196,54 @@ export function ChaptersPage({
   chapters,
   moodboard,
   alwaysOpen = false,
+  autoOpenFirst = false,
 }: {
   chapters: readonly LetterChapter[];
   moodboard?: LetterContent['moodboard'];
   alwaysOpen?: boolean;
+  /** On the first reading, opens chapter one by itself once all the cards have been on screen a moment. */
+  autoOpenFirst?: boolean;
 }) {
+  const [autoOpened, setAutoOpened] = useState(false);
+  const touched = useRef(false);
+  const cards = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = cards.current;
+    if (!autoOpenFirst || alwaysOpen || !el || typeof IntersectionObserver === 'undefined') return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        clearTimeout(timer);
+        if (entry?.isIntersecting && !touched.current) {
+          timer = setTimeout(() => {
+            if (!touched.current) setAutoOpened(true);
+            observer.disconnect();
+          }, 2000);
+        }
+      },
+      { threshold: 1 },
+    );
+    observer.observe(el);
+    return () => {
+      clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, [autoOpenFirst, alwaysOpen]);
+
   return (
     <div className={styles.page}>
-      <div className={`${styles.inner} ${styles.cards}`}>
-        {chapters.map((c) => (
-          <ChapterCard key={c.id} chapter={c} alwaysOpen={alwaysOpen} />
+      <div ref={cards} className={`${styles.inner} ${styles.cards}`}>
+        {chapters.map((c, i) => (
+          <ChapterCard
+            key={c.id}
+            chapter={c}
+            alwaysOpen={alwaysOpen}
+            autoOpen={i === 0 && autoOpened}
+            onToggle={() => {
+              touched.current = true;
+            }}
+          />
         ))}
         {/* A link means nothing in a saved picture, so the download leaves it out. */}
         {moodboard && !alwaysOpen && <Moodboard moodboard={moodboard} />}
