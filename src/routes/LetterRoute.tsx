@@ -172,6 +172,7 @@ function LetterFlow({ token }: { token: string }) {
                 data={toLetterData(state.payload)}
                 signed={signed}
                 onSign={onSign}
+                writeCover={!state.resumed && !signed}
                 initialIndex={signed ? 'last' : 0}
               />
             </Suspense>

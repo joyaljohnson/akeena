@@ -16,10 +16,18 @@ type LetterProps = {
   signed?: SignedInfo | null;
   initialIndex?: number | 'last';
   onSign?: (name: string) => Promise<SignOutcome>;
+  /** Write the cover note out like a pen (first opening only). */
+  writeCover?: boolean;
 };
 
 /** The letter itself, without the surrounding phone column. */
-export function LetterContent({ data, signed = null, initialIndex, onSign }: LetterProps) {
+export function LetterContent({
+  data,
+  signed = null,
+  initialIndex,
+  onSign,
+  writeCover = false,
+}: LetterProps) {
   const { content } = data;
 
   useEffect(() => {
@@ -28,7 +36,7 @@ export function LetterContent({ data, signed = null, initialIndex, onSign }: Let
 
   const pages = useMemo(
     () => [
-      { key: 'cover', label: 'Cover', node: <CoverPage data={data} /> },
+      { key: 'cover', label: 'Cover', node: <CoverPage data={data} write={writeCover} /> },
       { key: 'duties', label: content.duties.title, node: <DutiesPage content={content} /> },
       { key: 'chapters', label: 'Chapters', node: <ChaptersPage chapters={content.chapters} /> },
       { key: 'quote', label: 'Closing quote', node: <QuotePage quote={content.closingQuote} /> },
@@ -45,7 +53,7 @@ export function LetterContent({ data, signed = null, initialIndex, onSign }: Let
         ),
       },
     ],
-    [data, content, signed, onSign],
+    [data, content, signed, onSign, writeCover],
   );
 
   return <LetterScroll pages={pages} initialIndex={initialIndex} />;

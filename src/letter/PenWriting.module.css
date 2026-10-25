@@ -1,0 +1,30 @@
+.word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Each letter starts completely covered (the clip box has no width) and is uncovered from left to
+   right, with a little room above, below and to the sides so long script strokes are never cut. */
+.char {
+  display: inline-block;
+  clip-path: inset(-45% 160% -45% -60%);
+  opacity: 0;
+  animation-name: ink;
+  animation-timing-function: cubic-bezier(0.4, 0.05, 0.35, 1);
+  animation-fill-mode: both;
+}
+
+@keyframes ink {
+  to {
+    clip-path: inset(-45% -60% -45% -60%);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .char {
+    animation: none;
+    clip-path: none;
+    opacity: 1;
+  }
+}

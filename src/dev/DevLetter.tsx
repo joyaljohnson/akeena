@@ -30,6 +30,7 @@ function Preview({ fixture }: { fixture: LetterData }) {
       initialIndex={Number(params.get('page') ?? 0)}
       signed={signed}
       onSign={onSign}
+      writeCover={params.get('write') === '1'}
     />
   );
 }

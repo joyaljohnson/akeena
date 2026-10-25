@@ -13,6 +13,11 @@ import {
 
 const link = `/#/l/${TOKEN}`;
 
+// The note is written out letter by letter, so it exists twice in the page (one copy for screen
+// readers). Look at the paragraph that holds it.
+const note = (page: import('@playwright/test').Page) =>
+  page.locator('p', { hasText: 'You have been my person from day one.' });
+
 async function openLetter(page: import('@playwright/test').Page) {
   await page.goto(link);
   await enterPin(page, PIN);
@@ -74,7 +79,7 @@ test('the whole journey: PIN, envelope, letter, sign, download @responsive', asy
   await openLetter(page);
 
   // The cover fills the first screen; nothing else is on it.
-  await expect(page.getByText('You have been my person from day one.')).toBeVisible();
+  await expect(note(page)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Duties' })).not.toBeInViewport();
 
   // Chapters are cards that open on tap.
@@ -208,7 +213,7 @@ test('if the handwriting fonts fail to load, the letter still opens and reads fi
   });
   await mockBackend(page);
   await openLetter(page);
-  await expect(page.getByText('You have been my person from day one.')).toBeVisible();
+  await expect(note(page)).toBeVisible();
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth > window.innerWidth,
   );
@@ -236,4 +241,51 @@ test('the whole journey runs without a single console error or warning', async (
   ]);
   expect(download.suggestedFilename()).toContain('Riya');
   expect(problems).toEqual([]);
+});
+
+test('the note is written out like a pen, and a tap finishes it', async ({ page }) => {
+  await mockBackend(page);
+  await openLetter(page);
+  const letters = page.locator('p span[class*="char"]');
+  expect(await letters.count()).toBeGreaterThan(20);
+  // Straight after opening, the end of the note has not been written yet.
+  const lastOpacity = await letters.last().evaluate((el) => Number(getComputedStyle(el).opacity));
+  expect(lastOpacity).toBeLessThan(1);
+  // A tap on the cover finishes the writing at once.
+  await note(page).click();
+  await expect(letters).toHaveCount(0);
+  await expect(note(page)).toBeVisible();
+  await expect(page.getByText('With love,')).toBeVisible();
+});
+
+test('the whole note is readable to screen readers from the start', async ({ page }) => {
+  await mockBackend(page);
+  await openLetter(page);
+  await expect(
+    page.locator('p .sr-only', { hasText: 'You have been my person from day one.' }),
+  ).toBeAttached();
+  await expect(page.locator('p span[aria-hidden="true"]').first()).toBeAttached();
+});
+
+test.describe('pen writing with reduced motion', () => {
+  test.use({ reducedMotion: 'reduce' });
+  test('everything is shown at once', async ({ page }) => {
+    await mockBackend(page);
+    await openLetter(page);
+    const letters = page.locator('p span[class*="char"]');
+    const last = await letters.last().evaluate((el) => Number(getComputedStyle(el).opacity));
+    expect(last).toBe(1);
+  });
+});
+
+test('a refresh does not write the note again, and the finished picture never animates', async ({
+  page,
+}) => {
+  await mockBackend(page);
+  await openLetter(page);
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { name: /Riya, would you be my bridesmaid/ }),
+  ).toBeVisible();
+  await expect(page.locator('p span[class*="char"]')).toHaveCount(0);
 });

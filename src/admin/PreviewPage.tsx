@@ -55,7 +55,12 @@ export function PreviewPage() {
   const signed = recordSigned ?? localSigned;
   const letter = (
     <div style={{ height: '100%', ...(handwritingVars(data.fontId) as CSSProperties) }}>
-      <LetterContent data={data} signed={signed} onSign={recordSigned ? undefined : onSign} />
+      <LetterContent
+        data={data}
+        signed={signed}
+        onSign={recordSigned ? undefined : onSign}
+        writeCover={replay > 0 && !recordSigned}
+      />
     </div>
   );
 
