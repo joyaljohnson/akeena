@@ -25,6 +25,8 @@ type EnvelopeSceneProps = {
   unlock: (pin: string) => Promise<UnlockResult>;
   /** Called once the opening animation has finished and the letter should take over. */
   onOpened: () => void;
+  /** Called straight from the tap on the seal. */
+  onSealTap?: () => void;
   /** Start with the link already locked (from the link check). */
   initialLockedUntil?: string;
   /** Handwriting font for "A letter for you" (the default font; the name is not known yet). */
@@ -74,6 +76,7 @@ export function EnvelopeLoading({ fontId }: { fontId: string }) {
 export function EnvelopeScene({
   unlock,
   onOpened,
+  onSealTap,
   fontId,
   initialLockedUntil,
 }: EnvelopeSceneProps) {
@@ -126,7 +129,7 @@ export function EnvelopeScene({
   if (animating) {
     return (
       <Suspense fallback={null}>
-        <EnvelopeStage fontId={fontId} onOpened={onOpened} />
+        <EnvelopeStage fontId={fontId} onOpened={onOpened} onSealTap={onSealTap} />
       </Suspense>
     );
   }

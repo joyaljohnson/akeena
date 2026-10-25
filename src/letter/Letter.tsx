@@ -7,6 +7,7 @@ import { LetterScroll } from './LetterScroll';
 import { PhoneStage } from './PhoneStage';
 import { AcceptancePage } from './pages/AcceptancePage';
 import { ChaptersPage } from './pages/ChaptersPage';
+import { SoundButton } from './SoundButton';
 import { CoverPage } from './pages/CoverPage';
 import { DutiesPage } from './pages/DutiesPage';
 import { QuotePage } from './pages/QuotePage';
@@ -36,7 +37,11 @@ export function LetterContent({
 
   const pages = useMemo(
     () => [
-      { key: 'cover', label: 'Cover', node: <CoverPage data={data} write={writeCover} /> },
+      {
+        key: 'cover',
+        label: 'Cover',
+        node: <CoverPage data={data} write={writeCover} showBackground />,
+      },
       { key: 'duties', label: content.duties.title, node: <DutiesPage content={content} /> },
       {
         key: 'chapters',
@@ -60,7 +65,12 @@ export function LetterContent({
     [data, content, signed, onSign, writeCover],
   );
 
-  return <LetterScroll pages={pages} initialIndex={initialIndex} />;
+  return (
+    <div style={{ position: 'relative', height: '100%' }}>
+      <LetterScroll pages={pages} initialIndex={initialIndex} />
+      <SoundButton />
+    </div>
+  );
 }
 
 export function Letter(props: LetterProps) {

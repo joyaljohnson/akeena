@@ -408,6 +408,20 @@ function Editor({ template }: { template: TemplateRecord }) {
       ))}
 
       <section className={`${styles.card} ${styles.section}`}>
+        <h2 className={styles.sectionTitle}>Cover film and music (optional)</h2>
+        <p className={styles.hint}>
+          A quiet looping film behind the cover, and music that starts when the envelope opens.
+          Paste the web links of the files you uploaded. Leave all three empty for the plain cover.
+        </p>
+        {text('Film link (.mp4)', ['cover', 'background', 'videoUrl'], { type: 'url' })}
+        {text('Still picture link (.jpg)', ['cover', 'background', 'posterUrl'], {
+          type: 'url',
+          hint: 'Shown first, and instead of the film when someone has motion turned off.',
+        })}
+        {text('Music link (optional)', ['cover', 'background', 'musicUrl'], { type: 'url' })}
+      </section>
+
+      <section className={`${styles.card} ${styles.section}`}>
         <h2 className={styles.sectionTitle}>Moodboard link (optional)</h2>
         <p className={styles.hint}>
           Shows as a small card after the chapters, for example a Pinterest board. Leave both boxes

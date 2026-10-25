@@ -8,7 +8,14 @@ export const sample: LetterData = {
   personalNote: 'You have been my person from the very first day. Will you stand with me?',
   content: {
     bride: { firstName: 'Bride', signOff: 'With love,' },
-    cover: { headlineTemplate: '{name}, would you be my bridesmaid?' },
+    cover: {
+      headlineTemplate: '{name}, would you be my bridesmaid?',
+      background: {
+        videoUrl: 'https://media.example.test/cover.mp4',
+        posterUrl: 'https://media.example.test/cover-poster.jpg',
+        musicUrl: 'https://media.example.test/music.m4a',
+      },
+    },
     duties: {
       title: 'Duties',
       items: ['Be the calm in the happy storm', 'Hold my bouquet', 'Dance like nobody is watching'],

@@ -6,6 +6,7 @@ type EnvelopeGateProps = {
   fontId: string;
   initialLockedUntil?: string;
   onOpened?: () => void;
+  onSealTap?: () => void;
   /** Rendered after the envelope has opened. */
   children: ReactNode;
 };
@@ -16,6 +17,7 @@ export function EnvelopeGate({
   fontId,
   initialLockedUntil,
   onOpened,
+  onSealTap,
   children,
 }: EnvelopeGateProps) {
   const [opened, setOpened] = useState(false);
@@ -25,6 +27,7 @@ export function EnvelopeGate({
         unlock={unlock}
         fontId={fontId}
         initialLockedUntil={initialLockedUntil}
+        onSealTap={onSealTap}
         onOpened={() => {
           setOpened(true);
           onOpened?.();

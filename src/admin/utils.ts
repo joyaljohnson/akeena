@@ -144,8 +144,17 @@ export function normalizeContent(content: LetterContent): LetterContent {
   // Both boxes empty means "no moodboard"; one box filled is kept so the editor can ask for the other.
   const label = content.moodboard?.label?.trim() ?? '';
   const url = content.moodboard?.url?.trim() ?? '';
+  const bg = content.cover.background;
+  const videoUrl = bg?.videoUrl?.trim() ?? '';
+  const posterUrl = bg?.posterUrl?.trim() ?? '';
+  const musicUrl = bg?.musicUrl?.trim() ?? '';
+  const background =
+    videoUrl === '' && posterUrl === '' && musicUrl === ''
+      ? undefined
+      : { videoUrl, posterUrl, musicUrl: musicUrl === '' ? undefined : musicUrl };
   return {
     ...content,
+    cover: { ...content.cover, background },
     moodboard: label === '' && url === '' ? undefined : { label, url },
     chapters: content.chapters.map((c) => ({
       ...c,

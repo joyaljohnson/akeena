@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { fillTemplate } from '../../lib/format';
 import type { LetterData } from '../../lib/letterTypes';
+import { CoverBackground } from '../CoverBackground';
 import { FloralCorner } from '../FloralCorner';
 import { PenCursor } from '../PenCursor';
 import { PenWriting } from '../PenWriting';
@@ -11,12 +12,14 @@ type CoverPageProps = {
   data: LetterData;
   /** Write the note and sign-off out like a pen. Off for the picture download and for revisits. */
   write?: boolean;
+  /** Show the film behind the cover. Off for the picture download and the admin preview. */
+  showBackground?: boolean;
 };
 
 const START_MS = 900; // let the letter finish fading in first
 const PAUSE_BEFORE_SIGNOFF_MS = 800;
 
-export function CoverPage({ data, write = false }: CoverPageProps) {
+export function CoverPage({ data, write = false, showBackground = false }: CoverPageProps) {
   const { content } = data;
   const [skipped, setSkipped] = useState(false);
   const [startedAt] = useState(() => performance.now());
@@ -46,6 +49,12 @@ export function CoverPage({ data, write = false }: CoverPageProps) {
 
   return (
     <div className={styles.page}>
+      {showBackground && content.cover.background && (
+        <CoverBackground
+          videoUrl={content.cover.background.videoUrl}
+          posterUrl={content.cover.background.posterUrl}
+        />
+      )}
       {/* Tapping the cover while it is being written shows the finished text straight away. */}
       <div
         ref={innerRef}

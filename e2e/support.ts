@@ -25,6 +25,17 @@ export async function mockBackend(page: Page, handlers: Handlers = {}) {
   const calls: Array<{ fn: string; body: Record<string, unknown> }> = [];
   const attempts = { wrong: 0 };
 
+  // The sample letter points at media that does not exist; answer with nothing and keep it silent.
+  await page.route('https://media.example.test/**', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/octet-stream', body: '' }),
+  );
+  await page.addInitScript(() => {
+    (window as unknown as { __played: string[] }).__played = [];
+    HTMLMediaElement.prototype.play = function () {
+      (window as unknown as { __played: string[] }).__played.push(this.currentSrc || this.src);
+      return Promise.resolve();
+    };
+  });
   await page.route('https://e2e.supabase.test/rest/v1/rpc/*', async (route: Route) => {
     const fn = route.request().url().split('/rpc/')[1] ?? '';
     const body = (route.request().postDataJSON() ?? {}) as Record<string, unknown>;

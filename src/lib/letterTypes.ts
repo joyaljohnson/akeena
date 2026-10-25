@@ -3,6 +3,14 @@ import { z } from 'zod';
 export const CHAPTER_THEMES = ['pearl', 'jewel', 'gold', 'pastel-metallic'] as const;
 export type ChapterTheme = (typeof CHAPTER_THEMES)[number];
 
+/** A web address, or a path on this site (used when previewing on this computer). */
+const mediaUrl = z
+  .string()
+  .refine(
+    (v) => /^https?:\/\/\S+$/.test(v) || /^\/\S+$/.test(v),
+    'Please paste the full link, starting with https://',
+  );
+
 const required = (what: string) => z.string().min(1, `Please enter ${what}.`);
 
 const eventSchema = z.object({
@@ -37,6 +45,14 @@ const chapterSchema = z.object({
 export const letterContentSchema = z.object({
   bride: z.object({ firstName: required('your first name'), signOff: required('a sign-off') }),
   cover: z.object({
+    /** Optional moving picture behind the cover, and music that starts when the envelope opens. */
+    background: z
+      .object({
+        videoUrl: mediaUrl,
+        posterUrl: mediaUrl,
+        musicUrl: mediaUrl.optional(),
+      })
+      .optional(),
     headlineTemplate: required('a headline').refine((h) => h.includes('{name}'), {
       message: 'Include {name} so each cover shows her name.',
     }),

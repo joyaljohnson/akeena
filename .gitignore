@@ -28,3 +28,8 @@ assets-src/wax-seal.png
 assets-src/floral-corner.png
 assets-src/paper-texture.png
 assets-src/og-envelope.jpg
+
+# Personal media: never committed (the files go to private storage)
+private-media/
+public/dev-media/
+tsconfig.tsbuildinfo

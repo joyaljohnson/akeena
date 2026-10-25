@@ -18,6 +18,8 @@ type Phase = 'flipping' | 'back' | 'opening' | 'opened';
 type EnvelopeStageProps = {
   /** Called once the opening animation has finished and the letter should take over. */
   onOpened: () => void;
+  /** Called straight from the tap on the seal (the moment phones allow sound to start). */
+  onSealTap?: () => void;
   fontId: string;
 };
 
@@ -27,7 +29,7 @@ type Controls = ReturnType<typeof animate>;
  * The animated half of the envelope: the flip, the seal, the opening. It loads in the background
  * while she types her PIN, so the PIN screen itself stays light and appears sooner.
  */
-export default function EnvelopeStage({ onOpened, fontId }: EnvelopeStageProps) {
+export default function EnvelopeStage({ onOpened, onSealTap, fontId }: EnvelopeStageProps) {
   const reduce = useReducedMotion() ?? false;
   const [phase, setPhase] = useState<Phase>('flipping');
   const [face, setFace] = useState<'front' | 'back'>('front');
@@ -168,7 +170,10 @@ export default function EnvelopeStage({ onOpened, fontId }: EnvelopeStageProps) 
                     <button
                       type="button"
                       className={`${styles.sealButton} ${phase === 'back' ? styles.pulse : ''}`}
-                      onClick={() => void openEnvelope()}
+                      onClick={() => {
+                        onSealTap?.();
+                        void openEnvelope();
+                      }}
                       disabled={phase !== 'back'}
                       aria-label="Open your letter"
                     />

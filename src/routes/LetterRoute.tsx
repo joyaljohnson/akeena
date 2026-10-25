@@ -8,6 +8,7 @@ import {
   type CSSProperties,
 } from 'react';
 import { useParams } from 'react-router-dom';
+import { startMusic } from '../letter/music';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
 import { PhoneStage } from '../letter/PhoneStage';
@@ -129,6 +130,11 @@ function LetterFlow({ token }: { token: string }) {
     [token],
   );
 
+  const onSealTap = useCallback(() => {
+    const music = pending.current?.content.cover.background?.musicUrl;
+    if (music) startMusic(music);
+  }, []);
+
   const handOver = useCallback(() => {
     const payload = pending.current;
     if (payload) setState({ kind: 'letter', payload, resumed: false });
@@ -156,6 +162,7 @@ function LetterFlow({ token }: { token: string }) {
             fontId={DEFAULT_FONT_ID}
             initialLockedUntil={state.lockedUntil}
             onOpened={handOver}
+            onSealTap={onSealTap}
           >
             {null}
           </EnvelopeGate>

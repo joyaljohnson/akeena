@@ -48,3 +48,8 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 - A small fountain pen (src/letter/PenCursor.tsx) travels with the cover writing: its path is measured from the real letter positions and played back on the same clock; it leaves on tap-skip, resize or reduced motion, and never appears in the downloaded picture.
 - The writing pen is a feather quill (PenCursor.tsx). No CSS filters or will-change on it (they paint a rectangle on some phones); its shadow is part of the SVG. Its clock is taken from the letters' real CSS animation startTime, and the nib is timed to the ink's leading edge (inkEdgeMs). Paper texture keeps only fibres over flat colour (process-art.mjs). Test visual changes in WebKit too: npx playwright install webkit.
 - Optional moodboard link (content.moodboard: label + url) shows as a card after the chapters; not in the downloaded picture; edited in the admin under Shared letter. The real link lives only in the private fixture/letter-content.md and the database, never in git; check-leaks watches pin.it links.
+
+## Cover film and music (Oct 2026)
+- Optional `cover.background {videoUrl, posterUrl, musicUrl?}` in content. Personal media is never committed; see `docs/COVER-MEDIA.md`.
+- Music is `src/letter/music.ts` (one Audio, started from the seal tap via `onSealTap` threaded EnvelopeGate -> Scene -> Stage); `SoundButton` toggles it. `CoverBackground` only shows in the real letter (`showBackground`), never in export or admin preview.
+- E2E stubs media at `media.example.test`; a11y scans use `preload:false` (axe otherwise waits 10 s per scan on the stub video).

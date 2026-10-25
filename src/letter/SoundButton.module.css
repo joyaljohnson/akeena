@@ -1,0 +1,15 @@
+.btn {
+  position: absolute;
+  top: calc(var(--safe-top, 0px) + 0.6rem);
+  right: 0.7rem;
+  z-index: 20;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--gold-light);
+  background: rgb(251 247 239 / 0.8);
+  color: var(--ink-soft);
+  cursor: pointer;
+}

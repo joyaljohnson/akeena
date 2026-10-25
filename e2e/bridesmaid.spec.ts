@@ -317,3 +317,33 @@ test('the pen follows the writing: it moves down the page as the note is written
   const later = await where();
   expect(Math.abs(later.x - first.x) + Math.abs(later.y - first.y)).toBeGreaterThan(8);
 });
+
+test('the music starts when the envelope opens and the sound button turns it off and on', async ({
+  page,
+}) => {
+  await mockBackend(page);
+  await page.goto(link);
+  await expect(page.getByRole('button', { name: /Turn the music/ })).toHaveCount(0);
+  await enterPin(page, PIN);
+  await page.getByRole('button', { name: 'Open your letter' }).click();
+  const sound = page.getByRole('button', { name: 'Turn the music off' });
+  await expect(sound).toBeVisible({ timeout: 15_000 });
+  await expect(sound).toHaveAttribute('aria-pressed', 'true');
+  expect(
+    await page.evaluate(() => (window as unknown as { __played: string[] }).__played),
+  ).toContain('https://media.example.test/music.m4a');
+  await sound.click();
+  const on = page.getByRole('button', { name: 'Turn the music on' });
+  await expect(on).toHaveAttribute('aria-pressed', 'false');
+  await on.click();
+  await expect(page.getByRole('button', { name: 'Turn the music off' })).toBeVisible();
+});
+
+test('the cover shows the film behind it, silent and looping', async ({ page }) => {
+  await mockBackend(page);
+  await openLetter(page);
+  const video = page.locator('video');
+  await expect(video).toHaveCount(1);
+  await expect(video).toHaveJSProperty('muted', true);
+  await expect(video).toHaveJSProperty('loop', true);
+});

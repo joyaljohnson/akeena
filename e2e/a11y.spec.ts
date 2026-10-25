@@ -6,6 +6,13 @@ import { disableShare, enterPin, letter, mockBackend, PIN, SIGNED_AT, TOKEN } fr
 async function scan(page: Page, label: string) {
   const results = await new AxeBuilder({ page })
     .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+    // The cover film is silent, decorative and hidden from screen readers. The test stand-in for it
+    // never loads, and axe would wait ten seconds per scan for it, so skip its media preload.
+    .exclude('video')
+    .options({
+      preload: false,
+      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] },
+    })
     .analyze();
   const summary = results.violations.map(
     (v) =>
