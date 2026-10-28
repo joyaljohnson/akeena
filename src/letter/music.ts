@@ -6,7 +6,7 @@ import { useSyncExternalStore } from 'react';
  * when she leaves the page and returns when she comes back, and can be turned off and on.
  */
 
-const TARGET_VOLUME = 0.55;
+const TARGET_VOLUME = 0.5;
 const FADE_MS = 1600;
 
 type Snapshot = { available: boolean; playing: boolean };
