@@ -378,11 +378,12 @@ test('reading yourself cancels the automatic scroll, and chapter one opens on it
   );
 });
 
-test('chapters with a named colour show a colour strip', async ({ page }) => {
+test('chapters with a named colour show colour chips with their names', async ({ page }) => {
   await mockBackend(page);
   await openLetter(page);
   await page.getByRole('button', { name: /Chapter One/ }).click();
-  const strip = page.getByRole('img', { name: /Colour palette/ });
-  await expect(strip.first()).toBeVisible();
-  expect(await strip.first().locator('span').count()).toBeGreaterThanOrEqual(8);
+  const list = page.getByRole('list', { name: /Colour palette/ });
+  await expect(list.first()).toBeVisible();
+  await expect(list.first().getByText('Ivory')).toBeVisible();
+  expect(await list.first().locator('li').count()).toBeGreaterThanOrEqual(8);
 });

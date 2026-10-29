@@ -38,7 +38,12 @@ const chapterSchema = z.object({
   dressCodeNote: z.string().optional(),
   /** Colour strip under "The colour" (hex codes). Left out, the chapter's theme supplies a default. */
   swatches: z
-    .array(z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Use six-digit colour codes like #D4AF37.'))
+    .array(
+      z.object({
+        name: z.string().optional(),
+        hex: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Write each colour like: Champagne #F7E7CE'),
+      }),
+    )
     .max(12)
     .optional(),
 });

@@ -66,6 +66,23 @@ function Field({
   );
 }
 
+type Swatch = { name?: string; hex: string };
+
+function swatchesToText(swatches: readonly Swatch[] | undefined): string {
+  return (swatches ?? []).map((s) => (s.name ? `${s.name} ${s.hex}` : s.hex)).join('\n');
+}
+
+function textToSwatches(raw: string): Swatch[] {
+  return raw
+    .split(/[\n,]+/)
+    .map((line) => line.trim())
+    .filter((line) => line !== '')
+    .map((line) => {
+      const m = /^(.*?)\s*(#[0-9a-fA-F]{6})$/.exec(line);
+      return m ? { name: m[1] || undefined, hex: m[2] ?? line } : { hex: line };
+    });
+}
+
 function Editor({ template }: { template: TemplateRecord }) {
   const { api, notify } = useAdmin();
   const [content, setContent] = useState<LetterContent>(template.content);
@@ -400,20 +417,17 @@ function Editor({ template }: { template: TemplateRecord }) {
                 error={
                   Object.entries(errors).find(([k]) => k.startsWith(`chapters.${ci}.swatches`))?.[1]
                 }
-                hint="Colour codes separated by commas, for example #FFFFFF, #F8F6F0. Leave empty for the standard strip."
+                hint="One colour per line: its name, then its code, like Champagne #F7E7CE. Leave empty for the standard colours."
               >
                 {(c) => (
-                  <input
+                  <textarea
                     {...c}
-                    className={styles.input}
-                    value={swatchText[ci] ?? (chapter.swatches ?? []).join(', ')}
+                    className={styles.textarea}
+                    value={swatchText[ci] ?? swatchesToText(chapter.swatches)}
                     onChange={(e) => {
                       const raw = e.target.value;
                       setSwatchText((t) => ({ ...t, [ci]: raw }));
-                      set(
-                        ['chapters', ci, 'swatches'],
-                        raw.split(/[\s,]+/).filter((v) => v !== ''),
-                      );
+                      set(['chapters', ci, 'swatches'], textToSwatches(raw));
                     }}
                   />
                 )}

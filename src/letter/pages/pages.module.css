@@ -382,18 +382,29 @@
   text-wrap: balance;
 }
 
-/* A long strip of colour chips under "The colour" */
+/* Colour chips with their names, two to a row */
 .swatches {
-  display: flex;
+  list-style: none;
+  margin: 0.35rem 0 0;
+  padding: 0;
   width: 100%;
-  max-width: 280px;
-  height: 30px;
-  margin-top: 0.3rem;
-  overflow: hidden;
-  border: 1px solid var(--accent-line);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--paper) 70%, transparent);
+  max-width: 300px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
 }
 .swatch {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+.chip {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--accent-line);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--paper) 70%, transparent);
 }

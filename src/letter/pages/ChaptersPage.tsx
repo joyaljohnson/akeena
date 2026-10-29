@@ -25,41 +25,46 @@ function PinIcon({ className }: { className?: string }) {
   );
 }
 
-/** Built-in colour strips for the themes that have a named colour (ten shades each). */
-const THEME_SWATCHES: Partial<Record<LetterChapter['theme'], readonly string[]>> = {
+type Swatch = NonNullable<LetterChapter['swatches']>[number];
+
+/** Built-in colours for the themes that have a named colour (ten shades each). */
+const THEME_SWATCHES: Partial<Record<LetterChapter['theme'], readonly Swatch[]>> = {
   pearl: [
-    '#FFFFFF',
-    '#FFFAFA',
-    '#FFFFF0',
-    '#FAF8F2',
-    '#FDF5E6',
-    '#F5F2EA',
-    '#F0EAD6',
-    '#EEE8DA',
-    '#E9E4D4',
-    '#E3DDCB',
+    { name: 'White', hex: '#FFFFFF' },
+    { name: 'Snow', hex: '#FFFAFA' },
+    { name: 'Ivory', hex: '#FFFFF0' },
+    { name: 'Pearl', hex: '#FAF8F2' },
+    { name: 'Cream', hex: '#FDF5E6' },
+    { name: 'Chalk', hex: '#F5F2EA' },
+    { name: 'Eggshell', hex: '#F0EAD6' },
+    { name: 'Linen', hex: '#EEE8DA' },
+    { name: 'Bone', hex: '#E9E4D4' },
+    { name: 'Oyster', hex: '#E3DDCB' },
   ],
   gold: [
-    '#F7E7CE',
-    '#EBCF9E',
-    '#E8C86D',
-    '#DDB668',
-    '#D4AF37',
-    '#C9A24E',
-    '#B8925A',
-    '#A67C2E',
-    '#8F6A22',
-    '#7A5A1C',
+    { name: 'Champagne', hex: '#F7E7CE' },
+    { name: 'Pale gold', hex: '#EBCF9E' },
+    { name: 'Sunlit gold', hex: '#E8C86D' },
+    { name: 'Honey gold', hex: '#DDB668' },
+    { name: 'Classic gold', hex: '#D4AF37' },
+    { name: 'Rich gold', hex: '#C9A24E' },
+    { name: 'Antique gold', hex: '#B8925A' },
+    { name: 'Burnished gold', hex: '#A67C2E' },
+    { name: 'Bronze gold', hex: '#8F6A22' },
+    { name: 'Old gold', hex: '#7A5A1C' },
   ],
 };
 
-function SwatchStrip({ colours, label }: { colours: readonly string[]; label: string }) {
+function Swatches({ colours, label }: { colours: readonly Swatch[]; label: string }) {
   return (
-    <div className={styles.swatches} role="img" aria-label={`Colour palette: ${label}`}>
+    <ul className={styles.swatches} aria-label={`Colour palette: ${label}`}>
       {colours.map((c) => (
-        <span key={c} className={styles.swatch} style={{ background: c }} />
+        <li key={c.hex + (c.name ?? '')} className={styles.swatch}>
+          <span className={styles.chip} style={{ background: c.hex }} aria-hidden="true" />
+          <span>{c.name ?? c.hex}</span>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
@@ -106,7 +111,7 @@ function ChapterDetails({ chapter }: { chapter: LetterChapter }) {
         {(() => {
           const colours = chapter.swatches ?? THEME_SWATCHES[chapter.theme];
           return colours && colours.length > 0 ? (
-            <SwatchStrip colours={colours} label={chapter.dressCode} />
+            <Swatches colours={colours} label={chapter.dressCode} />
           ) : null;
         })()}
         {chapter.dressCodeNote && <p className={`hand ${styles.aside}`}>{chapter.dressCodeNote}</p>}
