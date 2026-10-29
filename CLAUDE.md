@@ -57,4 +57,4 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 
 ## River-green palette (Oct 2026)
 - The letter (not the envelope) uses `data-palette="river"` (tokens.css): mint paper `paper-river.webp` (made by process-art.mjs), sea-green accents sampled from the cover film, forest-green `--burgundy` for buttons and sign-off. All four chapter themes are greens. Letter CSS uses `color-mix` on tokens instead of hard-coded rgba. Export root carries the same attribute (with `--paper-noise: none`).
-- Duties use a heart bullet. The shades-of-white/gold pictures are gone; "The colour" is plain text (`colourImage` removed from the schema; old data is ignored).
+- Duties use a heart bullet. The shades-of-white/gold pictures are gone; "The colour" shows a swatch strip instead (`chapter.swatches`, hex list edited in the admin; pearl and gold themes have built-in ten-shade defaults in ChaptersPage). `colourImage` is removed from the schema.

@@ -36,6 +36,11 @@ const chapterSchema = z.object({
   vibe: required('the vibe'),
   dressCode: required('the colour'),
   dressCodeNote: z.string().optional(),
+  /** Colour strip under "The colour" (hex codes). Left out, the chapter's theme supplies a default. */
+  swatches: z
+    .array(z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Use six-digit colour codes like #D4AF37.'))
+    .max(12)
+    .optional(),
 });
 
 export const letterContentSchema = z.object({

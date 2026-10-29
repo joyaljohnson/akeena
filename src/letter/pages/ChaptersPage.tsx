@@ -25,6 +25,44 @@ function PinIcon({ className }: { className?: string }) {
   );
 }
 
+/** Built-in colour strips for the themes that have a named colour (ten shades each). */
+const THEME_SWATCHES: Partial<Record<LetterChapter['theme'], readonly string[]>> = {
+  pearl: [
+    '#FFFFFF',
+    '#FFFAFA',
+    '#FFFFF0',
+    '#FAF8F2',
+    '#FDF5E6',
+    '#F5F2EA',
+    '#F0EAD6',
+    '#EEE8DA',
+    '#E9E4D4',
+    '#E3DDCB',
+  ],
+  gold: [
+    '#F7E7CE',
+    '#EBCF9E',
+    '#E8C86D',
+    '#DDB668',
+    '#D4AF37',
+    '#C9A24E',
+    '#B8925A',
+    '#A67C2E',
+    '#8F6A22',
+    '#7A5A1C',
+  ],
+};
+
+function SwatchStrip({ colours, label }: { colours: readonly string[]; label: string }) {
+  return (
+    <div className={styles.swatches} role="img" aria-label={`Colour palette: ${label}`}>
+      {colours.map((c) => (
+        <span key={c} className={styles.swatch} style={{ background: c }} />
+      ))}
+    </div>
+  );
+}
+
 function ChapterDetails({ chapter }: { chapter: LetterChapter }) {
   const many = chapter.events.length > 1;
   return (
@@ -65,6 +103,12 @@ function ChapterDetails({ chapter }: { chapter: LetterChapter }) {
           The colour
         </h3>
         <p className={styles.body}>{chapter.dressCode}</p>
+        {(() => {
+          const colours = chapter.swatches ?? THEME_SWATCHES[chapter.theme];
+          return colours && colours.length > 0 ? (
+            <SwatchStrip colours={colours} label={chapter.dressCode} />
+          ) : null;
+        })()}
         {chapter.dressCodeNote && <p className={`hand ${styles.aside}`}>{chapter.dressCodeNote}</p>}
       </section>
     </div>

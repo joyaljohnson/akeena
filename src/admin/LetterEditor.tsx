@@ -77,6 +77,7 @@ function Editor({ template }: { template: TemplateRecord }) {
     whatsapp: template.whatsappTemplate,
   });
   const [saving, setSaving] = useState(false);
+  const [swatchText, setSwatchText] = useState<Record<number, string>>({});
 
   useEffect(() => {
     HANDWRITING_FONTS.forEach((f) => void loadHandwritingFont(f.id));
@@ -394,6 +395,29 @@ function Editor({ template }: { template: TemplateRecord }) {
 
               {text('Vibe', ['chapters', ci, 'vibe'], { multiline: true })}
               {text('The colour', ['chapters', ci, 'dressCode'], { multiline: true })}
+              <Field
+                label="Colour swatches (optional)"
+                error={
+                  Object.entries(errors).find(([k]) => k.startsWith(`chapters.${ci}.swatches`))?.[1]
+                }
+                hint="Colour codes separated by commas, for example #FFFFFF, #F8F6F0. Leave empty for the standard strip."
+              >
+                {(c) => (
+                  <input
+                    {...c}
+                    className={styles.input}
+                    value={swatchText[ci] ?? (chapter.swatches ?? []).join(', ')}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      setSwatchText((t) => ({ ...t, [ci]: raw }));
+                      set(
+                        ['chapters', ci, 'swatches'],
+                        raw.split(/[\s,]+/).filter((v) => v !== ''),
+                      );
+                    }}
+                  />
+                )}
+              </Field>
               {text('Note under the colour (optional)', ['chapters', ci, 'dressCodeNote'], {
                 hint: 'For example "I will send you pictures".',
               })}

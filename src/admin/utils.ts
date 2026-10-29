@@ -165,6 +165,7 @@ export function normalizeContent(content: LetterContent): LetterContent {
     chapters: content.chapters.map((c) => ({
       ...c,
       dressCodeNote: blank(c.dressCodeNote),
+      swatches: c.swatches && c.swatches.length > 0 ? c.swatches : undefined,
       events: c.events.map((e) => ({
         ...e,
         label: blank(e.label),
