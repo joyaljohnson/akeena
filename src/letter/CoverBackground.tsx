@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styles from './CoverBackground.module.css';
 
-type CoverBackgroundProps = { videoUrl: string; posterUrl: string };
+type CoverBackgroundProps = { videoUrl: string; posterUrl: string; veil?: boolean };
 
 /** True when she has asked her phone to move less, or to save data. */
 function wantsStill(): boolean {
@@ -17,7 +17,7 @@ function wantsStill(): boolean {
  * in over it. An ivory veil keeps the handwriting readable. Reduced motion / data saver get the
  * still poster only.
  */
-export function CoverBackground({ videoUrl, posterUrl }: CoverBackgroundProps) {
+export function CoverBackground({ videoUrl, posterUrl, veil = true }: CoverBackgroundProps) {
   const [still] = useState(wantsStill);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -53,7 +53,7 @@ export function CoverBackground({ videoUrl, posterUrl }: CoverBackgroundProps) {
           onError={() => setFailed(true)}
         />
       )}
-      <div className={styles.veil} />
+      {veil && <div className={styles.veil} />}
     </div>
   );
 }

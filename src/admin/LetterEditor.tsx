@@ -419,6 +419,32 @@ function Editor({ template }: { template: TemplateRecord }) {
           hint: 'Shown first, and instead of the film when someone has motion turned off.',
         })}
         {text('Music link (optional)', ['cover', 'background', 'musicUrl'], { type: 'url' })}
+        <Field label="Soft veil over the film">
+          {(c) => (
+            <select
+              {...c}
+              className={styles.select}
+              value={content.cover.background?.veil === false ? 'off' : 'on'}
+              onChange={(e) => set(['cover', 'background', 'veil'], e.target.value === 'on')}
+            >
+              <option value="on">On (easier to read)</option>
+              <option value="off">Off (film at full strength)</option>
+            </select>
+          )}
+        </Field>
+        <Field label="Cover writing colour">
+          {(c) => (
+            <select
+              {...c}
+              className={styles.select}
+              value={content.cover.background?.textColour ?? 'dark'}
+              onChange={(e) => set(['cover', 'background', 'textColour'], e.target.value)}
+            >
+              <option value="dark">Dark</option>
+              <option value="white">White</option>
+            </select>
+          )}
+        </Field>
       </section>
 
       <section className={`${styles.card} ${styles.section}`}>

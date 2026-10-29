@@ -151,7 +151,13 @@ export function normalizeContent(content: LetterContent): LetterContent {
   const background =
     videoUrl === '' && posterUrl === '' && musicUrl === ''
       ? undefined
-      : { videoUrl, posterUrl, musicUrl: musicUrl === '' ? undefined : musicUrl };
+      : {
+          videoUrl,
+          posterUrl,
+          musicUrl: musicUrl === '' ? undefined : musicUrl,
+          veil: bg?.veil,
+          textColour: bg?.textColour,
+        };
   return {
     ...content,
     cover: { ...content.cover, background },

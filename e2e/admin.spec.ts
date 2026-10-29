@@ -197,3 +197,19 @@ test('the real admin address asks for sign-in and never shows the dashboard to s
   await page.getByRole('button', { name: 'Sign in' }).click();
   await expect(page.getByText("That email or password isn't right.")).toBeVisible();
 });
+
+test('the cover veil and writing colour can be changed and saved', async ({ page }) => {
+  await page.goto(`${admin}/letter`);
+  const veil = page.getByLabel('Soft veil over the film');
+  const colour = page.getByLabel('Cover writing colour');
+  await expect(veil).toHaveValue('on');
+  await expect(colour).toHaveValue('dark');
+  await veil.selectOption('off');
+  await colour.selectOption('white');
+  const save = page.getByRole('button', { name: 'Save changes' });
+  await expect(save).toBeEnabled();
+  await save.click();
+  await expect(page.getByText('Saved. Unsigned letters now show this version.')).toBeVisible();
+  await expect(veil).toHaveValue('off');
+  await expect(colour).toHaveValue('white');
+});

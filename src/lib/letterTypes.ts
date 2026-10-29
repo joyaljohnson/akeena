@@ -51,6 +51,10 @@ export const letterContentSchema = z.object({
         videoUrl: mediaUrl,
         posterUrl: mediaUrl,
         musicUrl: mediaUrl.optional(),
+        /** Soft ivory layer over the film so dark writing reads easily. Default on. */
+        veil: z.boolean().optional(),
+        /** Colour of the cover writing. Default dark. */
+        textColour: z.enum(['dark', 'white']).optional(),
       })
       .optional(),
     headlineTemplate: required('a headline').refine((h) => h.includes('{name}'), {

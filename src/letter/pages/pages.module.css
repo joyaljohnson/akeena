@@ -67,6 +67,14 @@
   color: var(--burgundy);
 }
 
+/* White writing over the film (with a soft shadow so it holds up on bright frames). */
+.cover[data-tone='white'] .headline,
+.cover[data-tone='white'] .note,
+.cover[data-tone='white'] .signoff {
+  color: #fff;
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.55);
+}
+
 /* Duties */
 .duties {
   list-style: none;

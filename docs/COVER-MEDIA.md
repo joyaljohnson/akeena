@@ -23,3 +23,7 @@ Prepared files (made with `ffmpeg-static`, silent, 576x1024, about 1.8 MB) are i
 - Film: muted, looping, `playsInline`, pauses when the page is hidden, fades in over the poster; an ivory veil keeps handwriting readable. Not used in the downloadable picture or the admin preview.
 - Music: starts at the seal tap with a 1.6 s fade-in, loops, pauses when she leaves the page and returns on coming back. A round sound button (top right, `aria-pressed`) turns it off and on. If the browser refuses sound, the button shows "off" and a tap starts it.
 - The clip's own sound is river ambience, not music, so a separate licensed track is needed.
+
+## Veil and writing colour
+
+Admin, Shared letter, Cover film and music: **Soft veil over the film** (on by default; off shows the film at full strength) and **Cover writing colour** (dark or white; white gets a soft shadow). Both only affect the cover in the real letter.

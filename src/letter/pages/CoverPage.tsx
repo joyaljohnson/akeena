@@ -69,12 +69,16 @@ export function CoverPage({
         <CoverBackground
           videoUrl={content.cover.background.videoUrl}
           posterUrl={content.cover.background.posterUrl}
+          veil={content.cover.background.veil !== false}
         />
       )}
       {/* Tapping the cover while it is being written shows the finished text straight away. */}
       <div
         ref={innerRef}
         className={`${styles.inner} ${styles.cover}`}
+        data-tone={
+          showBackground && content.cover.background?.textColour === 'white' ? 'white' : undefined
+        }
         onPointerDown={animate ? () => setSkipped(true) : undefined}
       >
         {animate && <PenCursor containerRef={innerRef} blocks={penBlocks} startedAt={startedAt} />}
