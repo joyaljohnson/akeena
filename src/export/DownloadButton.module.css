@@ -69,7 +69,7 @@
   width: 100%;
   height: auto;
   border-radius: 8px;
-  box-shadow: 0 4px 14px rgba(58, 47, 42, 0.18);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--ink) 18%, transparent);
   -webkit-touch-callout: default;
   user-select: auto;
 }

@@ -397,11 +397,6 @@ function Editor({ template }: { template: TemplateRecord }) {
               {text('Note under the colour (optional)', ['chapters', ci, 'dressCodeNote'], {
                 hint: 'For example "I will send you pictures".',
               })}
-              {chapter.colourImage && (
-                <p className={styles.hint}>
-                  Colour picture: {chapter.colourImage.name} (set up by the developer).
-                </p>
-              )}
             </div>
           </details>
         </section>

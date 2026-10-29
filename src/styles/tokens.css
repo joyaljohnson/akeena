@@ -23,3 +23,22 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --column-width: 430px;
 }
+
+/* The river palette: sea-green water, forest green and mountain grey, taken from the cover film. */
+[data-palette='river'] {
+  --ivory: #e4f0ea;
+  --paper: #f2f8f4;
+  --paper-shadow: #d3e4db;
+  --ink: #22332d;
+  --ink-soft: #4d6159;
+  --blush: #cfe6db;
+  --rose: #a9c8b8;
+  --sage: #7fb5a0;
+  --dusty-blue: #9fb8b0;
+  --gold: #4f8f7a;
+  --gold-light: #a9c8b8;
+  --burgundy: #2f6b5c;
+}
+[data-palette='river']:not([data-export-root]) {
+  --paper-noise: url('/img/paper-river.webp');
+}

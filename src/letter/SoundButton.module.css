@@ -9,7 +9,7 @@
   place-items: center;
   border-radius: 50%;
   border: 1px solid var(--gold-light);
-  background: rgb(251 247 239 / 0.8);
+  background: color-mix(in srgb, var(--paper) 80%, transparent);
   color: var(--ink-soft);
   cursor: pointer;
 }

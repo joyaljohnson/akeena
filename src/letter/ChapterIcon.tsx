@@ -13,8 +13,8 @@ export const DEFAULT_ICON_FOR_THEME: Record<ChapterTheme, ChapterIconName> = {
   'pastel-metallic': 'bible',
 };
 
-const GOLD = '#C9A24E';
-const GLOW = '#F3D79A';
+const GOLD = '#4f8f7a';
+const GLOW = '#cfe8dd';
 
 type Pair = { closed: ReactElement; open: ReactElement };
 

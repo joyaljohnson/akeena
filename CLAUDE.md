@@ -54,3 +54,7 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 - Music is `src/letter/music.ts` (one Audio, started from the seal tap via `onSealTap` threaded EnvelopeGate -> Scene -> Stage); `SoundButton` toggles it. `CoverBackground` only shows in the real letter (`showBackground`), never in export or admin preview.
 - E2E stubs media at `media.example.test`; a11y scans use `preload:false` (axe otherwise waits 10 s per scan on the stub video).
 - First opening only (`writeCover`): 3 s after the cover writing ends (or is skipped) the scroller eases down to the duties (`autoAdvanceAfterMs` in LetterScroll); any touch, wheel or key cancels it; skipped for reduced motion. Chapter one opens by itself once all four cards have been fully on screen for 2 s, unless she has opened a card (no instruction text, per the rules above).
+
+## River-green palette (Oct 2026)
+- The letter (not the envelope) uses `data-palette="river"` (tokens.css): mint paper `paper-river.webp` (made by process-art.mjs), sea-green accents sampled from the cover film, forest-green `--burgundy` for buttons and sign-off. All four chapter themes are greens. Letter CSS uses `color-mix` on tokens instead of hard-coded rgba. Export root carries the same attribute (with `--paper-noise: none`).
+- Duties use a heart bullet. The shades-of-white/gold pictures are gone; "The colour" is plain text (`colourImage` removed from the schema; old data is ignored).

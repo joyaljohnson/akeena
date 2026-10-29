@@ -63,7 +63,7 @@ export async function captureLetter(
     const pixelRatio = computePixelRatio(width, height);
 
     const { toBlob } = await import('html-to-image');
-    const options = { pixelRatio, width, height, backgroundColor: '#FBF7EF', cacheBust: false };
+    const options = { pixelRatio, width, height, backgroundColor: '#F2F8F4', cacheBust: false };
     // Safari draws images and fonts only on the second pass, so the first render is a warm-up.
     await toBlob(node, options);
     const blob = await toBlob(node, options);

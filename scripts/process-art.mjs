@@ -161,9 +161,11 @@ await flat('envelope-flap-inner.png', 'envelope-inner', 1000, 72);
 // from its own compression), which show as pale rectangles on a bright screen. So keep only the
 // fine fibres (the picture minus a blurred copy of itself) and lay them over a flat paper colour.
 // Then mirror it into a 2x2 block so every edge matches its neighbour and it can repeat.
-{
+for (const [paperName, base] of [
+  ['paper', [251, 247, 239]], // the envelope's paper colour (--paper)
+  ['paper-river', [242, 248, 244]], // the letter's mint paper (river palette)
+]) {
   const SIZE = 512;
-  const base = [251, 247, 239]; // the page's paper colour (--paper)
   const src = await sharp(`${SRC}/paper-texture.png`)
     .resize(SIZE, SIZE)
     .removeAlpha()
@@ -198,7 +200,7 @@ await flat('envelope-flap-inner.png', 'envelope-inner', 1000, 72);
     .png()
     .toBuffer();
   // Lossless, so the flat paper stays exactly flat (lossy compression adds pale rectangles).
-  await save(sharp(block), 'paper', { width: 1024, lossless: true });
+  await save(sharp(block), paperName, { width: 1024, lossless: true });
 }
 
 // --- link preview and icons --------------------------------------------------------------------

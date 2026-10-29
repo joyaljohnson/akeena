@@ -74,7 +74,10 @@ export function LetterContent({
   );
 
   return (
-    <div style={{ position: 'relative', height: '100%' }}>
+    <div
+      data-palette="river"
+      style={{ position: 'relative', height: '100%', background: 'var(--paper)' }}
+    >
       <LetterScroll
         pages={pages}
         initialIndex={initialIndex}

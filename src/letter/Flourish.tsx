@@ -24,7 +24,8 @@ export function Flourish({ className }: FlourishProps) {
   );
 }
 
-export function FloralBullet({ className }: FlourishProps) {
+/** A simple heart for the list of duties. */
+export function HeartBullet({ className }: FlourishProps) {
   return (
     <svg
       className={className}
@@ -34,20 +35,10 @@ export function FloralBullet({ className }: FlourishProps) {
       aria-hidden="true"
       focusable="false"
     >
-      {[0, 72, 144, 216, 288].map((a) => (
-        <ellipse
-          key={a}
-          cx="10"
-          cy="5.2"
-          rx="2.6"
-          ry="4"
-          fill="#E6CBC3"
-          stroke="#C9A3A0"
-          strokeWidth="0.6"
-          transform={`rotate(${a} 10 10)`}
-        />
-      ))}
-      <circle cx="10" cy="10" r="2" fill="#B8925A" />
+      <path
+        d="M10 17.2 3.6 10.8C1.5 8.7 1.8 5.4 4.2 4.1c1.8-1 4-.4 5.8 1.7 1.8-2.1 4-2.7 5.8-1.7 2.4 1.3 2.7 4.6.6 6.7Z"
+        fill="currentColor"
+      />
     </svg>
   );
 }

@@ -19,7 +19,12 @@ type ExportLetterProps = { data: LetterData; signed: SignedInfo };
 export function ExportLetter({ data, signed }: ExportLetterProps) {
   const { content } = data;
   return (
-    <div className={styles.root} style={handwritingVars(data.fontId)} data-export-root>
+    <div
+      className={styles.root}
+      style={handwritingVars(data.fontId)}
+      data-export-root
+      data-palette="river"
+    >
       <CoverPage data={data} />
       <DutiesPage content={content} />
       <ChaptersPage chapters={content.chapters} alwaysOpen />

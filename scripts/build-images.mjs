@@ -21,6 +21,8 @@ const SKIP = new Set([
   'floral-corner',
   'paper-texture',
   'og-envelope',
+  'shades-of-white', // replaced by plain text under "The colour"
+  'shades-of-gold',
 ]);
 
 for (const file of readdirSync(SRC)) {

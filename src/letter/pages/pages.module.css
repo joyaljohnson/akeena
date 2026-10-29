@@ -94,6 +94,7 @@
 }
 .duty svg {
   margin-top: 0.2rem;
+  color: var(--gold);
 }
 
 /* Chapters */
@@ -138,18 +139,18 @@
   border: 0;
 }
 
-/* Themes: tint the paper and accents to the dress code */
+/* Themes: four greens drawn from the river, one per chapter */
 .card[data-theme='pearl'] {
-  --accent-text: #6b6354;
-  --accent-line: #cfc8b8;
+  --accent-text: #3f5f55;
+  --accent-line: #bcd5c9;
   background-image:
     linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.85) 48%, transparent 66%),
-    linear-gradient(180deg, #fdfbf6 0%, #f1ede5 100%), var(--paper-noise);
+    linear-gradient(180deg, #fafdfb 0%, #e9f3ee 100%), var(--paper-noise);
 }
 .card[data-theme='jewel'] {
-  --accent-text: #6c2a5f;
-  --accent-line: #c99b3d;
-  background-image: linear-gradient(180deg, #fcf6e9 0%, #f8eedb 100%), var(--paper-noise);
+  --accent-text: #24584a;
+  --accent-line: #5f9c88;
+  background-image: linear-gradient(180deg, #eff8f3 0%, #dcede4 100%), var(--paper-noise);
 }
 .card[data-theme='jewel']::before {
   content: '';
@@ -158,25 +159,25 @@
   height: 6px;
   background: linear-gradient(
     90deg,
-    #e3a21a 0 25%,
-    #b8307a 25% 50%,
-    #1e8c6b 50% 75%,
-    #1f6f8b 75% 100%
+    #2f6b5c 0 25%,
+    #4f9a86 25% 50%,
+    #7fb5a0 50% 75%,
+    #a9c8b8 75% 100%
   );
 }
 .card[data-theme='gold'] {
-  --accent-text: #6f5116;
-  --accent-line: #c9a24e;
+  --accent-text: #35594b;
+  --accent-line: #86b8a3;
   background-image:
-    radial-gradient(120% 60% at 50% 105%, rgba(240, 190, 90, 0.45), transparent 70%),
-    linear-gradient(180deg, #fbf3df 0%, #f5e5bd 100%), var(--paper-noise);
+    radial-gradient(120% 60% at 50% 105%, rgba(127, 181, 160, 0.4), transparent 70%),
+    linear-gradient(180deg, #edf7f1 0%, #d5eadf 100%), var(--paper-noise);
 }
 .card[data-theme='pastel-metallic'] {
-  --accent-text: #594e6c;
-  --accent-line: #c1b3d4;
+  --accent-text: #3f5c58;
+  --accent-line: #9fc4bb;
   background-image:
     linear-gradient(120deg, transparent 25%, rgba(255, 255, 255, 0.7) 45%, transparent 62%),
-    linear-gradient(160deg, #f7efe4 0%, #ece5f2 52%, #e4f1ea 100%), var(--paper-noise);
+    linear-gradient(160deg, #f1f8f5 0%, #e1efea 52%, #d6e7e3 100%), var(--paper-noise);
 }
 
 /* Quote */
@@ -201,7 +202,7 @@
   font-family: var(--font-display);
   font-style: italic;
   font-size: 1.35rem;
-  box-shadow: 0 6px 18px rgba(126, 46, 58, 0.28);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--burgundy) 28%, transparent);
   cursor: pointer;
 }
 .oath {
@@ -239,7 +240,7 @@
   position: absolute;
   right: 0;
   bottom: -14px;
-  filter: drop-shadow(0 2px 3px rgba(58, 47, 42, 0.25));
+  filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--ink) 25%, transparent));
 }
 .signedAt {
   margin: 0.5rem 0 0;
@@ -272,11 +273,11 @@
   --accent-line: var(--gold-light);
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(184, 146, 90, 0.45);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
   border-radius: 20px;
   background-color: var(--paper);
   background-image: var(--paper-noise);
-  box-shadow: 0 8px 22px rgba(58, 47, 42, 0.1);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--ink) 10%, transparent);
   text-align: center;
 }
 .cardHead {
@@ -349,18 +350,6 @@
   color: var(--accent-text);
 }
 
-.figure {
-  margin: 0.5rem 0 0;
-  width: 100%;
-  max-width: 320px;
-}
-.figure img {
-  display: block;
-  width: 100%;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(58, 47, 42, 0.12);
-}
 
 /* Moodboard link under the chapters */
 .moodboard {
@@ -369,7 +358,7 @@
   gap: 0.35rem;
   margin-top: 0.5rem;
   padding: 1rem 1.25rem 0.9rem;
-  border: 1px dashed rgba(184, 146, 90, 0.7);
+  border: 1px dashed color-mix(in srgb, var(--gold) 70%, transparent);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.55);
   text-align: center;

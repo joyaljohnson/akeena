@@ -103,9 +103,9 @@ export function PenCursor({ containerRef, blocks, startedAt }: PenCursorProps) {
           >
             <defs>
               <linearGradient id="quillVane" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0" stopColor="#FBF7EF" />
-                <stop offset="0.55" stopColor="#F2DDD6" />
-                <stop offset="1" stopColor="#E2BDB5" />
+                <stop offset="0" stopColor="#F6FBF8" />
+                <stop offset="0.55" stopColor="#DCEFE6" />
+                <stop offset="1" stopColor="#B4D6C7" />
               </linearGradient>
             </defs>
             {/* a soft shadow drawn as part of the picture (no CSS filter, which can paint a box) */}
@@ -113,11 +113,11 @@ export function PenCursor({ containerRef, blocks, startedAt }: PenCursorProps) {
             <path
               d={VANE}
               fill="url(#quillVane)"
-              stroke="#B98580"
+              stroke="#6F9C8B"
               strokeWidth="0.6"
               strokeLinejoin="round"
             />
-            <g stroke="#B98580" strokeWidth="0.45" opacity="0.6" strokeLinecap="round">
+            <g stroke="#6F9C8B" strokeWidth="0.45" opacity="0.6" strokeLinecap="round">
               <path d="M21 11.3 L25.5 5.4" />
               <path d="M21 11.8 L23.5 16.4" />
               <path d="M28 10.4 L34 4.4" />
@@ -131,7 +131,7 @@ export function PenCursor({ containerRef, blocks, startedAt }: PenCursorProps) {
             <path
               d="M10 12 C 24 10.6 42 6 59 1.2"
               fill="none"
-              stroke="#C9A24E"
+              stroke="#4F8F7A"
               strokeWidth="1.2"
               strokeLinecap="round"
             />

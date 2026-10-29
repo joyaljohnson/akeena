@@ -1,5 +1,5 @@
 import type { LetterContent } from '../../lib/letterTypes';
-import { Flourish, FloralBullet } from '../Flourish';
+import { Flourish, HeartBullet } from '../Flourish';
 import styles from './pages.module.css';
 
 export function DutiesPage({ content }: { content: LetterContent }) {
@@ -11,7 +11,7 @@ export function DutiesPage({ content }: { content: LetterContent }) {
         <ul className={styles.duties}>
           {content.duties.items.map((item) => (
             <li key={item} className={styles.duty}>
-              <FloralBullet />
+              <HeartBullet />
               <span>{item}</span>
             </li>
           ))}

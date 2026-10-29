@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import styles from './PetalBurst.module.css';
 
-const COLOURS = ['#E6CBC3', '#D9BE8C', '#F0D2CB', '#C9A3A0', '#EAD7A8'];
+const COLOURS = ['#e4f1ea', '#a9c8b8', '#cfe6db', '#7fb5a0', '#f6fbf8'];
 const COUNT = 18;
 
-/** A soft burst of petals (ivory, blush, gold) lasting about a second. Skipped for reduced motion. */
+/** A soft burst of petals (white and greens) lasting about a second. Skipped for reduced motion. */
 export function PetalBurst() {
   return (
     <div className={styles.burst} aria-hidden="true">

@@ -171,7 +171,7 @@ function LetterFlow({ token }: { token: string }) {
     case 'letter': {
       const signed: SignedInfo | null = state.payload.signed;
       return (
-        <PhoneStage style={handwritingVars(state.payload.font) as CSSProperties}>
+        <PhoneStage palette="river" style={handwritingVars(state.payload.font) as CSSProperties}>
           <div className={state.resumed ? undefined : 'fade-in'} style={{ height: '100%' }}>
             {/* Plain paper while the pages arrive, so nothing from the envelope flashes back. */}
             <Suspense fallback={<div style={{ height: '100%', background: 'var(--paper)' }} />}>
