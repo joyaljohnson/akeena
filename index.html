@@ -6,7 +6,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <meta name="description" content="Something special is waiting for you." />
     <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#F7F1E6" />
+    <meta name="theme-color" content="#F2F8F4" />
     <title>You've got a letter 💌</title>
     <meta property="og:type" content="website" />
     <meta property="og:title" content="You've got a letter 💌" />
@@ -20,18 +20,15 @@
     <link rel="icon" type="image/png" href="%BASE_URL%favicon.png" />
     <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
     <style>
-      /* The envelope is drawn here so it appears before any script has loaded. It mirrors the
+      /* The first screen is drawn here so it appears before any script has loaded. It mirrors the
          app's own PIN screen (src/envelope), which replaces it the moment the app starts. */
-      #shell { display: flex; justify-content: center; min-height: 100dvh; background: radial-gradient(60% 40% at 20% 10%, rgba(230,203,195,.5), transparent 70%), radial-gradient(50% 40% at 85% 90%, rgba(169,188,208,.4), transparent 70%), #f7f1e6; }
+      #shell { display: flex; justify-content: center; min-height: 100dvh; background: #e4f0ea; }
       #shell[hidden] { display: none; }
-      #shell .col { width: 100%; max-width: 430px; height: 100dvh; background: #fbf7ef; box-shadow: 0 0 60px rgba(58,47,42,.12); display: grid; place-items: center; overflow: hidden; }
-      #shell .stack { display: grid; justify-items: center; gap: 2.25rem; }
-      #shell .env { position: relative; width: min(86vw, 340px); height: calc(min(86vw, 340px) * .671); filter: drop-shadow(0 14px 24px rgba(58,47,42,.18)); }
-      #shell .env { background: linear-gradient(135deg, #fdfaf3, #f0e8d8); border-radius: 4px; }
-      #shell .env img { position: absolute; inset: 0; width: 100%; height: 100%; }
-      #shell .env p { position: absolute; inset: 0; display: grid; place-items: center; margin: 0; font: 400 calc(1.7rem * 1.1)/1.3 'Parisienne', cursive; color: #3a2f2a; text-align: center; }
+      #shell .col { width: 100%; max-width: 430px; height: 100dvh; background: #f2f8f4; box-shadow: 0 0 60px rgba(34,51,45,.12); display: grid; place-items: center; overflow: hidden; }
+      #shell .stack { display: grid; justify-items: center; gap: .9rem; padding: 0 1.25rem; }
+      #shell h1 { margin: 0 0 1.4rem; font: 400 calc(2.5rem * 1.1)/1.3 'Parisienne', cursive; color: #22332d; text-align: center; }
       #shell .boxes { display: flex; gap: .6rem; min-height: 150px; align-items: flex-start; }
-      #shell .boxes i { width: 48px; height: 58px; border: 1px solid #b8925a; border-radius: 10px; background: rgba(255,255,255,.7); opacity: .55; box-shadow: 0 2px 8px rgba(58,47,42,.08); }
+      #shell .boxes i { width: 48px; height: 58px; border: 1px solid #4f8f7a; border-radius: 10px; background: rgba(255,255,255,.7); opacity: .55; box-shadow: 0 2px 8px rgba(34,51,45,.08); }
     </style>
   </head>
   <body>
@@ -39,10 +36,7 @@
       <div id="shell" aria-hidden="true" hidden>
         <div class="col">
           <div class="stack">
-            <div class="env">
-              <img id="shell-img" alt="" width="1000" height="671" decoding="async" />
-              <p>A letter for you</p>
-            </div>
+            <h1>A letter for you</h1>
             <div class="boxes"><i></i><i></i><i></i><i></i></div>
           </div>
         </div>
@@ -52,7 +46,6 @@
       // Only letter links get the envelope; the admin area and other pages start blank.
       if (/^#\/l\//.test(location.hash)) {
         document.getElementById('shell').hidden = false;
-        document.getElementById('shell-img').src = '%BASE_URL%img/envelope-front.webp';
       }
     </script>
     <noscript>This letter needs JavaScript to open. Please enable it and try again.</noscript>

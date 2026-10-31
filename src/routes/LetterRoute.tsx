@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { startMusic } from '../letter/music';
+import type { Recipient } from '../envelope/recipient';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
 import { PhoneStage } from '../letter/PhoneStage';
@@ -135,6 +136,16 @@ function LetterFlow({ token }: { token: string }) {
     if (music) startMusic(music);
   }, []);
 
+  const getRecipient = useCallback((): Recipient | null => {
+    const p = pending.current;
+    if (!p) return null;
+    return {
+      name: p.name,
+      from: `${p.content.bride.signOff} ${p.content.bride.firstName}`,
+      fontId: p.font,
+    };
+  }, []);
+
   const handOver = useCallback(() => {
     const payload = pending.current;
     if (payload) setState({ kind: 'letter', payload, resumed: false });
@@ -156,10 +167,11 @@ function LetterFlow({ token }: { token: string }) {
       return <UnavailableScreen />;
     case 'envelope':
       return (
-        <PhoneStage style={handwritingVars(DEFAULT_FONT_ID) as CSSProperties}>
+        <PhoneStage palette="river" style={handwritingVars(DEFAULT_FONT_ID) as CSSProperties}>
           <EnvelopeGate
             unlock={unlock}
             fontId={DEFAULT_FONT_ID}
+            getRecipient={getRecipient}
             initialLockedUntil={state.lockedUntil}
             onOpened={handOver}
             onSealTap={onSealTap}

@@ -1,9 +1,11 @@
 import { useState, type ReactNode } from 'react';
 import { EnvelopeScene, type UnlockResult } from './EnvelopeScene';
+import type { Recipient } from './recipient';
 
 type EnvelopeGateProps = {
   unlock: (pin: string) => Promise<UnlockResult>;
   fontId: string;
+  getRecipient: () => Recipient | null;
   initialLockedUntil?: string;
   onOpened?: () => void;
   onSealTap?: () => void;
@@ -15,6 +17,7 @@ type EnvelopeGateProps = {
 export function EnvelopeGate({
   unlock,
   fontId,
+  getRecipient,
   initialLockedUntil,
   onOpened,
   onSealTap,
@@ -26,6 +29,7 @@ export function EnvelopeGate({
       <EnvelopeScene
         unlock={unlock}
         fontId={fontId}
+        getRecipient={getRecipient}
         initialLockedUntil={initialLockedUntil}
         onSealTap={onSealTap}
         onOpened={() => {

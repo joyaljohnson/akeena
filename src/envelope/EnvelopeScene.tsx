@@ -9,10 +9,10 @@ import {
   type ReactNode,
 } from 'react';
 import { handwritingVars, loadHandwritingFont } from '../lib/handwriting';
-import { UnionStamp } from '../letter/UnionStamp';
-import { EnvelopeFrontArt } from './EnvelopeArt';
+import { Flourish } from '../letter/Flourish';
 import styles from './EnvelopeScene.module.css';
 import { PinEntry, type PinStatus } from './PinEntry';
+import type { Recipient } from './recipient';
 
 export type UnlockResult =
   | { status: 'ok' }
@@ -31,26 +31,21 @@ type EnvelopeSceneProps = {
   initialLockedUntil?: string;
   /** Handwriting font for "A letter for you" (the default font; the name is not known yet). */
   fontId: string;
+  /** Read after the PIN was right: the name and sender written on the envelope's front. */
+  getRecipient: () => Recipient | null;
 };
 
 // The animation code is a separate download that starts as soon as the PIN screen is idle.
 const loadStage = () => import('./EnvelopeStage');
 const EnvelopeStage = lazy(loadStage);
 
-/** The envelope front with a slot underneath for the PIN boxes. */
-function Front({ fontId, children }: { fontId: string; children: ReactNode }) {
+/** The first screen: a plain page with a greeting and the PIN boxes. The envelope comes later. */
+function PinScreen({ fontId, children }: { fontId: string; children: ReactNode }) {
   return (
     <div className={styles.scene} style={handwritingVars(fontId) as CSSProperties}>
-      <div className={styles.stageCol}>
-        <div className={styles.perspective}>
-          <div className={styles.flip}>
-            <div className={styles.envelope}>
-              <EnvelopeFrontArt className={styles.fill} />
-              <UnionStamp className={styles.stamp} size={64} />
-              <p className={`hand ${styles.greeting}`}>A letter for you</p>
-            </div>
-          </div>
-        </div>
+      <div className={styles.pinScreen}>
+        <h1 className={`hand ${styles.heading}`}>A letter for you</h1>
+        <Flourish className={styles.headingFlourish} />
         <div className={styles.pin}>{children}</div>
       </div>
     </div>
@@ -65,9 +60,9 @@ function Front({ fontId, children }: { fontId: string; children: ReactNode }) {
 export function EnvelopeLoading({ fontId }: { fontId: string }) {
   return (
     <div role="status" aria-label="Loading your letter" style={{ height: '100%' }}>
-      <Front fontId={fontId}>
+      <PinScreen fontId={fontId}>
         <PinEntry status={{ kind: 'checking' }} onSubmit={() => undefined} />
-      </Front>
+      </PinScreen>
     </div>
   );
 }
@@ -78,13 +73,14 @@ export function EnvelopeScene({
   onOpened,
   onSealTap,
   fontId,
+  getRecipient,
   initialLockedUntil,
 }: EnvelopeSceneProps) {
   const [pinStatus, setPinStatus] = useState<PinStatus>(
     initialLockedUntil ? { kind: 'locked', until: initialLockedUntil } : { kind: 'idle' },
   );
   const [pinKey, setPinKey] = useState(0);
-  const [animating, setAnimating] = useState(false);
+  const [recipient, setRecipient] = useState<Recipient | null>(null);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -119,24 +115,37 @@ export function EnvelopeScene({
         setPinStatus({ kind: 'error' });
       } else {
         // Make sure the animation code is here before the envelope turns over.
-        await loadStage().catch(() => undefined);
-        if (mounted.current) setAnimating(true);
+        const who = getRecipient() ?? { name: '', from: '' };
+        // Her handwriting for the name on the envelope, but never wait long for it.
+        await Promise.all([
+          loadStage().catch(() => undefined),
+          Promise.race([
+            loadHandwritingFont(who.fontId ?? fontId).catch(() => undefined),
+            new Promise((r) => setTimeout(r, 1500)),
+          ]),
+        ]);
+        if (mounted.current) setRecipient(who);
       }
     },
-    [unlock],
+    [unlock, getRecipient, fontId],
   );
 
-  if (animating) {
+  if (recipient) {
     return (
       <Suspense fallback={null}>
-        <EnvelopeStage fontId={fontId} onOpened={onOpened} onSealTap={onSealTap} />
+        <EnvelopeStage
+          fontId={fontId}
+          onOpened={onOpened}
+          onSealTap={onSealTap}
+          recipient={recipient}
+        />
       </Suspense>
     );
   }
 
   return (
-    <Front fontId={fontId}>
+    <PinScreen fontId={fontId}>
       <PinEntry key={pinKey} status={pinStatus} onSubmit={(p) => void submitPin(p)} />
-    </Front>
+    </PinScreen>
   );
 }

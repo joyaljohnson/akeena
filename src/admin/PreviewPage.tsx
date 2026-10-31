@@ -80,9 +80,21 @@ export function PreviewPage() {
           </Link>
         </span>
       </div>
-      <PhoneStage style={handwritingVars(replay ? DEFAULT_FONT_ID : data.fontId) as CSSProperties}>
+      <PhoneStage
+        palette="river"
+        style={handwritingVars(replay ? DEFAULT_FONT_ID : data.fontId) as CSSProperties}
+      >
         {replay > 0 ? (
-          <EnvelopeGate key={replay} unlock={unlock} fontId={DEFAULT_FONT_ID}>
+          <EnvelopeGate
+            key={replay}
+            unlock={unlock}
+            fontId={DEFAULT_FONT_ID}
+            getRecipient={() => ({
+              name: data.name,
+              from: `${data.content.bride.signOff} ${data.content.bride.firstName}`,
+              fontId: data.fontId,
+            })}
+          >
             {letter}
           </EnvelopeGate>
         ) : (

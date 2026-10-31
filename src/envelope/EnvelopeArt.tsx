@@ -101,12 +101,16 @@ export function FlapInnerArt({ className }: ArtProps) {
   );
 }
 
-/** The flower spray that sits at the flap's point, above the seal. */
-export function FlapFloralsArt({ className }: ArtProps) {
-  return <Picture name="flap-florals" className={className} />;
-}
-
-/** The blush wax seal with its embossed peony. */
+/** The blush wax seal with its embossed paw print (drawn, see public/img/paw-seal.svg). */
 export function WaxSealArt({ className }: ArtProps) {
-  return <Picture name="wax-seal" className={className} />;
+  return (
+    <img
+      className={className}
+      src={`${ART}paw-seal.svg`}
+      alt=""
+      aria-hidden="true"
+      draggable={false}
+      decoding="async"
+    />
+  );
 }

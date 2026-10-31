@@ -4,16 +4,19 @@ import { handwritingVars } from '../lib/handwriting';
 import { UnionStamp } from '../letter/UnionStamp';
 import {
   EnvelopeFrontArt,
-  FlapFloralsArt,
   FlapInnerArt,
   FlapOuterArt,
   InteriorArt,
   PocketArt,
   WaxSealArt,
 } from './EnvelopeArt';
+import type { Recipient } from './recipient';
 import styles from './EnvelopeScene.module.css';
 
-type Phase = 'flipping' | 'back' | 'opening' | 'opened';
+type Phase = 'flying' | 'front' | 'flipping' | 'back' | 'opening' | 'opened';
+
+/** How long the front (her name) stays in view before the envelope turns over. */
+const FRONT_HOLD_MS = 3000;
 
 type EnvelopeStageProps = {
   /** Called once the opening animation has finished and the letter should take over. */
@@ -21,6 +24,8 @@ type EnvelopeStageProps = {
   /** Called straight from the tap on the seal (the moment phones allow sound to start). */
   onSealTap?: () => void;
   fontId: string;
+  /** Who the letter is for, written on the front. */
+  recipient: Recipient;
 };
 
 type Controls = ReturnType<typeof animate>;
@@ -29,11 +34,22 @@ type Controls = ReturnType<typeof animate>;
  * The animated half of the envelope: the flip, the seal, the opening. It loads in the background
  * while she types her PIN, so the PIN screen itself stays light and appears sooner.
  */
-export default function EnvelopeStage({ onOpened, onSealTap, fontId }: EnvelopeStageProps) {
+export default function EnvelopeStage({
+  onOpened,
+  onSealTap,
+  fontId,
+  recipient,
+}: EnvelopeStageProps) {
   const reduce = useReducedMotion() ?? false;
-  const [phase, setPhase] = useState<Phase>('flipping');
+  const [phase, setPhase] = useState<Phase>('flying');
   const [face, setFace] = useState<'front' | 'back'>('front');
 
+  const fly = useMotionValue(reduce ? 1 : 0);
+  const flyScale = useTransform(fly, [0, 1], [0.05, 1]);
+  const flyX = useTransform(fly, [0, 1], ['38vw', '0vw']);
+  const flyY = useTransform(fly, [0, 1], ['-46vh', '0vh']);
+  const flyRotate = useTransform(fly, [0, 1], [-32, 0]);
+  const flyOpacity = useTransform(fly, [0, 0.22], [0, 1]);
   const flipRot = useMotionValue(0);
   const flapRot = useMotionValue(0);
   const crack = useMotionValue(0);
@@ -70,11 +86,26 @@ export default function EnvelopeStage({ onOpened, onSealTap, fontId }: EnvelopeS
     return c;
   }, []);
 
-  // The PIN was right, so turn the envelope over as soon as this stage appears. The flag keeps a
-  // cancelled run (React's development mode starts effects twice) from touching the screen.
+  // The PIN was right: the envelope flies in from far away, stays face up for a few seconds (a tap
+  // moves on sooner), then turns over to show the seal. The flag keeps a cancelled run (React's
+  // development mode starts effects twice) from touching the screen.
+  const endHold = useRef<(() => void) | null>(null);
   useEffect(() => {
     let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     void (async () => {
+      if (!reduce) {
+        await run(animate(fly, 1, { duration: 2.1, ease: [0.18, 0.9, 0.25, 1] }));
+        if (cancelled) return;
+      }
+      setPhase('front');
+      await new Promise<void>((resolve) => {
+        endHold.current = resolve;
+        timer = setTimeout(resolve, FRONT_HOLD_MS);
+      });
+      endHold.current = null;
+      if (cancelled) return;
+      setPhase('flipping');
       if (reduce) {
         setFace('back');
       } else {
@@ -89,8 +120,9 @@ export default function EnvelopeStage({ onOpened, onSealTap, fontId }: EnvelopeS
     })();
     return () => {
       cancelled = true;
+      clearTimeout(timer);
     };
-  }, [reduce, run, flipRot]);
+  }, [reduce, run, fly, flipRot]);
 
   const openEnvelope = useCallback(async () => {
     if (phase !== 'back') return;
@@ -116,6 +148,7 @@ export default function EnvelopeStage({ onOpened, onSealTap, fontId }: EnvelopeS
 
   // Tapping anywhere during the opening skips to the end.
   const skip = () => {
+    if (phase === 'front') endHold.current?.();
     if (phase !== 'opening' || skipped.current) return;
     skipped.current = true;
     active.current.forEach((c) => c.complete());
@@ -124,70 +157,78 @@ export default function EnvelopeStage({ onOpened, onSealTap, fontId }: EnvelopeS
   return (
     <motion.div
       className={styles.scene}
-      style={{ ...(handwritingVars(fontId) as CSSProperties), opacity: sceneOpacity }}
+      style={{
+        ...(handwritingVars(recipient.fontId ?? fontId) as CSSProperties),
+        opacity: sceneOpacity,
+      }}
       onPointerDown={skip}
     >
       <div className={styles.stageCol}>
-        <div className={styles.perspective}>
-          <motion.div className={styles.flip} style={{ rotateY: flipRot }}>
-            {face === 'front' ? (
-              <div className={`${styles.envelope} ${reduce ? styles.fadeIn : ''}`}>
-                <EnvelopeFrontArt className={styles.fill} />
-                <UnionStamp className={styles.stamp} size={64} />
-                <p className={`hand ${styles.greeting}`}>A letter for you</p>
-              </div>
-            ) : (
-              <div className={`${styles.envelope} ${styles.back} ${reduce ? styles.fadeIn : ''}`}>
-                <InteriorArt className={`${styles.fill} ${styles.zInterior}`} />
-                <motion.div className={styles.glowBack} style={{ opacity: glow }} />
-                <motion.div
-                  className={styles.letter}
-                  style={{ y: letterY, scale: letterScale }}
-                  aria-hidden="true"
-                >
-                  <span className={styles.letterRule} />
-                  <span className={styles.letterRule} />
-                  <span className={styles.letterRule} />
-                </motion.div>
-                <PocketArt className={`${styles.fill} ${styles.zPocket}`} />
-                <motion.div className={styles.glowFront} style={{ opacity: glowFront }} />
-                <motion.div className={styles.flap} style={{ rotateX: flapRot, zIndex: flapZ }}>
-                  <div className={`${styles.flapFace} ${styles.flapOuter}`}>
-                    <FlapOuterArt className={styles.fill} />
-                    <FlapFloralsArt className={styles.florals} />
-                    <motion.span
-                      className={styles.sealHalf}
-                      style={{ x: sealLeftX, rotate: sealLeftR, opacity: sealOpacity }}
-                    >
-                      <WaxSealArt className={`${styles.sealArt} ${styles.sealLeft}`} />
-                    </motion.span>
-                    <motion.span
-                      className={styles.sealHalf}
-                      style={{ x: sealRightX, rotate: sealRightR, opacity: sealOpacity }}
-                    >
-                      <WaxSealArt className={`${styles.sealArt} ${styles.sealRight}`} />
-                    </motion.span>
-                    <button
-                      type="button"
-                      className={`${styles.sealButton} ${phase === 'back' ? styles.pulse : ''}`}
-                      onClick={() => {
-                        onSealTap?.();
-                        void openEnvelope();
-                      }}
-                      disabled={phase !== 'back'}
-                      aria-label="Open your letter"
-                    />
+        <motion.div
+          className={styles.flyer}
+          style={{ x: flyX, y: flyY, scale: flyScale, rotate: flyRotate, opacity: flyOpacity }}
+        >
+          <div className={styles.perspective}>
+            <motion.div className={styles.flip} style={{ rotateY: flipRot }}>
+              {face === 'front' ? (
+                <div className={`${styles.envelope} ${reduce ? styles.fadeIn : ''}`}>
+                  <EnvelopeFrontArt className={styles.fill} />
+                  <UnionStamp className={styles.stamp} size={64} />
+                  <div className={styles.address}>
+                    <p className={`hand ${styles.recipient}`}>{recipient.name}</p>
+                    <p className={`hand ${styles.from}`}>{recipient.from}</p>
                   </div>
-                  <div className={`${styles.flapFace} ${styles.flapInner}`}>
-                    <FlapInnerArt className={styles.fill} />
-                  </div>
-                </motion.div>
-              </div>
-            )}
-          </motion.div>
-        </div>
-
-        <div className={`${styles.pin} ${styles.pinHidden}`} aria-hidden="true" />
+                </div>
+              ) : (
+                <div className={`${styles.envelope} ${styles.back} ${reduce ? styles.fadeIn : ''}`}>
+                  <InteriorArt className={`${styles.fill} ${styles.zInterior}`} />
+                  <motion.div className={styles.glowBack} style={{ opacity: glow }} />
+                  <motion.div
+                    className={styles.letter}
+                    style={{ y: letterY, scale: letterScale }}
+                    aria-hidden="true"
+                  >
+                    <span className={styles.letterRule} />
+                    <span className={styles.letterRule} />
+                    <span className={styles.letterRule} />
+                  </motion.div>
+                  <PocketArt className={`${styles.fill} ${styles.zPocket}`} />
+                  <motion.div className={styles.glowFront} style={{ opacity: glowFront }} />
+                  <motion.div className={styles.flap} style={{ rotateX: flapRot, zIndex: flapZ }}>
+                    <div className={`${styles.flapFace} ${styles.flapOuter}`}>
+                      <FlapOuterArt className={styles.fill} />
+                      <motion.span
+                        className={styles.sealHalf}
+                        style={{ x: sealLeftX, rotate: sealLeftR, opacity: sealOpacity }}
+                      >
+                        <WaxSealArt className={`${styles.sealArt} ${styles.sealLeft}`} />
+                      </motion.span>
+                      <motion.span
+                        className={styles.sealHalf}
+                        style={{ x: sealRightX, rotate: sealRightR, opacity: sealOpacity }}
+                      >
+                        <WaxSealArt className={`${styles.sealArt} ${styles.sealRight}`} />
+                      </motion.span>
+                      <button
+                        type="button"
+                        className={`${styles.sealButton} ${phase === 'back' ? styles.pulse : ''}`}
+                        onClick={() => {
+                          onSealTap?.();
+                          void openEnvelope();
+                        }}
+                        disabled={phase !== 'back'}
+                        aria-label="Open your letter"
+                      />
+                    </div>
+                    <div className={`${styles.flapFace} ${styles.flapInner}`}>
+                      <FlapInnerArt className={styles.fill} />
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
     </motion.div>
   );

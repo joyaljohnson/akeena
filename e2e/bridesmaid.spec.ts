@@ -387,3 +387,36 @@ test('chapters with a named colour show colour chips with their names', async ({
   await expect(list.first().getByText('Ivory')).toBeVisible();
   expect(await list.first().locator('li').count()).toBeGreaterThanOrEqual(8);
 });
+
+test('after the PIN the envelope flies in with her name, then turns over to the seal', async ({
+  page,
+}) => {
+  await mockBackend(page);
+  await page.goto(link);
+  // First screen: a plain greeting and the PIN boxes, no envelope yet.
+  await expect(page.getByText('A letter for you')).toBeVisible();
+  await expect(page.locator('img[src*="envelope"]')).toHaveCount(0);
+  await enterPin(page, PIN);
+  // The front: her name, who it is from, and the verse stamp.
+  await expect(page.getByText('Riya', { exact: true })).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText('With love, Bride')).toBeVisible();
+  await expect(page.getByRole('img', { name: /Mark 10:9/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Open your letter' })).toHaveCount(0);
+  // About three seconds later it turns over and the seal can be tapped.
+  await expect(page.getByRole('button', { name: 'Open your letter' })).toBeEnabled({
+    timeout: 10_000,
+  });
+  await expect(page.getByText('Riya', { exact: true })).toHaveCount(0);
+});
+
+test('tapping the envelope front turns it over without waiting', async ({ page }) => {
+  await mockBackend(page);
+  await page.goto(link);
+  await enterPin(page, PIN);
+  await expect(page.getByText('Riya', { exact: true })).toBeVisible({ timeout: 10_000 });
+  await page.waitForTimeout(2500); // the fly-in has landed
+  await page.mouse.click(195, 400);
+  await expect(page.getByRole('button', { name: 'Open your letter' })).toBeEnabled({
+    timeout: 3000,
+  });
+});

@@ -13,7 +13,30 @@
 .stageCol {
   display: grid;
   justify-items: center;
-  gap: 2.25rem;
+}
+
+/* The first screen: a greeting and the PIN boxes on plain paper. */
+.pinScreen {
+  display: grid;
+  justify-items: center;
+  gap: 0.9rem;
+  padding: 0 1.25rem;
+}
+.heading {
+  margin: 0;
+  --hand-size: 2.5rem;
+  color: var(--ink);
+  text-align: center;
+  font-weight: 400;
+}
+.headingFlourish {
+  color: var(--gold);
+  margin-bottom: 1.1rem;
+}
+
+/* The envelope flies in from far away; the motion is set from the stage. */
+.flyer {
+  will-change: transform, opacity;
 }
 
 .perspective {
@@ -47,22 +70,33 @@
   }
 }
 
-/* Front */
+/* Front: his or her name, who it is from, and the verse stamp at the top right */
 .stamp {
   position: absolute;
   top: 6%;
   right: 4%;
   filter: drop-shadow(0 2px 3px rgba(58, 47, 42, 0.22));
 }
-.greeting {
+.address {
   position: absolute;
-  inset: 0;
+  inset: 22% 8% 10% 8%;
   display: grid;
-  place-items: center;
-  margin: 0;
-  --hand-size: 1.7rem;
-  color: var(--ink);
+  align-content: center;
+  justify-items: center;
+  gap: 0.45rem;
   text-align: center;
+}
+.recipient {
+  margin: 0;
+  --hand-size: 2rem;
+  color: var(--ink);
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+.from {
+  margin: 0;
+  --hand-size: 1.2rem;
+  color: var(--ink-soft);
 }
 
 /* Back */
@@ -151,17 +185,6 @@
   transform: rotateY(180deg);
 }
 
-.florals {
-  position: absolute;
-  left: 50%;
-  bottom: calc(var(--seal) * 0.42);
-  width: 66%;
-  height: auto;
-  transform: translateX(-50%);
-  pointer-events: none;
-  filter: drop-shadow(0 3px 4px rgba(58, 47, 42, 0.22));
-}
-
 .sealHalf {
   position: absolute;
   left: 50%;
@@ -214,11 +237,6 @@
 
 .pin {
   min-height: 150px;
-  transition: opacity 0.25s ease;
-}
-.pinHidden {
-  opacity: 0;
-  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

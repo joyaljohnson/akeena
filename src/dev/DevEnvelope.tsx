@@ -31,8 +31,16 @@ function Preview({ fixture }: { fixture: LetterData }) {
   }, []);
 
   return (
-    <PhoneStage style={handwritingVars(DEFAULT_FONT_ID) as CSSProperties}>
-      <EnvelopeGate unlock={unlock} fontId={DEFAULT_FONT_ID}>
+    <PhoneStage palette="river" style={handwritingVars(DEFAULT_FONT_ID) as CSSProperties}>
+      <EnvelopeGate
+        unlock={unlock}
+        fontId={DEFAULT_FONT_ID}
+        getRecipient={() => ({
+          name: fixture.name,
+          from: `${fixture.content.bride.signOff} ${fixture.content.bride.firstName}`,
+          fontId: fixture.fontId,
+        })}
+      >
         <div style={{ height: '100%', ...(handwritingVars(fixture.fontId) as CSSProperties) }}>
           <LetterContent data={fixture} />
         </div>
