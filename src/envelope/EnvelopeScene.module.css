@@ -103,7 +103,7 @@
 .back {
   /* The flap's point reaches 73.8% of the way down the envelope picture. */
   --flap-h: calc(var(--eh) * 0.7376);
-  --seal: calc(var(--ew) * 0.21);
+  --seal: calc(var(--ew) * 0.28);
   perspective: 900px;
 }
 .zInterior {
