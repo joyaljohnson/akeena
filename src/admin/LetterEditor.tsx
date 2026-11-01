@@ -493,6 +493,33 @@ function Editor({ template }: { template: TemplateRecord }) {
       </section>
 
       <section className={`${styles.card} ${styles.section}`}>
+        <h2 className={styles.sectionTitle}>Pet credits</h2>
+        <p className={styles.hint}>
+          A small line under the wax seal and another under the signature. Switch off to hide both.
+        </p>
+        <Field label="Show the pet credits">
+          {(c) => (
+            <select
+              {...c}
+              className={styles.select}
+              value={content.pet?.enabled ? 'on' : 'off'}
+              onChange={(e) => set(['pet', 'enabled'], e.target.value === 'on')}
+            >
+              <option value="on">On</option>
+              <option value="off">Off</option>
+            </select>
+          )}
+        </Field>
+        {text('Name', ['pet', 'name'])}
+        {text('Line under the seal', ['pet', 'sealLine'], {
+          hint: 'Use {pet} where the name goes.',
+        })}
+        {text('Line under the signature', ['pet', 'witnessLine'], {
+          hint: 'Use {pet} where the name goes.',
+        })}
+      </section>
+
+      <section className={`${styles.card} ${styles.section}`}>
         <h2 className={styles.sectionTitle}>Ending</h2>
         {text('Closing quote', ['closingQuote'], { multiline: true })}
         {text('Question', ['acceptance', 'question'])}

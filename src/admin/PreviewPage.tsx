@@ -1,5 +1,6 @@
 import { useCallback, useState, type CSSProperties } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { makeRecipient } from '../envelope/recipient';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
 import { LetterContent } from '../letter/Letter';
@@ -89,11 +90,7 @@ export function PreviewPage() {
             key={replay}
             unlock={unlock}
             fontId={DEFAULT_FONT_ID}
-            getRecipient={() => ({
-              name: data.name,
-              from: `${data.content.bride.signOff} ${data.content.bride.firstName}`,
-              fontId: data.fontId,
-            })}
+            getRecipient={() => makeRecipient(data.name, data.content, data.fontId)}
           >
             {letter}
           </EnvelopeGate>

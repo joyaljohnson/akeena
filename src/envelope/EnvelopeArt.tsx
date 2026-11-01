@@ -101,16 +101,7 @@ export function FlapInnerArt({ className }: ArtProps) {
   );
 }
 
-/** The blush wax seal with its embossed paw print (drawn, see public/img/paw-seal.svg). */
+/** The blush wax seal with Loki's face (public/img/wax-seal.webp, cut out by scripts/process-art.mjs). */
 export function WaxSealArt({ className }: ArtProps) {
-  return (
-    <img
-      className={className}
-      src={`${ART}paw-seal.svg`}
-      alt=""
-      aria-hidden="true"
-      draggable={false}
-      decoding="async"
-    />
-  );
+  return <Picture name="wax-seal" className={className} />;
 }

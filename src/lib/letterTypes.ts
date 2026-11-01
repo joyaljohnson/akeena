@@ -76,6 +76,15 @@ export const letterContentSchema = z.object({
   }),
   oath: required('the oath'),
   /** An optional link under the chapters, such as a Pinterest board for outfit ideas. */
+  /** The family dog's two small credits (seal and witness). Absent or disabled: neither shows. */
+  pet: z
+    .object({
+      name: required('the pet’s name'),
+      sealLine: required('the line under the seal'),
+      witnessLine: required('the witness line'),
+      enabled: z.boolean(),
+    })
+    .optional(),
   moodboard: z
     .object({
       label: required('a label for the link'),

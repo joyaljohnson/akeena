@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { sample } from '../src/dev/sampleContent';
 import {
   disableShare,
   enterPin,
@@ -111,6 +112,7 @@ test('the whole journey: PIN, envelope, letter, sign, download @responsive', asy
   await expect(seal).toBeEnabled();
   await seal.click();
   await expect(page.getByText('✅ Signed by Riya K · 3 Nov 2026, 3:05 pm')).toBeVisible();
+  await expect(page.getByText('Witnessed by Loki')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Seal it' })).toHaveCount(0);
 
   const signCall = calls.find((c) => c.fn === 'sign_letter');
@@ -149,6 +151,7 @@ test('a signed letter opens at the acceptance page showing her signature', async
   });
   await openLetter(page);
   await expect(page.getByText('✅ Signed by Riya K · 3 Nov 2026, 3:05 pm')).toBeInViewport();
+  await expect(page.getByText('Witnessed by Loki')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Download your letter' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Yes, I do!' })).toHaveCount(0);
 });
@@ -419,4 +422,42 @@ test('tapping the envelope front turns it over without waiting', async ({ page }
   await expect(page.getByRole('button', { name: 'Open your letter' })).toBeEnabled({
     timeout: 3000,
   });
+});
+
+test("Loki's seal: the line under it shows, the seal lifts off whole, and the letter opens", async ({
+  page,
+}) => {
+  await mockBackend(page);
+  await page.goto(link);
+  await enterPin(page, PIN);
+  const seal = page.getByRole('button', { name: "Tap Loki's seal to open your letter" });
+  await expect(seal).toBeEnabled({ timeout: 10_000 });
+  await expect(page.getByText('Sealed by Loki')).toBeVisible();
+  await seal.click();
+  await expect(page.getByRole('heading', { name: /Riya, would you be my bridesmaid/ })).toBeVisible(
+    { timeout: 15_000 },
+  );
+});
+
+test('with the pet switched off there is no Loki line and the seal keeps a plain name', async ({
+  page,
+}) => {
+  const off = { ...sample.content, pet: { ...sample.content.pet!, enabled: false } };
+  await mockBackend(page, {
+    unlock: () => ({
+      status: 'ok',
+      letter: letter({ content: off, signed: { at: SIGNED_AT, name: 'Riya K' } }),
+    }),
+  });
+  await page.goto(link);
+  await enterPin(page, PIN);
+  await expect(page.getByRole('button', { name: 'Open your letter', exact: true })).toBeEnabled({
+    timeout: 10_000,
+  });
+  await expect(page.getByText('Sealed by Loki')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Open your letter', exact: true }).click();
+  await expect(page.getByText('✅ Signed by Riya K · 3 Nov 2026, 3:05 pm')).toBeInViewport({
+    timeout: 15_000,
+  });
+  await expect(page.getByText('Witnessed by')).toHaveCount(0);
 });

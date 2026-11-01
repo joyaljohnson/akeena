@@ -8,6 +8,8 @@ import {
   MAX_NAME_LENGTH,
   type SignOutcome,
 } from '../../lib/signing';
+import { petLines } from '../../lib/pet';
+import { PawIcon } from '../PawIcon';
 import { PetalBurst } from '../PetalBurst';
 import { UnionStamp } from '../UnionStamp';
 import styles from './pages.module.css';
@@ -75,6 +77,7 @@ export function AcceptancePage({
   const inputId = useId();
 
   const final = signed ?? justSigned;
+  const pet = petLines(content);
   const animateStamp = justSigned !== null && !exportMode;
 
   const accept = () => {
@@ -150,6 +153,16 @@ export function AcceptancePage({
               >
                 ✅ Signed by {final.name} · {formatSignedAt(final.at)}
               </motion.p>
+              {pet && (
+                <motion.p
+                  className={`hand ${styles.witness}`}
+                  initial={animateStamp ? { opacity: 0 } : false}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: animateStamp ? 1.2 : 0, duration: 0.5 }}
+                >
+                  {pet.witnessLine} <PawIcon />
+                </motion.p>
+              )}
             </div>
             {!exportMode && downloadSlot && (
               <motion.div

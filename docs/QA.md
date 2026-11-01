@@ -91,3 +91,13 @@ delete her afterwards (a signed test letter can only be removed by deleting it).
 - [ ] Delete all test bridesmaids.
 - [ ] Confirm the three open spellings and the two church times from Akeena in the shared letter editor.
 - [ ] Check `https://<site>/#/admin` asks for a sign-in, and that sign-ups are off in Supabase.
+
+## Loki's credits (seal line and witness line)
+
+On iPhone Safari and Android Chrome:
+
+- Envelope back: "Sealed by Loki" with a small paw sits under the seal and is easy to read over the vine border.
+- Tap the seal: it wiggles, lifts off whole, fades; the "Sealed by" line fades with it; then the flap opens.
+- After signing: "Witnessed by Loki" with the paw fades in under the signed line (after the stamp lands).
+- Download the picture: open the PNG and check "Witnessed by Loki" and the paw appear under the signed line (the paw must be a drawn icon, not a blank box).
+- Admin, Shared letter, Pet credits: switching Off hides both lines and the seal's label becomes plain "Open your letter".

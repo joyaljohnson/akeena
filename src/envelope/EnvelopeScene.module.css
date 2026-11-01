@@ -103,7 +103,7 @@
 .back {
   /* The flap's point reaches 73.8% of the way down the envelope picture. */
   --flap-h: calc(var(--eh) * 0.7376);
-  --seal: calc(var(--ew) * 0.28);
+  --seal: calc(var(--ew) * 0.26);
   perspective: 900px;
 }
 .zInterior {
@@ -185,7 +185,8 @@
   transform: rotateY(180deg);
 }
 
-.sealHalf {
+.sealWrap,
+.sealShadow {
   position: absolute;
   left: 50%;
   bottom: calc(var(--seal) * -0.18);
@@ -193,7 +194,13 @@
   height: var(--seal);
   margin-left: calc(var(--seal) / -2);
   pointer-events: none;
-  filter: drop-shadow(0 3px 5px rgba(58, 47, 42, 0.3));
+}
+.sealWrap {
+  filter: drop-shadow(0 3px 5px color-mix(in srgb, var(--ink) 30%, transparent));
+}
+.sealShadow {
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(40, 30, 26, 0.45), transparent);
 }
 .sealArt {
   display: block;
@@ -201,11 +208,22 @@
   height: 100%;
   object-fit: contain;
 }
-.sealLeft {
-  clip-path: polygon(0 0, 52% 0, 46% 22%, 54% 40%, 47% 62%, 53% 80%, 49% 100%, 0 100%);
-}
-.sealRight {
-  clip-path: polygon(52% 0, 100% 0, 100% 100%, 49% 100%, 53% 80%, 47% 62%, 54% 40%, 46% 22%);
+
+/* "Sealed by Loki" under the seal, over the lower part of the envelope back */
+.sealedBy {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  top: calc(var(--flap-h) + var(--seal) * 0.2);
+  margin: 0;
+  --hand-size: 0.95rem;
+  text-align: center;
+  color: var(--gold);
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.9),
+    0 0 2px rgba(255, 255, 255, 0.8);
+  pointer-events: none;
 }
 
 .sealButton {

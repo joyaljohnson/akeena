@@ -50,15 +50,26 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 - Optional moodboard link (content.moodboard: label + url) shows as a card after the chapters; not in the downloaded picture; edited in the admin under Shared letter. The real link lives only in the private fixture/letter-content.md and the database, never in git; check-leaks watches pin.it links.
 
 ## Cover film and music (Oct 2026)
+
 - Optional `cover.background {videoUrl, posterUrl, musicUrl?}` in content. Personal media is never committed; see `docs/COVER-MEDIA.md`.
 - Music is `src/letter/music.ts` (one Audio, started from the seal tap via `onSealTap` threaded EnvelopeGate -> Scene -> Stage); `SoundButton` toggles it. `CoverBackground` only shows in the real letter (`showBackground`), never in export or admin preview.
 - E2E stubs media at `media.example.test`; a11y scans use `preload:false` (axe otherwise waits 10 s per scan on the stub video).
 - First opening only (`writeCover`): 3 s after the cover writing ends (or is skipped) the scroller eases down to the duties (`autoAdvanceAfterMs` in LetterScroll); any touch, wheel or key cancels it; skipped for reduced motion. Chapter one opens by itself once all four cards have been fully on screen for 2 s, unless she has opened a card (no instruction text, per the rules above).
 
 ## River-green palette (Oct 2026)
+
 - The letter (not the envelope) uses `data-palette="river"` (tokens.css): mint paper `paper-river.webp` (made by process-art.mjs), sea-green accents sampled from the cover film, forest-green `--burgundy` for buttons and sign-off. All four chapter themes are greens. Letter CSS uses `color-mix` on tokens instead of hard-coded rgba. Export root carries the same attribute (with `--paper-noise: none`).
 - Duties use a heart bullet. The shades-of-white/gold pictures are gone; "The colour" shows named colour chips instead (`chapter.swatches` = [{name,hex}], edited as "Name #HEX" lines in the admin; pearl and gold themes have built-in ten-shade defaults in ChaptersPage). `colourImage` is removed from the schema.
 
 ## Opening sequence (Oct 2026)
+
 - First screen is plain mint paper: "A letter for you" in handwriting, then the PIN boxes (no envelope). index.html draws the same thing before any script. After the right PIN the envelope flies in from far away (EnvelopeStage: `fly` motion value), front shows her name (her chosen handwriting), "With love, Akeena" and the Mark 10:9 stamp top right; after 3 s (a tap sooner) it flips to the back with the paw-print seal; tapping the seal opens the letter. Recipient comes from `getRecipient` (EnvelopeGate -> Scene -> Stage), read only after the PIN succeeded, so nothing private shows earlier.
 - The seal is drawn and is itself paw-shaped: `public/img/paw-seal.svg` (no flower; the flap florals and corner art are removed). The back picture's own embossed vine border is part of the photograph and stays. The whole flow uses `data-palette="river"`; the envelope pictures stay cream.
+
+## Loki (Nov 2026)
+
+- Seal art is Loki's wax seal (`assets-src/wax-seal.png` -> `public/img/wax-seal.webp` via process-art.mjs). It lifts off whole on tap (wiggle, lift, fade; `peel`/`wiggle` motion values in EnvelopeStage); the old split-in-half crack is gone. `navigator.vibrate(15)` on tap. Reduced motion: seal just fades.
+- Content `pet {name, sealLine, witnessLine, enabled}` (optional; absent = off so old signed snapshots are unchanged). `petLines()` in `src/lib/pet.ts` fills {pet}. "Sealed by Loki" sits under the seal; "Witnessed by Loki" under the signed line (also in export, revisits, admin preview). Migration `20261102000000_pet_block.sql` backfills the template row. Admin: Shared letter -> Pet credits.
+- `PawIcon` is an inline SVG (never the emoji). Favicon/apple icon: gold paw on ivory (process-art.mjs).
+- The seal button's accessible name is "Tap Loki's seal to open your letter" (pet on) or "Open your letter". There is deliberately NO visible "Tap..." prompt under the envelope: the standing rule is no instruction text in the letter flow.
+- Never commit the original photo of Loki; only the generated seal art ships.

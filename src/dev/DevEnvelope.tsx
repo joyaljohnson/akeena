@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react';
+import { makeRecipient } from '../envelope/recipient';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
 import { LetterContent } from '../letter/Letter';
@@ -35,11 +36,7 @@ function Preview({ fixture }: { fixture: LetterData }) {
       <EnvelopeGate
         unlock={unlock}
         fontId={DEFAULT_FONT_ID}
-        getRecipient={() => ({
-          name: fixture.name,
-          from: `${fixture.content.bride.signOff} ${fixture.content.bride.firstName}`,
-          fontId: fixture.fontId,
-        })}
+        getRecipient={() => makeRecipient(fixture.name, fixture.content, fixture.fontId)}
       >
         <div style={{ height: '100%', ...(handwritingVars(fixture.fontId) as CSSProperties) }}>
           <LetterContent data={fixture} />

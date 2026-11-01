@@ -1,6 +1,7 @@
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { handwritingVars } from '../lib/handwriting';
+import { PawIcon } from '../letter/PawIcon';
 import { UnionStamp } from '../letter/UnionStamp';
 import {
   EnvelopeFrontArt,
@@ -52,7 +53,8 @@ export default function EnvelopeStage({
   const flyOpacity = useTransform(fly, [0, 0.22], [0, 1]);
   const flipRot = useMotionValue(0);
   const flapRot = useMotionValue(0);
-  const crack = useMotionValue(0);
+  const wiggle = useMotionValue(0);
+  const peel = useMotionValue(0);
   const glow = useMotionValue(0);
   const lift = useMotionValue(0);
   const letterScale = useMotionValue(1);
@@ -60,11 +62,14 @@ export default function EnvelopeStage({
 
   const flapZ = useTransform(flapRot, (v) => (v > 90 ? 0 : 4));
   const letterY = useTransform(lift, [0, 1], ['0%', '-66%']);
-  const sealLeftX = useTransform(crack, [0, 1], [0, -12]);
-  const sealRightX = useTransform(crack, [0, 1], [0, 12]);
-  const sealLeftR = useTransform(crack, [0, 1], [0, -14]);
-  const sealRightR = useTransform(crack, [0, 1], [0, 14]);
-  const sealOpacity = useTransform(crack, [0, 0.7, 1], [1, 1, 0]);
+  const sealY = useTransform(peel, [0, 1], [0, -24]);
+  const sealScale = useTransform(peel, [0, 1], [1, 1.12]);
+  const sealTilt = useTransform([wiggle, peel], ([w, p]: number[]) => (w ?? 0) + (p ?? 0) * -8);
+  const sealOpacity = useTransform(peel, [0, 0.55, 1], [1, 1, 0]);
+  // The shadow grows beneath the seal as it lifts away from the paper, then goes with it.
+  const shadowOpacity = useTransform(peel, [0, 0.5, 1], [0, 0.55, 0]);
+  const shadowScale = useTransform(peel, [0, 1], [0.8, 1.35]);
+  const shadowY = useTransform(peel, [0, 1], [0, 14]);
   const glowFront = useTransform(glow, (v) => v * 0.55);
 
   const active = useRef<Controls[]>([]);
@@ -128,14 +133,18 @@ export default function EnvelopeStage({
     if (phase !== 'back') return;
     setPhase('opening');
     if (reduce) {
+      // No wiggle or lift: the seal simply fades out, then the letter takes over.
+      await run(animate(peel, 1, { duration: 0.3 }));
       await run(animate(sceneOpacity, 0, { duration: 0.45 }));
     } else {
-      await run(animate(crack, 1, { duration: 0.5, ease: 'easeOut' }));
+      // A small wiggle, then the seal lifts off the flap whole and fades away.
+      await run(animate(wiggle, [0, 4, -4, 4, -4, 0], { duration: 0.3, ease: 'linear' }));
+      await run(animate(peel, 1, { duration: 0.55, ease: [0.3, 0.1, 0.3, 1] }));
       await Promise.all([
-        run(animate(flapRot, 180, { duration: 0.95, ease: [0.45, 0.05, 0.2, 1] })),
+        run(animate(flapRot, 180, { duration: 0.9, ease: [0.45, 0.05, 0.2, 1] })),
         run(animate(glow, 1, { duration: 0.9, delay: 0.45 })),
       ]);
-      await run(animate(lift, 1, { duration: 1, ease: [0.22, 1, 0.36, 1] }));
+      await run(animate(lift, 1, { duration: 0.9, ease: [0.22, 1, 0.36, 1] }));
       await Promise.all([
         run(animate(letterScale, 1.12, { duration: 0.7 })),
         run(animate(sceneOpacity, 0, { duration: 0.7, delay: 0.15 })),
@@ -144,7 +153,7 @@ export default function EnvelopeStage({
     if (!mounted.current) return;
     setPhase('opened');
     onOpened();
-  }, [phase, reduce, run, crack, flapRot, glow, lift, letterScale, sceneOpacity, onOpened]);
+  }, [phase, reduce, run, wiggle, peel, flapRot, glow, lift, letterScale, sceneOpacity, onOpened]);
 
   // Tapping anywhere during the opening skips to the end.
   const skip = () => {
@@ -193,31 +202,43 @@ export default function EnvelopeStage({
                     <span className={styles.letterRule} />
                   </motion.div>
                   <PocketArt className={`${styles.fill} ${styles.zPocket}`} />
+                  {recipient.sealLine && (
+                    <motion.p
+                      className={`hand ${styles.sealedBy}`}
+                      style={{ opacity: sealOpacity }}
+                    >
+                      {recipient.sealLine} <PawIcon />
+                    </motion.p>
+                  )}
                   <motion.div className={styles.glowFront} style={{ opacity: glowFront }} />
                   <motion.div className={styles.flap} style={{ rotateX: flapRot, zIndex: flapZ }}>
                     <div className={`${styles.flapFace} ${styles.flapOuter}`}>
                       <FlapOuterArt className={styles.fill} />
                       <motion.span
-                        className={styles.sealHalf}
-                        style={{ x: sealLeftX, rotate: sealLeftR, opacity: sealOpacity }}
-                      >
-                        <WaxSealArt className={`${styles.sealArt} ${styles.sealLeft}`} />
-                      </motion.span>
+                        className={styles.sealShadow}
+                        style={{ opacity: shadowOpacity, scale: shadowScale, y: shadowY }}
+                      />
                       <motion.span
-                        className={styles.sealHalf}
-                        style={{ x: sealRightX, rotate: sealRightR, opacity: sealOpacity }}
+                        className={styles.sealWrap}
+                        style={{
+                          y: sealY,
+                          scale: sealScale,
+                          rotate: sealTilt,
+                          opacity: sealOpacity,
+                        }}
                       >
-                        <WaxSealArt className={`${styles.sealArt} ${styles.sealRight}`} />
+                        <WaxSealArt className={styles.sealArt} />
                       </motion.span>
                       <button
                         type="button"
                         className={`${styles.sealButton} ${phase === 'back' ? styles.pulse : ''}`}
                         onClick={() => {
                           onSealTap?.();
+                          navigator.vibrate?.(15);
                           void openEnvelope();
                         }}
                         disabled={phase !== 'back'}
-                        aria-label="Open your letter"
+                        aria-label={recipient.sealLabel}
                       />
                     </div>
                     <div className={`${styles.flapFace} ${styles.flapInner}`}>

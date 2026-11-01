@@ -99,6 +99,12 @@ export const sample: LetterData = {
     closingQuote: 'No take-backs, no excuses. You are officially stuck with me!',
     acceptance: { question: 'Will you accept?', yesLabel: 'Yes, I do!' },
     oath: 'I solemnly swear I am up to no good (and ready to celebrate)',
+    pet: {
+      name: 'Loki',
+      sealLine: 'Sealed by {pet}',
+      witnessLine: 'Witnessed by {pet}',
+      enabled: true,
+    },
     moodboard: { label: 'Join my sample board', url: 'https://moodboard.example.test/board' },
   },
 };

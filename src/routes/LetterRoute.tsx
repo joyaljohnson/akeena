@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useParams } from 'react-router-dom';
 import { startMusic } from '../letter/music';
-import type { Recipient } from '../envelope/recipient';
+import { makeRecipient, type Recipient } from '../envelope/recipient';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
 import { PhoneStage } from '../letter/PhoneStage';
@@ -139,11 +139,7 @@ function LetterFlow({ token }: { token: string }) {
   const getRecipient = useCallback((): Recipient | null => {
     const p = pending.current;
     if (!p) return null;
-    return {
-      name: p.name,
-      from: `${p.content.bride.signOff} ${p.content.bride.firstName}`,
-      fontId: p.font,
-    };
+    return makeRecipient(p.name, p.content, p.font);
   }, []);
 
   const handOver = useCallback(() => {

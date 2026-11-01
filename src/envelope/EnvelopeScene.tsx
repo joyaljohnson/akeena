@@ -115,7 +115,7 @@ export function EnvelopeScene({
         setPinStatus({ kind: 'error' });
       } else {
         // Make sure the animation code is here before the envelope turns over.
-        const who = getRecipient() ?? { name: '', from: '' };
+        const who = getRecipient() ?? { name: '', from: '', sealLabel: 'Open your letter' };
         // Her handwriting for the name on the envelope, but never wait long for it.
         await Promise.all([
           loadStage().catch(() => undefined),
