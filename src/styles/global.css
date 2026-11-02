@@ -34,7 +34,8 @@ body {
 /* Handwriting: font, size scale and line-height come from handwritingVars() on an ancestor. */
 .hand {
   font-family: var(--hw-family, 'Parisienne', cursive);
-  font-weight: 400;
+  font-style: var(--hw-style, normal);
+  font-weight: var(--hw-weight, 400);
   font-size: calc(var(--hand-size, 1.6rem) * var(--hw-scale, 1.1));
   line-height: var(--hw-lh, 1.3);
   overflow-wrap: anywhere;

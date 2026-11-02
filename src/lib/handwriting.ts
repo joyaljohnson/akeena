@@ -7,6 +7,10 @@ type HandwritingFont = {
   /** Multiplier on the base script size; script fonts differ wildly in x-height. */
   scale: number;
   lineHeight: number;
+  /** Serif and sans choices: plain or italic type instead of a script. */
+  generic?: 'serif' | 'sans-serif';
+  style?: 'italic';
+  weight?: number;
   load: () => Promise<unknown>;
 };
 
@@ -75,6 +79,86 @@ export const HANDWRITING_FONTS: readonly HandwritingFont[] = [
     lineHeight: 1.7,
     load: () => import('@fontsource/homemade-apple/400.css'),
   },
+  {
+    id: 'cormorant-italic',
+    generic: 'serif',
+    label: 'Cormorant (serif)',
+    family: 'Cormorant Garamond',
+    scale: 1.0,
+    lineHeight: 1.4,
+    style: 'italic',
+    weight: 500,
+    load: () => import('@fontsource/cormorant-garamond/500-italic.css'),
+  },
+  {
+    id: 'playfair-italic',
+    generic: 'serif',
+    label: 'Playfair (serif)',
+    family: 'Playfair Display',
+    scale: 0.85,
+    lineHeight: 1.45,
+    style: 'italic',
+    load: () => import('@fontsource/playfair-display/400-italic.css'),
+  },
+  {
+    id: 'eb-garamond-italic',
+    generic: 'serif',
+    label: 'Garamond (serif)',
+    family: 'EB Garamond',
+    scale: 1.0,
+    lineHeight: 1.45,
+    style: 'italic',
+    load: () => import('@fontsource/eb-garamond/400-italic.css'),
+  },
+  {
+    id: 'lora-italic',
+    generic: 'serif',
+    label: 'Lora (serif)',
+    family: 'Lora',
+    scale: 0.9,
+    lineHeight: 1.5,
+    style: 'italic',
+    load: () => import('@fontsource/lora/400-italic.css'),
+  },
+  {
+    id: 'josefin-sans',
+    generic: 'sans-serif',
+    label: 'Josefin (sans)',
+    family: 'Josefin Sans',
+    scale: 0.9,
+    lineHeight: 1.5,
+    weight: 300,
+    load: () => import('@fontsource/josefin-sans/300.css'),
+  },
+  {
+    id: 'montserrat-light',
+    generic: 'sans-serif',
+    label: 'Montserrat (sans)',
+    family: 'Montserrat',
+    scale: 0.82,
+    lineHeight: 1.55,
+    weight: 300,
+    load: () => import('@fontsource/montserrat/300.css'),
+  },
+  {
+    id: 'nunito',
+    generic: 'sans-serif',
+    label: 'Nunito (sans)',
+    family: 'Nunito',
+    scale: 0.88,
+    lineHeight: 1.5,
+    load: () => import('@fontsource/nunito/400.css'),
+  },
+  {
+    id: 'poppins-light',
+    generic: 'sans-serif',
+    label: 'Poppins (sans)',
+    family: 'Poppins',
+    scale: 0.8,
+    lineHeight: 1.55,
+    weight: 300,
+    load: () => import('@fontsource/poppins/300.css'),
+  },
 ];
 
 export const DEFAULT_FONT_ID = 'parisienne';
@@ -88,9 +172,11 @@ export function getHandwritingFont(id: string | null | undefined): HandwritingFo
 export function handwritingVars(id: string): CSSProperties {
   const f = getHandwritingFont(id);
   return {
-    '--hw-family': `'${f.family}', 'Snell Roundhand', cursive`,
+    '--hw-family': `'${f.family}', 'Snell Roundhand', ${f.generic ?? 'cursive'}`,
     '--hw-scale': String(f.scale),
     '--hw-lh': String(f.lineHeight),
+    '--hw-style': f.style ?? 'normal',
+    '--hw-weight': String(f.weight ?? 400),
   } as CSSProperties;
 }
 
@@ -99,7 +185,7 @@ export async function loadHandwritingFont(id: string): Promise<void> {
   const f = getHandwritingFont(id);
   await f.load();
   try {
-    await document.fonts.load(`1em '${f.family}'`);
+    await document.fonts.load(`${f.style ?? 'normal'} ${f.weight ?? 400} 1em '${f.family}'`);
   } catch {
     /* serif fallback stays in place */
   }
