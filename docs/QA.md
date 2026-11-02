@@ -50,6 +50,7 @@ delete her afterwards (a signed test letter can only be removed by deleting it).
 ### 3. Android, Chrome
 
 - [ ] The same journey as Safari.
+- [ ] Download as PDF opens in the phone's viewer as one tall page with the letter, duties and signed page (no chapter cards).
 - [ ] Download: the share sheet or a download notification appears; the picture is in Gallery or Files and is complete.
 - [ ] Back button leaves the letter sensibly (it does not reopen the PIN screen by accident).
 

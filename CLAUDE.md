@@ -73,3 +73,7 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 - `PawIcon` is an inline SVG (never the emoji). Favicon/apple icon: gold paw on ivory (process-art.mjs).
 - The seal button's accessible name is "Tap Loki's seal to open your letter" (pet on) or "Open your letter". There is deliberately NO visible "Tap..." prompt under the envelope: the standing rule is no instruction text in the letter flow.
 - Never commit the original photo of Loki; only the generated seal art ships.
+
+## Download (Nov 2026)
+
+- The downloaded picture and the PDF hold only the cover letter, duties, closing quote and signed acceptance. The chapter cards (dates, places) and moodboard are left out (`ExportLetter`). Second button "Download as PDF": the picture is wrapped in a one-page PDF by `src/export/pdf.ts` (no library; JPEG inside, page 450pt wide, as tall as the picture). Admin has Download and PDF buttons. Extra font choices: four serif italic and four sans (`src/lib/handwriting.ts`).

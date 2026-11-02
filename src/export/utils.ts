@@ -22,12 +22,12 @@ export function isInAppBrowser(userAgent: string): boolean {
 }
 
 /** "Riya K." -> "Akeena-bridesmaid-letter-Riya-K.png", safe on every file system. */
-export function exportFilename(name: string): string {
+export function exportFilename(name: string, extension: 'png' | 'pdf' = 'png'): string {
   const safe = name
     .normalize('NFKC')
     .replace(/[^\p{L}\p{M}\p{N}\s_-]/gu, '')
     .trim()
     .replace(/\s+/g, '-')
     .slice(0, 40);
-  return `Akeena-bridesmaid-letter-${safe || 'Letter'}.png`;
+  return `Akeena-bridesmaid-letter-${safe || 'Letter'}.${extension}`;
 }

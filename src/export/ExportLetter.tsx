@@ -1,7 +1,6 @@
 import { handwritingVars } from '../lib/handwriting';
 import type { LetterData, SignedInfo } from '../lib/letterTypes';
 import { AcceptancePage } from '../letter/pages/AcceptancePage';
-import { ChaptersPage } from '../letter/pages/ChaptersPage';
 import { CoverPage } from '../letter/pages/CoverPage';
 import { DutiesPage } from '../letter/pages/DutiesPage';
 import { QuotePage } from '../letter/pages/QuotePage';
@@ -13,8 +12,8 @@ export const EXPORT_CSS_WIDTH = 390;
 type ExportLetterProps = { data: LetterData; signed: SignedInfo };
 
 /**
- * The whole signed letter on one tall page: every page stacked, every chapter open, no buttons,
- * no motion. It is laid out like the phone version so the picture matches what she read.
+ * The signed letter on one tall page: the letter, the duties, the closing quote and the signed
+ * acceptance. The chapter cards (dates, places) are left out. No buttons, no motion. It is laid out like the phone version so the picture matches what she read.
  */
 export function ExportLetter({ data, signed }: ExportLetterProps) {
   const { content } = data;
@@ -27,7 +26,6 @@ export function ExportLetter({ data, signed }: ExportLetterProps) {
     >
       <CoverPage data={data} />
       <DutiesPage content={content} />
-      <ChaptersPage chapters={content.chapters} alwaysOpen />
       <QuotePage quote={content.closingQuote} />
       <AcceptancePage content={content} signed={signed} exportMode />
     </div>

@@ -6,12 +6,14 @@ import { exportFilename, isInAppBrowser } from './utils';
 
 type DownloadButtonProps = { data: LetterData; signed: SignedInfo };
 
+type Kind = 'png' | 'pdf';
 type Ready = { blob: Blob; filename: string };
 
 export function DownloadButton({ data, signed }: DownloadButtonProps) {
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState(false);
-  const [ready, setReady] = useState<Ready | null>(null);
+  const [ready, setReady] = useState<Partial<Record<Kind, Ready>>>({});
+  const [shown, setShown] = useState<Kind>('png');
   const [showPicture, setShowPicture] = useState(false);
   const [pictureUrl, setPictureUrl] = useState<string | null>(null);
   const canceled = useRef(false);
@@ -39,18 +41,29 @@ export function DownloadButton({ data, signed }: DownloadButtonProps) {
     setShowPicture(true);
   };
 
-  const start = async () => {
+  const start = async (kind: Kind) => {
     if (busy) return;
     setProblem(false);
-    let current = ready;
+    setShown(kind);
+    let current = ready[kind];
     if (!current) {
       setBusy(true);
       try {
         const { captureLetter } = await import('./captureLetter');
-        const { blob } = await captureLetter(data, signed);
-        current = { blob, filename: exportFilename(signed.name) };
+        const picture = await captureLetter(data, signed);
         if (canceled.current) return;
-        setReady(current);
+        const png = { blob: picture.blob, filename: exportFilename(signed.name) };
+        let pdf: Ready | undefined;
+        if (kind === 'pdf') {
+          const { pictureToPdf } = await import('./pdf');
+          pdf = {
+            blob: await pictureToPdf(picture.blob, picture.width, picture.height),
+            filename: exportFilename(signed.name, 'pdf'),
+          };
+        }
+        current = kind === 'pdf' ? pdf : png;
+        if (canceled.current) return;
+        setReady((r) => ({ ...r, png: r.png ?? png, ...(pdf ? { pdf } : {}) }));
       } catch {
         if (!canceled.current) setProblem(true);
         return;
@@ -58,13 +71,18 @@ export function DownloadButton({ data, signed }: DownloadButtonProps) {
         if (!canceled.current) setBusy(false);
       }
     }
+    if (!current) return;
     const result = await deliver(current.blob, current.filename);
-    if (result === 'modal' && !canceled.current) openPicture(current.blob);
+    if (result === 'modal' && !canceled.current) {
+      if (kind === 'pdf') window.open(URL.createObjectURL(current.blob), '_blank');
+      else openPicture(current.blob);
+    }
   };
 
   const shareAgain = async () => {
-    if (!ready) return;
-    const result = await deliver(ready.blob, ready.filename);
+    const current = ready[shown];
+    if (!current) return;
+    const result = await deliver(current.blob, current.filename);
     if (result === 'shared') setShowPicture(false);
   };
 
@@ -75,8 +93,21 @@ export function DownloadButton({ data, signed }: DownloadButtonProps) {
           For the best download, open this in Safari or Chrome (⋯, then Open in browser).
         </p>
       )}
-      <button type="button" className={styles.button} onClick={() => void start()} disabled={busy}>
+      <button
+        type="button"
+        className={styles.button}
+        onClick={() => void start('png')}
+        disabled={busy}
+      >
         {busy ? 'Preparing your letter…' : 'Download your letter'}
+      </button>
+      <button
+        type="button"
+        className={styles.button}
+        onClick={() => void start('pdf')}
+        disabled={busy}
+      >
+        Download as PDF
       </button>
       <p className={styles.status} role="status" aria-live="polite">
         {busy
@@ -86,7 +117,7 @@ export function DownloadButton({ data, signed }: DownloadButtonProps) {
             : ''}
       </p>
 
-      {showPicture && ready && (
+      {showPicture && ready.png && (
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Your letter">
           <div className={styles.sheet}>
             <p className={styles.sheetText}>Press and hold the image to save it.</p>
@@ -94,7 +125,7 @@ export function DownloadButton({ data, signed }: DownloadButtonProps) {
               <img className={styles.picture} src={pictureUrl} alt="Your signed letter" />
             )}
             <div className={styles.sheetActions}>
-              {canShareFile(ready.blob, ready.filename) && (
+              {canShareFile(ready.png.blob, ready.png.filename) && (
                 <button type="button" className={styles.button} onClick={() => void shareAgain()}>
                   Save or share
                 </button>

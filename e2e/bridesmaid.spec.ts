@@ -127,8 +127,18 @@ test('the whole journey: PIN, envelope, letter, sign, download @responsive', asy
   const path = await download.path();
   const { width, height } = pngSize(readFileSync(path));
   expect(width).toBe(1080);
-  expect(height).toBeGreaterThan(5000);
+  expect(height).toBeGreaterThan(2000);
   expect(width * height).toBeLessThanOrEqual(16_000_000);
+
+  // The picture holds the letter, duties and signed page, not the chapter cards.
+  const [pdf] = await Promise.all([
+    page.waitForEvent('download'),
+    page.getByRole('button', { name: 'Download as PDF' }).click(),
+  ]);
+  expect(pdf.suggestedFilename()).toBe('Akeena-bridesmaid-letter-Riya-K.pdf');
+  const bytes = readFileSync(await pdf.path());
+  expect(bytes.subarray(0, 5).toString()).toBe('%PDF-');
+  expect(bytes.subarray(-6).toString()).toContain('%%EOF');
 });
 
 test('refreshing resumes straight into the letter without recounting the view', async ({

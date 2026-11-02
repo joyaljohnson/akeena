@@ -7,7 +7,7 @@ export type Delivery = 'shared' | 'downloaded' | 'cancelled' | 'modal';
  * on), then a normal file download, then a picture she can long-press to save.
  */
 export async function deliver(blob: Blob, filename: string): Promise<Delivery> {
-  const file = new File([blob], filename, { type: 'image/png' });
+  const file = new File([blob], filename, { type: blob.type || 'image/png' });
 
   if (typeof navigator.share === 'function' && navigator.canShare?.({ files: [file] })) {
     try {
@@ -38,6 +38,6 @@ export async function deliver(blob: Blob, filename: string): Promise<Delivery> {
 }
 
 export function canShareFile(blob: Blob, filename: string): boolean {
-  const file = new File([blob], filename, { type: 'image/png' });
+  const file = new File([blob], filename, { type: blob.type || 'image/png' });
   return typeof navigator.share === 'function' && !!navigator.canShare?.({ files: [file] });
 }
