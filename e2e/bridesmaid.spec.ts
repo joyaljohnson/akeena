@@ -342,6 +342,19 @@ test('the music starts when the envelope opens and the sound button turns it off
   await expect(page.getByRole('button', { name: 'Turn the music off' })).toBeVisible();
 });
 
+test('after a refresh the sound button is offered with the music off, and a tap starts it', async ({
+  page,
+}) => {
+  await mockBackend(page);
+  await openLetter(page);
+  await page.reload();
+  const on = page.getByRole('button', { name: 'Turn the music on' });
+  await expect(on).toBeVisible({ timeout: 15_000 });
+  await expect(on).toHaveAttribute('aria-pressed', 'false');
+  await on.click();
+  await expect(page.getByRole('button', { name: 'Turn the music off' })).toBeVisible();
+});
+
 test('the cover shows the film behind it, silent and looping', async ({ page }) => {
   await mockBackend(page);
   await openLetter(page);

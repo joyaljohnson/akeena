@@ -8,7 +8,7 @@ import {
   type CSSProperties,
 } from 'react';
 import { useParams } from 'react-router-dom';
-import { startMusic } from '../letter/music';
+import { offerMusic, startMusic } from '../letter/music';
 import { makeRecipient, type Recipient } from '../envelope/recipient';
 import { EnvelopeGate } from '../envelope/EnvelopeGate';
 import type { UnlockResult } from '../envelope/EnvelopeScene';
@@ -130,6 +130,15 @@ function LetterFlow({ token }: { token: string }) {
     },
     [token],
   );
+
+  // After a refresh there is no seal tap, so the sound button appears with the music off and a tap starts it.
+  const resumedMusic =
+    state.kind === 'letter' && state.resumed
+      ? state.payload.content.cover.background?.musicUrl
+      : undefined;
+  useEffect(() => {
+    if (resumedMusic) offerMusic(resumedMusic);
+  }, [resumedMusic]);
 
   const onSealTap = useCallback(() => {
     const music = pending.current?.content.cover.background?.musicUrl;
