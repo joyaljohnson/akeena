@@ -183,3 +183,20 @@ export function move<T>(list: readonly T[], from: number, to: number): T[] {
   copy.splice(to, 0, item as T);
   return copy;
 }
+
+type Swatch = { name?: string; hex: string };
+
+export function swatchesToText(swatches: readonly Swatch[] | undefined): string {
+  return (swatches ?? []).map((s) => (s.name ? `${s.name} ${s.hex}` : s.hex)).join('\n');
+}
+
+export function textToSwatches(raw: string): Swatch[] {
+  return raw
+    .split(/[\n,]+/)
+    .map((line) => line.trim())
+    .filter((line) => line !== '')
+    .map((line) => {
+      const m = /^(.*?)\s*(#[0-9a-fA-F]{6})$/.exec(line);
+      return m ? { name: m[1] || undefined, hex: m[2] ?? line } : { hex: line };
+    });
+}

@@ -481,3 +481,17 @@
   font-size: 0.9rem;
   line-height: 1.25;
 }
+
+/* An input with its buttons beside it; the buttons drop underneath on a narrow screen. */
+.inputRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.inputRow .input {
+  flex: 1 1 12rem;
+  width: auto;
+}
+.inputRow .btn {
+  flex: 0 0 auto;
+}

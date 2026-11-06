@@ -12,6 +12,7 @@ import { AdminContext, type ConfirmOptions } from './context';
 import styles from './admin.module.css';
 import { BridesmaidFormPage } from './BridesmaidFormPage';
 import { Dashboard } from './Dashboard';
+import { GuideEditor } from './GuideEditor';
 import { LetterEditor } from './LetterEditor';
 import { PreviewPage } from './PreviewPage';
 import type { AdminApi } from './types';
@@ -205,6 +206,14 @@ export function AdminRoot({ api, base }: AdminRootProps) {
                     >
                       Shared letter
                     </NavLink>
+                    <NavLink
+                      to={`${base}/groomsmen`}
+                      className={({ isActive }) =>
+                        `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
+                      }
+                    >
+                      Groomsmen
+                    </NavLink>
                     <button
                       className={styles.btnGhost + ' ' + styles.btn}
                       onClick={() => void api.signOut()}
@@ -219,6 +228,7 @@ export function AdminRoot({ api, base }: AdminRootProps) {
                     <Route path="new" element={<BridesmaidFormPage />} />
                     <Route path="edit/:id" element={<BridesmaidFormPage />} />
                     <Route path="letter" element={<LetterEditor />} />
+                    <Route path="groomsmen" element={<GuideEditor />} />
                   </Routes>
                 </main>
               </>

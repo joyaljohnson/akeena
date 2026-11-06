@@ -1,3 +1,4 @@
+import type { GuideContent } from '../lib/guideTypes';
 import type { LetterContent } from '../lib/letterTypes';
 
 export type BridesmaidRecord = {
@@ -25,6 +26,18 @@ export type TemplateRecord = {
   defaultFont: string;
   whatsappTemplate: string;
 };
+
+/** The groomsmen page: one shared link and PIN. */
+export type GuideRecord = {
+  token: string;
+  pin: string;
+  isActive: boolean;
+  openCount: number;
+  lastOpenedAt: string | null;
+  content: GuideContent;
+};
+
+export type GuideInput = { content: GuideContent; pin: string; isActive: boolean };
 
 export type BridesmaidInput = {
   name: string;
@@ -55,4 +68,7 @@ export interface AdminApi {
   /** Saves the order the list is now in. */
   setOrder(idsInOrder: string[]): Promise<void>;
   deleteBridesmaid(id: string): Promise<void>;
+  /** null until the page has been saved once. */
+  getGuide(): Promise<GuideRecord | null>;
+  saveGuide(input: GuideInput): Promise<GuideRecord>;
 }

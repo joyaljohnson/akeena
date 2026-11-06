@@ -6,7 +6,15 @@ import styles from './admin.module.css';
 import { useAdmin } from './context';
 import type { TemplateRecord } from './types';
 import { useAdminData } from './useAdminData';
-import { getIn, issuesByPath, move, normalizeContent, setIn } from './utils';
+import {
+  getIn,
+  issuesByPath,
+  move,
+  normalizeContent,
+  setIn,
+  swatchesToText,
+  textToSwatches,
+} from './utils';
 
 type Path = ReadonlyArray<string | number>;
 
@@ -27,7 +35,7 @@ const ICONS = [
 type FieldControl = { id: string; 'aria-describedby'?: string; 'aria-invalid'?: boolean };
 
 /** A labelled field. The label names only the control; hint and error are linked, not part of it. */
-function Field({
+export function Field({
   label,
   error,
   hint,
@@ -64,23 +72,6 @@ function Field({
       )}
     </div>
   );
-}
-
-type Swatch = { name?: string; hex: string };
-
-function swatchesToText(swatches: readonly Swatch[] | undefined): string {
-  return (swatches ?? []).map((s) => (s.name ? `${s.name} ${s.hex}` : s.hex)).join('\n');
-}
-
-function textToSwatches(raw: string): Swatch[] {
-  return raw
-    .split(/[\n,]+/)
-    .map((line) => line.trim())
-    .filter((line) => line !== '')
-    .map((line) => {
-      const m = /^(.*?)\s*(#[0-9a-fA-F]{6})$/.exec(line);
-      return m ? { name: m[1] || undefined, hex: m[2] ?? line } : { hex: line };
-    });
 }
 
 function Editor({ template }: { template: TemplateRecord }) {

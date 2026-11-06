@@ -1,9 +1,11 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { guideContentSchema } from '../lib/guideTypes';
 import { letterContentSchema } from '../lib/letterTypes';
 import type {
   AdminApi,
   BridesmaidInput,
   BridesmaidRecord,
+  GuideRecord,
   SaveResult,
   SignInResult,
   TemplateRecord,
@@ -52,6 +54,29 @@ function failure(error: { code?: string; message?: string }): SaveResult {
     return { ok: false, reason: /signed/i.test(error.message ?? '') ? 'signed' : 'invalid' };
   }
   return { ok: false, reason: 'error' };
+}
+
+type GuideRow = {
+  token: string;
+  pin: string;
+  is_active: boolean;
+  open_count: number;
+  last_opened_at: string | null;
+  content: unknown;
+};
+
+function toGuide(r: GuideRow): GuideRecord {
+  const content = guideContentSchema.safeParse(r.content);
+  if (!content.success)
+    throw new Error('The groomsmen page in the database is not in the expected shape');
+  return {
+    token: r.token,
+    pin: r.pin,
+    isActive: r.is_active,
+    openCount: r.open_count,
+    lastOpenedAt: r.last_opened_at,
+    content: content.data,
+  };
 }
 
 let cached: { key: string; api: AdminApi } | null = null;
@@ -196,6 +221,29 @@ function buildApi(url: string, anonKey: string): AdminApi {
       );
       const failed = results.find((r) => r.error);
       if (failed?.error) throw new Error(failed.error.message);
+    },
+
+    async getGuide() {
+      const { data, error } = await supabase
+        .from('groomsmen_guide')
+        .select('*')
+        .eq('id', 1)
+        .maybeSingle();
+      if (error) throw new Error(error.message);
+      return data ? toGuide(data as GuideRow) : null;
+    },
+
+    async saveGuide(input) {
+      // Upsert: the first save creates the row (the database gives it a link), later saves leave
+      // the link alone.
+      const { data, error } = await supabase
+        .from('groomsmen_guide')
+        .upsert({ id: 1, content: input.content, pin: input.pin, is_active: input.isActive })
+        .select('*');
+      if (error) throw new Error(error.message);
+      const row = (data as GuideRow[] | null)?.[0];
+      if (!row) throw new Error('The change was not saved');
+      return toGuide(row);
     },
 
     async deleteBridesmaid(id) {

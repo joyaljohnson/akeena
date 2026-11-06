@@ -4,6 +4,7 @@ import type {
   AdminApi,
   BridesmaidInput,
   BridesmaidRecord,
+  GuideRecord,
   SaveResult,
   TemplateRecord,
 } from './types';
@@ -57,6 +58,7 @@ function seed(): BridesmaidRecord[] {
 export function createMockApi(template: TemplateRecord): AdminApi {
   let list = seed();
   let tpl = template;
+  let guide: GuideRecord | null = null;
   let signedIn = true;
   const listeners = new Set<(e: string | null) => void>();
   const wait = () => new Promise((r) => setTimeout(r, 150));
@@ -132,6 +134,20 @@ export function createMockApi(template: TemplateRecord): AdminApi {
     async setOrder(ids) {
       await wait();
       list = list.map((b) => ({ ...b, sortOrder: ids.indexOf(b.id) + 1 }));
+    },
+    async getGuide() {
+      await wait();
+      return guide;
+    },
+    async saveGuide(input) {
+      await wait();
+      guide = {
+        token: guide?.token ?? 'guide'.padEnd(40, 'c'),
+        openCount: guide?.openCount ?? 0,
+        lastOpenedAt: guide?.lastOpenedAt ?? null,
+        ...input,
+      };
+      return guide;
     },
     async deleteBridesmaid(id) {
       await wait();

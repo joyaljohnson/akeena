@@ -143,6 +143,13 @@ test.describe('admin screens', () => {
     await expect(page.getByRole('heading', { name: 'Shared letter' })).toBeVisible();
     await scan(page, 'shared letter editor');
 
+    await page.goto(`${admin}/groomsmen`);
+    await expect(page.getByRole('heading', { name: 'Groomsmen page' })).toBeVisible();
+    await scan(page, 'groomsmen editor');
+    await page.getByLabel('Picture links (optional)').first().fill('nope');
+    await page.getByRole('button', { name: 'Show preview' }).click();
+    await scan(page, 'groomsmen editor with errors');
+
     await page.goto(admin);
     await page
       .getByRole('listitem')

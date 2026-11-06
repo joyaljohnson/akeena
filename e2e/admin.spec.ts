@@ -213,3 +213,60 @@ test('the cover veil and writing colour can be changed and saved', async ({ page
   await expect(veil).toHaveValue('off');
   await expect(colour).toHaveValue('white');
 });
+
+test('the groomsmen page can be set up: mistakes explained, a preview, then saved with a link', async ({
+  page,
+}) => {
+  await page.goto(admin);
+  await page.getByRole('link', { name: 'Groomsmen' }).click();
+  await expect(page.getByRole('heading', { name: 'Groomsmen page' })).toBeVisible();
+  await expect(page.getByText("The page isn't set up yet")).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^Chapter \d: / })).toHaveCount(4);
+
+  // Mistakes are explained next to the box, and saving waits.
+  const save = page.getByRole('button', { name: 'Save changes' });
+  await page.getByLabel('Dress code', { exact: true }).first().fill('Cream and white');
+  await page.getByLabel('Picture links (optional)').first().fill('not a link');
+  await expect(page.getByText('Each line needs a full link, starting with https://')).toBeVisible();
+  await expect(save).toBeDisabled();
+  await page.getByLabel('Colours (optional)').first().fill('Cream nope');
+  await expect(page.getByText('Write each colour like: Cream #F5EBD7')).toBeVisible();
+
+  await page.getByLabel('Colours (optional)').first().fill('Cream #F5EBD7');
+  await page
+    .getByLabel('Picture links (optional)')
+    .first()
+    .fill('https://media.example.test/a.webp\nhttps://media.example.test/b.webp');
+  await page.getByLabel('PIN', { exact: true }).fill('12');
+  await expect(page.getByText('The PIN must be exactly 4 digits.')).toBeVisible();
+  await expect(save).toBeDisabled();
+  await page.getByLabel('PIN', { exact: true }).fill('2468');
+
+  // The preview is the real page with the draft.
+  await page.getByRole('button', { name: 'Show preview' }).click();
+  await expect(page.getByRole('heading', { name: 'For the groomsmen' })).toBeVisible();
+  await expect(page.getByText('Cream and white').last()).toBeVisible();
+
+  await expect(save).toBeEnabled();
+  await save.click();
+  await expect(page.getByText('Saved. The page is ready.')).toBeVisible();
+  await expect(page.getByLabel('Link to send')).toHaveValue(/\/#\/g\/guidec+$/);
+  await expect(save).toBeDisabled();
+
+  // Switching it off, then saving, is remembered.
+  await page.getByLabel('Page is').selectOption('off');
+  await save.click();
+  await expect(page.getByText('Saved. The groomsmen page now shows this.')).toBeVisible();
+});
+
+test('the groomsmen link and PIN can be copied', async ({ page }) => {
+  await page.goto(admin);
+  await page.getByRole('link', { name: 'Groomsmen' }).click();
+  await page.getByLabel('Dress code', { exact: true }).first().fill('Black');
+  await page.getByRole('button', { name: 'Save changes' }).click();
+  await expect(page.getByText('Saved. The page is ready.')).toBeVisible();
+  await page.getByRole('button', { name: 'Copy link' }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/\/#\/g\/guidec+$/);
+  await page.getByRole('button', { name: 'Copy PIN' }).click();
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toMatch(/^\d{4}$/);
+});

@@ -19,7 +19,11 @@ The pictures are third-party saves from Pinterest, so they are never committed a
 1. `node scripts/process-groomsmen.mjs "<folder with one sub-folder per chapter>"` crops black bars, resizes to 720 px wide WebP and gives each a random file name. Output: `private-media/groomsmen/`.
 2. Supabase dashboard, Storage, bucket `letter-media` (public), create the folder `groomsmen`, upload every `.webp` from `private-media/groomsmen/` (not `manifest.json`).
 
-## Setting up or changing the page
+## Editing in the admin
+
+Admin, **Groomsmen** (`#/admin/groomsmen`): link and PIN (copy, new PIN), on/off, heading, intro, closing line, Pinterest link, and for each chapter the dress code, outfit text, colours (`Name #HEX` per line) and picture links (one per line, in order). A live preview shows the draft with the real page. The first Save creates the page and its link; later saves keep the link. Pictures are still uploaded in Supabase Storage (`letter-media`, folder `groomsmen`) and their public links pasted in.
+
+## Setting up or changing the page (without the admin)
 
 1. Run the migration once (SQL editor): `supabase/migrations/20261106000000_groomsmen_guide.sql`.
 2. Edit the words in `src/dev-fixture/guide.ts`, then `npm run guide:build`.

@@ -127,6 +127,19 @@ describe('groomsmen guide: admins', () => {
     expect(await row()).toMatchObject({ pin: '1357' });
   });
 
+  it('can save through an upsert, which keeps the link and creates one the first time', async () => {
+    const upsert = `insert into groomsmen_guide (id, content, pin, is_active)
+      values (1, '{"heading":"New"}'::jsonb, '1357', false)
+      on conflict (id) do update set content = excluded.content, pin = excluded.pin,
+        is_active = excluded.is_active`;
+    await as(db, 'authenticated', adminId, () => db.query(upsert));
+    expect(await row()).toMatchObject({ token: TOKEN, pin: '1357', is_active: false });
+
+    await db.query('delete from groomsmen_guide');
+    await as(db, 'authenticated', adminId, () => db.query(upsert));
+    expect(String((await row()).token)).toMatch(/^[0-9a-f]{40}$/);
+  });
+
   it('shows a signed-in non-admin nothing and lets them change nothing', async () => {
     const read = await as(db, 'authenticated', otherId, () =>
       db.query('select * from groomsmen_guide'),

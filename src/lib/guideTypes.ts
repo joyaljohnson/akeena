@@ -7,7 +7,7 @@ import { mediaUrl } from './letterTypes';
  */
 const guideChapterSchema = z.object({
   /** Short headline, such as "Cream and white". */
-  dressCode: z.string().min(1),
+  dressCode: z.string().min(1, 'Please enter the dress code.'),
   /** A line or two about the outfit. */
   details: z.string().optional(),
   /** Colour chips under the dress code. */
@@ -15,7 +15,7 @@ const guideChapterSchema = z.object({
     .array(
       z.object({
         name: z.string().optional(),
-        hex: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+        hex: z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Write each colour like: Cream #F5EBD7'),
       }),
     )
     .max(12)
@@ -25,12 +25,17 @@ const guideChapterSchema = z.object({
 });
 
 export const guideContentSchema = z.object({
-  heading: z.string().min(1),
+  heading: z.string().min(1, 'Please enter a heading.'),
   intro: z.string(),
   closing: z.string().optional(),
   /** Keyed by the chapter's id in the shared letter (ch1 to ch4). */
   chapters: z.record(z.string(), guideChapterSchema),
-  moodboard: z.object({ label: z.string().min(1), url: z.string().url() }).optional(),
+  moodboard: z
+    .object({
+      label: z.string().min(1, 'Please enter a label for the link.'),
+      url: z.string().url('Please paste the full link, starting with https://'),
+    })
+    .optional(),
 });
 
 export type GuideContent = z.infer<typeof guideContentSchema>;
