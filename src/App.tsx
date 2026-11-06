@@ -8,6 +8,7 @@ const AdminApp = lazy(() => import('./admin/AdminApp'));
 const DevAdmin = import.meta.env.DEV ? lazy(() => import('./dev/DevAdmin')) : null;
 const DevLetter = import.meta.env.DEV ? lazy(() => import('./dev/DevLetter')) : null;
 const DevEnvelope = import.meta.env.DEV ? lazy(() => import('./dev/DevEnvelope')) : null;
+const DevChapters = import.meta.env.DEV ? lazy(() => import('./dev/DevChapters')) : null;
 const StampCompare = import.meta.env.DEV ? lazy(() => import('./dev/StampCompare')) : null;
 
 function Hello() {
@@ -28,6 +29,7 @@ export function App() {
         {DevAdmin && <Route path="/dev/admin/*" element={<DevAdmin />} />}
         {DevLetter && <Route path="/dev/letter" element={<DevLetter />} />}
         {DevEnvelope && <Route path="/dev/envelope" element={<DevEnvelope />} />}
+        {DevChapters && <Route path="/dev/chapters" element={<DevChapters />} />}
         {StampCompare && <Route path="/dev/stamp" element={<StampCompare />} />}
         <Route path="*" element={<UnavailableScreen />} />
       </Routes>
