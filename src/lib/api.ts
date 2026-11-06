@@ -2,9 +2,11 @@ import type { z } from 'zod';
 import {
   checkLinkSchema,
   signSchema,
+  unlockGuideSchema,
   unlockSchema,
   type CheckLinkResult,
   type SignResponse,
+  type UnlockGuideResponse,
   type UnlockResponse,
 } from './rpcSchemas';
 
@@ -76,3 +78,13 @@ export const unlockLetter = (
 
 export const signLetter = (token: string, pin: string, signedName: string): Promise<SignResponse> =>
   rpc('sign_letter', { p_token: token, p_pin: pin, p_signed_name: signedName }, signSchema);
+
+export const checkGuide = (token: string): Promise<CheckLinkResult> =>
+  rpc('check_guide', { p_token: token }, checkLinkSchema);
+
+export const unlockGuide = (
+  token: string,
+  pin: string,
+  countView = true,
+): Promise<UnlockGuideResponse> =>
+  rpc('unlock_guide', { p_token: token, p_pin: pin, p_count_view: countView }, unlockGuideSchema);

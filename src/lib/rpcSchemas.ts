@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { guideContentSchema } from './guideTypes';
 import { letterContentSchema } from './letterTypes';
 
 /** Everything the three public functions can return, validated before the app trusts it. */
@@ -34,7 +35,20 @@ export const signSchema = z.discriminatedUnion('status', [
   ...failureShapes,
 ]);
 
+const guidePayloadSchema = z.object({
+  font: z.string(),
+  chapters: letterContentSchema.shape.chapters,
+  content: guideContentSchema,
+});
+
+export const unlockGuideSchema = z.discriminatedUnion('status', [
+  z.object({ status: z.literal('ok'), guide: guidePayloadSchema }),
+  ...failureShapes,
+]);
+
 export type CheckLinkResult = z.infer<typeof checkLinkSchema>;
 export type UnlockResponse = z.infer<typeof unlockSchema>;
 export type SignResponse = z.infer<typeof signSchema>;
 export type LetterPayload = z.infer<typeof letterPayloadSchema>;
+export type UnlockGuideResponse = z.infer<typeof unlockGuideSchema>;
+export type GuidePayload = z.infer<typeof guidePayloadSchema>;

@@ -1,0 +1,165 @@
+.scroll {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--safe-bottom) + 1.5rem);
+  background-color: var(--paper);
+  background-image: var(--paper-noise);
+}
+.scroll:focus-visible {
+  outline-offset: -3px;
+}
+
+.head {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  padding: 3.25rem 1.5rem 0.5rem;
+  text-align: center;
+}
+.heading {
+  margin: 0;
+  --hand-size: 1.9rem;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.flourish {
+  color: var(--gold);
+}
+.intro {
+  margin: 0;
+  max-width: 30ch;
+  font-size: 1.02rem;
+  text-wrap: balance;
+}
+
+.closing {
+  margin: 1.25rem 1.5rem 0;
+  text-align: center;
+  --hand-size: 1.3rem;
+  color: var(--burgundy);
+  text-wrap: balance;
+}
+.moodWrap {
+  padding: 0 1.5rem;
+}
+
+/* Dress code and pictures inside a chapter card */
+.dress {
+  margin: 0;
+  font-size: 1.02rem;
+  text-wrap: balance;
+}
+.dressNote {
+  margin: 0;
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+  text-wrap: balance;
+}
+.looks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.look {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+  border-radius: 12px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--paper) 85%, var(--gold));
+  cursor: zoom-in;
+  aspect-ratio: 4 / 5;
+}
+.look img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+.look:focus-visible,
+.lbBtn:focus-visible {
+  outline: 2px solid var(--burgundy);
+  outline-offset: 2px;
+}
+
+/* Full-size picture */
+.lightbox {
+  width: 100vw;
+  max-width: 100vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: color-mix(in srgb, var(--ink) 97%, transparent);
+  color: #fff;
+}
+.lightbox::backdrop {
+  background: transparent;
+}
+.lbBody {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 3.5rem 0.5rem 4rem;
+  padding-top: calc(3.5rem + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+}
+.lbImg {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+.lbBtn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.lbClose {
+  top: calc(0.6rem + env(safe-area-inset-top, 0px));
+  right: 0.75rem;
+  padding: 0 1rem;
+}
+.lbPrev,
+.lbNext {
+  bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+}
+.lbPrev {
+  left: 0.75rem;
+}
+.lbNext {
+  right: 0.75rem;
+}
+.lbCount {
+  position: absolute;
+  bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: var(--font-label);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+}

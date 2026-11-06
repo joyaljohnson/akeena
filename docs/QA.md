@@ -102,3 +102,10 @@ On iPhone Safari and Android Chrome:
 - After signing: "Witnessed by Loki" with the paw fades in under the signed line (after the stamp lands).
 - Download the picture: open the PNG and check "Witnessed by Loki" and the paw appear under the signed line (the paw must be a drawn icon, not a blank box).
 - Admin, Shared letter, Pet credits: switching Off hides both lines and the seal's label becomes plain "Open your letter".
+
+## Groomsmen page
+
+- [ ] Link alone shows only "A letter for you" and the PIN boxes. Wrong PIN counts down; five wrong tries lock it.
+- [ ] After the PIN: heading, intro, four open chapter cards with details, map links, dress code, colour chips and pictures; Pinterest card and closing line at the end. No horizontal scroll at 360, 390 and 430.
+- [ ] A picture opens large; arrows step, Close and Esc work; the page behind does not scroll.
+- [ ] Refresh goes straight back in. Opens fine on iPhone Safari and Android Chrome.

@@ -40,7 +40,7 @@ const loadStage = () => import('./EnvelopeStage');
 const EnvelopeStage = lazy(loadStage);
 
 /** The first screen: a plain page with a greeting and the PIN boxes. The envelope comes later. */
-function PinScreen({ fontId, children }: { fontId: string; children: ReactNode }) {
+export function PinScreen({ fontId, children }: { fontId: string; children: ReactNode }) {
   return (
     <div className={styles.scene} style={handwritingVars(fontId) as CSSProperties}>
       <div className={styles.pinScreen}>

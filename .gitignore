@@ -33,3 +33,4 @@ assets-src/og-envelope.jpg
 private-media/
 public/dev-media/
 tsconfig.tsbuildinfo
+supabase/guide.private.sql

@@ -5,6 +5,11 @@ export const TOKEN = '0123456789abcdef0123456789abcdef01234567';
 export const PIN = '4821';
 export const SIGNED_AT = '2026-11-03T09:35:00Z'; // 3 Nov 2026, 3:05 pm in India
 
+const PIXEL = Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+  'base64',
+);
+
 export const letter = (overrides: Record<string, unknown> = {}) => ({
   name: 'Riya',
   personalNote: 'You have been my person from day one.',
@@ -14,7 +19,35 @@ export const letter = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+/** What the groomsmen page receives after the PIN: the sample chapters plus made-up dress codes. */
+export const GUIDE_TOKEN = 'fedcba9876543210fedcba9876543210fedcba98';
+export const GUIDE_PIN = '2468';
+export const guide = (overrides: Record<string, unknown> = {}) => ({
+  font: 'parisienne',
+  chapters: sample.content.chapters,
+  content: {
+    heading: 'For the groomsmen',
+    intro: 'Four chapters, four looks.',
+    closing: 'Thank you for standing with us.',
+    moodboard: { label: 'Join the Grooms men board', url: 'https://pinterest.example.test/board' },
+    chapters: Object.fromEntries(
+      sample.content.chapters.map((c, i) => [
+        c.id,
+        {
+          dressCode: `Look ${i + 1} dress code`,
+          details: 'A kurta and a mundu.',
+          swatches: [{ name: 'Cream', hex: '#F5EBD7' }],
+          looks: [1, 2, 3].map((n) => ({ url: `https://media.example.test/look-${i}-${n}.webp` })),
+        },
+      ]),
+    ),
+  },
+  ...overrides,
+});
+
 type Handlers = {
+  checkGuide?: () => unknown;
+  unlockGuide?: (pin: string, countView: boolean) => unknown;
   check?: () => unknown;
   unlock?: (pin: string, countView: boolean) => unknown;
   sign?: (pin: string, name: string) => unknown;
@@ -27,7 +60,9 @@ export async function mockBackend(page: Page, handlers: Handlers = {}) {
 
   // The sample letter points at media that does not exist; answer with nothing and keep it silent.
   await page.route('https://media.example.test/**', (route) =>
-    route.fulfill({ status: 200, contentType: 'application/octet-stream', body: '' }),
+    route.request().url().endsWith('.webp')
+      ? route.fulfill({ status: 200, contentType: 'image/png', body: PIXEL })
+      : route.fulfill({ status: 200, contentType: 'application/octet-stream', body: '' }),
   );
   await page.addInitScript(() => {
     (window as unknown as { __played: string[] }).__played = [];
@@ -48,6 +83,15 @@ export async function mockBackend(page: Page, handlers: Handlers = {}) {
         handlers.unlock?.(pin, body.p_count_view !== false) ??
         (pin === PIN
           ? { status: 'ok', letter: letter() }
+          : { status: 'wrong_pin', attempts_left: 4 - attempts.wrong++ });
+    }
+    if (fn === 'check_guide') result = handlers.checkGuide?.() ?? { status: 'ok' };
+    if (fn === 'unlock_guide') {
+      const pin = String(body.p_pin);
+      result =
+        handlers.unlockGuide?.(pin, body.p_count_view !== false) ??
+        (pin === GUIDE_PIN
+          ? { status: 'ok', guide: guide() }
           : { status: 'wrong_pin', attempts_left: 4 - attempts.wrong++ });
     }
     if (fn === 'sign_letter') {

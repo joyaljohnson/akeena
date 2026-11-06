@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   chapterLabel,
   describeEventTime,
@@ -55,7 +55,7 @@ const THEME_SWATCHES: Partial<Record<LetterChapter['theme'], readonly Swatch[]>>
   ],
 };
 
-function Swatches({ colours, label }: { colours: readonly Swatch[]; label: string }) {
+export function Swatches({ colours, label }: { colours: readonly Swatch[]; label: string }) {
   return (
     <ul className={styles.swatches} aria-label={`Colour palette: ${label}`}>
       {colours.map((c) => (
@@ -68,40 +68,52 @@ function Swatches({ colours, label }: { colours: readonly Swatch[]; label: strin
   );
 }
 
-function ChapterDetails({ chapter }: { chapter: LetterChapter }) {
+/** Dates, times and venues (shared by the bridesmaid letter and the groomsmen page). */
+export function EventsSection({ chapter }: { chapter: LetterChapter }) {
   const many = chapter.events.length > 1;
+  return (
+    <section className={styles.section} aria-labelledby={`${chapter.id}-details`}>
+      <h3 id={`${chapter.id}-details`} className={styles.label}>
+        Details
+      </h3>
+      {chapter.events.map((e) => (
+        <div key={`${e.date}-${e.venueName}`} className={styles.event}>
+          {many && e.label && <span className={styles.eventLabel}>{e.label}</span>}
+          <span className={styles.date}>{formatEventDate(e.date)}</span>
+          <span>{describeEventTime(e.time, e.timeNote)}</span>
+          <a
+            className={styles.venueLink}
+            href={e.mapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <PinIcon className={styles.pin} />
+            <span className={styles.venueText}>{e.venueName}</span>
+            <span className="sr-only"> (opens map in a new tab)</span>
+          </a>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+export function VibeSection({ chapter }: { chapter: LetterChapter }) {
+  return (
+    <section className={styles.section} aria-labelledby={`${chapter.id}-vibe`}>
+      <h3 id={`${chapter.id}-vibe`} className={styles.label}>
+        Vibe
+      </h3>
+      <p className={styles.body}>{chapter.vibe}</p>
+    </section>
+  );
+}
+
+function ChapterDetails({ chapter }: { chapter: LetterChapter }) {
   return (
     <div className={styles.cardInner}>
       <hr className={styles.rule} />
-      <section className={styles.section} aria-labelledby={`${chapter.id}-details`}>
-        <h3 id={`${chapter.id}-details`} className={styles.label}>
-          Details
-        </h3>
-        {chapter.events.map((e) => (
-          <div key={`${e.date}-${e.venueName}`} className={styles.event}>
-            {many && e.label && <span className={styles.eventLabel}>{e.label}</span>}
-            <span className={styles.date}>{formatEventDate(e.date)}</span>
-            <span>{describeEventTime(e.time, e.timeNote)}</span>
-            <a
-              className={styles.venueLink}
-              href={e.mapsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <PinIcon className={styles.pin} />
-              <span className={styles.venueText}>{e.venueName}</span>
-              <span className="sr-only"> (opens map in a new tab)</span>
-            </a>
-          </div>
-        ))}
-      </section>
-
-      <section className={styles.section} aria-labelledby={`${chapter.id}-vibe`}>
-        <h3 id={`${chapter.id}-vibe`} className={styles.label}>
-          Vibe
-        </h3>
-        <p className={styles.body}>{chapter.vibe}</p>
-      </section>
+      <EventsSection chapter={chapter} />
+      <VibeSection chapter={chapter} />
 
       <section className={styles.section} aria-labelledby={`${chapter.id}-colour`}>
         <h3 id={`${chapter.id}-colour`} className={styles.label}>
@@ -128,6 +140,8 @@ type ChapterCardProps = {
   /** Opens the card on its own when this turns true (until the reader has opened one herself). */
   autoOpen?: boolean;
   onToggle?: () => void;
+  /** Replaces the bridesmaid details (used by the groomsmen page). */
+  body?: ReactNode;
 };
 
 export function ChapterCard({
@@ -136,6 +150,7 @@ export function ChapterCard({
   defaultOpen = false,
   autoOpen = false,
   onToggle,
+  body,
 }: ChapterCardProps) {
   const [open, setOpen] = useState(defaultOpen);
   const [seenAuto, setSeenAuto] = useState(false);
@@ -189,7 +204,7 @@ export function ChapterCard({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: reduce ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
           >
-            <ChapterDetails chapter={chapter} />
+            {body ?? <ChapterDetails chapter={chapter} />}
           </motion.div>
         )}
       </AnimatePresence>
@@ -197,7 +212,7 @@ export function ChapterCard({
   );
 }
 
-function Moodboard({ moodboard }: { moodboard: NonNullable<LetterContent['moodboard']> }) {
+export function Moodboard({ moodboard }: { moodboard: NonNullable<LetterContent['moodboard']> }) {
   return (
     <section className={styles.moodboard} aria-labelledby="moodboard-title">
       <svg className={styles.moodIcon} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -226,12 +241,15 @@ export function ChaptersPage({
   moodboard,
   alwaysOpen = false,
   autoOpenFirst = false,
+  renderBody,
 }: {
   chapters: readonly LetterChapter[];
   moodboard?: LetterContent['moodboard'];
   alwaysOpen?: boolean;
   /** On the first reading, opens chapter one by itself once all the cards have been on screen a moment. */
   autoOpenFirst?: boolean;
+  /** Different card contents for the same chapters (the groomsmen page). */
+  renderBody?: (chapter: LetterChapter) => ReactNode;
 }) {
   const [autoOpened, setAutoOpened] = useState(false);
   const touched = useRef(false);
@@ -268,6 +286,7 @@ export function ChaptersPage({
             key={c.id}
             chapter={c}
             alwaysOpen={alwaysOpen}
+            body={renderBody?.(c)}
             autoOpen={i === 0 && autoOpened}
             onToggle={() => {
               touched.current = true;

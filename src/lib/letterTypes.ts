@@ -4,7 +4,7 @@ export const CHAPTER_THEMES = ['pearl', 'jewel', 'gold', 'pastel-metallic'] as c
 export type ChapterTheme = (typeof CHAPTER_THEMES)[number];
 
 /** A web address, or a path on this site (used when previewing on this computer). */
-const mediaUrl = z
+export const mediaUrl = z
   .string()
   .refine(
     (v) => /^https?:\/\/\S+$/.test(v) || /^\/\S+$/.test(v),

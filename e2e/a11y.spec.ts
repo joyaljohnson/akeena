@@ -1,6 +1,16 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
-import { disableShare, enterPin, letter, mockBackend, PIN, SIGNED_AT, TOKEN } from './support';
+import {
+  disableShare,
+  enterPin,
+  GUIDE_PIN,
+  GUIDE_TOKEN,
+  letter,
+  mockBackend,
+  PIN,
+  SIGNED_AT,
+  TOKEN,
+} from './support';
 
 // WCAG 2.1 A and AA rules, run on every screen a bridesmaid or admin can reach.
 async function scan(page: Page, label: string) {
@@ -143,4 +153,20 @@ test.describe('admin screens', () => {
     await page.waitForTimeout(700);
     await scan(page, 'preview');
   });
+});
+
+test('the groomsmen page: PIN screen, page and picture viewer', async ({ page }) => {
+  await mockBackend(page);
+  await page.goto(`/#/g/${GUIDE_TOKEN}`);
+  await expect(page.getByText('A letter for you')).toBeVisible();
+  await scan(page, 'groomsmen pin');
+  await enterPin(page, GUIDE_PIN);
+  await expect(page.getByRole('heading', { name: 'For the groomsmen' })).toBeVisible();
+  await scan(page, 'groomsmen page');
+  await page
+    .getByRole('button', { name: /outfit idea 1, view larger/ })
+    .first()
+    .click();
+  await expect(page.getByRole('dialog', { name: 'Outfit picture' })).toBeVisible();
+  await scan(page, 'groomsmen viewer');
 });

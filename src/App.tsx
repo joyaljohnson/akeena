@@ -5,10 +5,12 @@ import { LetterRoute } from './routes/LetterRoute';
 import { UnavailableScreen } from './routes/StatusScreen';
 
 const AdminApp = lazy(() => import('./admin/AdminApp'));
+const GuideRoute = lazy(() => import('./guide/GuideRoute'));
 const DevAdmin = import.meta.env.DEV ? lazy(() => import('./dev/DevAdmin')) : null;
 const DevLetter = import.meta.env.DEV ? lazy(() => import('./dev/DevLetter')) : null;
 const DevEnvelope = import.meta.env.DEV ? lazy(() => import('./dev/DevEnvelope')) : null;
 const DevChapters = import.meta.env.DEV ? lazy(() => import('./dev/DevChapters')) : null;
+const DevGuide = import.meta.env.DEV ? lazy(() => import('./dev/DevGuide')) : null;
 const StampCompare = import.meta.env.DEV ? lazy(() => import('./dev/StampCompare')) : null;
 
 function Hello() {
@@ -25,11 +27,13 @@ export function App() {
       <Routes>
         <Route path="/" element={<Hello />} />
         <Route path="/l/:token" element={<LetterRoute />} />
+        <Route path="/g/:token" element={<GuideRoute />} />
         <Route path="/admin/*" element={<AdminApp />} />
         {DevAdmin && <Route path="/dev/admin/*" element={<DevAdmin />} />}
         {DevLetter && <Route path="/dev/letter" element={<DevLetter />} />}
         {DevEnvelope && <Route path="/dev/envelope" element={<DevEnvelope />} />}
         {DevChapters && <Route path="/dev/chapters" element={<DevChapters />} />}
+        {DevGuide && <Route path="/dev/guide" element={<DevGuide />} />}
         {StampCompare && <Route path="/dev/stamp" element={<StampCompare />} />}
         <Route path="*" element={<UnavailableScreen />} />
       </Routes>

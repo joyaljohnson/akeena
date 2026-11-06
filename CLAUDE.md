@@ -77,3 +77,8 @@ Quality over speed. If the spec is wrong or something is better, say so. Missing
 ## Download (Nov 2026)
 
 - The downloaded picture and the PDF hold only the cover letter, duties, closing quote and signed acceptance. The chapter cards (dates, places) and moodboard are left out (`ExportLetter`). Second button "Download as PDF": the picture is wrapped in a one-page PDF by `src/export/pdf.ts` (no library; JPEG inside, page 450pt wide, as tall as the picture). Admin has Download and PDF buttons. Extra font choices: four serif italic and four sans (`src/lib/handwriting.ts`).
+
+## Groomsmen page (Nov 2026)
+
+- Route `#/g/:token` (lazy chunk `src/guide`), one shared token + PIN in table `groomsmen_guide` (single row, RLS, no anon access); RPCs `check_guide` and `unlock_guide` (migration `20261106000000`, tests `supabase/tests/guide.test.ts`). It returns only the shared letter's chapters, its default font, and the guide content. The chapter cards are the letter's own (`ChaptersPage` `renderBody`), always open; the "Dress code" section adds colour chips and outfit pictures (tap = native `<dialog>` viewer).
+- Words and picture links are private (`src/dev-fixture/guide.ts` -> `npm run guide:build` -> `supabase/guide.private.sql`). Pictures are third-party Pinterest saves: processed by `scripts/process-groomsmen.mjs`, uploaded to the public `letter-media/groomsmen/` bucket folder, never committed. The Pinterest link is watched by check-leaks via letter-content.md. See `docs/GROOMSMEN.md`. No instruction text on the page, same as the letter.

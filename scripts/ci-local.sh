@@ -6,7 +6,7 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 
 HIDE="$(mktemp -d)"
-PRIVATE=(src/dev-fixture supabase/seed.private.sql .env.local .env letter-content.md dist)
+PRIVATE=(src/dev-fixture supabase/seed.private.sql supabase/guide.private.sql public/dev-media .env.local .env letter-content.md dist)
 
 restore() {
   for p in "${PRIVATE[@]}"; do
